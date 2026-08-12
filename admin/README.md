@@ -28,7 +28,7 @@ Required environment values:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5005/api
-VITE_STOREFRONT_URL=https://ameykaveda.com
+VITE_STOREFRONT_URL=https://legendbornnutrition.com
 VITE_API_TIMEOUT_MS=20000
 ```
 

@@ -14,7 +14,7 @@ const storefrontConfigured = String(import.meta.env.VITE_STOREFRONT_URL || "").t
 if (!storefrontConfigured && import.meta.env.PROD) {
   throw new Error("VITE_STOREFRONT_URL is required for the production admin build.");
 }
-export const STOREFRONT_URL = (storefrontConfigured || "https://ameykaveda.com").replace(/\/$/, "");
+export const STOREFRONT_URL = (storefrontConfigured || "https://legendbornnutrition.com").replace(/\/$/, "");
 
 const API = axios.create({
   baseURL: API_BASE_URL,

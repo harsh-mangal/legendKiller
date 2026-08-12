@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ameykaveda.com/sitemap.xml
+Sitemap: https://legendbornnutrition.com/sitemap.xml

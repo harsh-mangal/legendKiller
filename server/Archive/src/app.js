@@ -20,7 +20,7 @@ import path from "path";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
-const allowedOrigins = (process.env.CORS_ORIGIN || "https://ameykaveda.com,http://localhost:3000,https://ameykaveda.com,https://www.ameykaveda.com,https://admin.ameykaveda.com").split(",").map((origin) => origin.trim()).filter(Boolean);
+const allowedOrigins = (process.env.CORS_ORIGIN || "https://legendbornnutrition.com,http://localhost:3000,https://legendbornnutrition.com,https://www.legendbornnutrition.com,https://admin.legendbornnutrition.com").split(",").map((origin) => origin.trim()).filter(Boolean);
 
 app.use(cors({ origin(origin, callback) {
   if (!origin || allowedOrigins.includes(origin)) return callback(null, true);

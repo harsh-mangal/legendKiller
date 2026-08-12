@@ -22,12 +22,12 @@ const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)]
 
 if (urls.length < STATIC_INDEXABLE_ROUTES.length) failures.push("Sitemap is missing static routes.");
 if (new Set(urls).size !== urls.length) failures.push("Sitemap contains duplicate page URLs.");
-if (!robots.includes("Sitemap: https://ameykaveda.com/sitemap.xml")) failures.push("robots.txt does not reference the canonical sitemap.");
+if (!robots.includes("Sitemap: https://legendbornnutrition.com/sitemap.xml")) failures.push("robots.txt does not reference the canonical sitemap.");
 
 const titles = new Map();
 for (const value of urls) {
   const url = new URL(value);
-  if (url.origin !== "https://ameykaveda.com") failures.push(`Non-canonical sitemap origin: ${value}`);
+  if (url.origin !== "https://legendbornnutrition.com") failures.push(`Non-canonical sitemap origin: ${value}`);
   if (url.search || url.hash) failures.push(`Sitemap URL contains query or fragment: ${value}`);
   const pathname = decodeURIComponent(url.pathname);
   const target = pathname === "/" ? path.join(dist, "index.html") : path.join(dist, pathname.replace(/^\//, ""), "index.html");

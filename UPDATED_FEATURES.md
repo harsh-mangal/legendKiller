@@ -87,7 +87,7 @@ REACT_APP_API_BASE_URL=http://localhost:5005
 Server additions:
 
 ```env
-CORS_ORIGIN=https://ameykaveda.com,https://www.ameykaveda.com,https://admin.ameykaveda.com
+CORS_ORIGIN=https://legendbornnutrition.com,https://www.legendbornnutrition.com,https://admin.legendbornnutrition.com
 RAZORPAY_WEBHOOK_SECRET=your_razorpay_webhook_secret
 CONTACT_TO=support@example.com
 ADMIN_NAME=Administrator

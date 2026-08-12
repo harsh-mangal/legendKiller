@@ -1,12 +1,12 @@
 server {
   listen 80;
-  server_name www.ameykaveda.com;
-  return 301 https://ameykaveda.com$request_uri;
+  server_name www.legendbornnutrition.com;
+  return 301 https://legendbornnutrition.com$request_uri;
 }
 
 server {
   listen 80;
-  server_name ameykaveda.com;
+  server_name legendbornnutrition.com;
   root /var/www/ameyka/dist;
   index index.html;
 
