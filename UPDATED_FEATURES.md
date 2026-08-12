@@ -75,13 +75,13 @@ Copy each committed `.env.example` template to its adjacent `.env` file and fill
 Client `.env`:
 
 ```env
-VITE_API_BASE_URL=http://localhost:5005/api
+VITE_API_BASE_URL=https://api.legendbornnutrition.com/api
 ```
 
 Admin `.env`:
 
 ```env
-REACT_APP_API_BASE_URL=http://localhost:5005
+REACT_APP_API_BASE_URL=https://api.legendbornnutrition.com
 ```
 
 Server additions:
@@ -95,7 +95,7 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=a_strong_unique_password
 ```
 
-Create the first administrator from `server` using `npm run create-admin`. Public registration always creates customer accounts. Configure Razorpay's `payment.captured` webhook for `http://localhost:5005/api/orders/razorpay/webhook` with the configured webhook secret.
+Create the first administrator from `server` using `npm run create-admin`. Public registration always creates customer accounts. Configure Razorpay's `payment.captured` webhook for `https://api.legendbornnutrition.com/api/orders/razorpay/webhook` with the configured webhook secret.
 
 ## Validation done
 

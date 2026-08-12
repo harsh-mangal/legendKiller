@@ -32,7 +32,7 @@ const readSelectedEnv = async () => {
 
 const fileEnv = await readSelectedEnv();
 const siteUrl = String(process.env.VITE_SITE_URL || fileEnv.VITE_SITE_URL || "https://legendbornnutrition.com").replace(/\/$/, "");
-const apiBaseUrl = String(process.env.SITEMAP_API_BASE_URL || process.env.VITE_API_BASE_URL || fileEnv.SITEMAP_API_BASE_URL || "http://localhost:5005/api").replace(/\/$/, "");
+const apiBaseUrl = String(process.env.SITEMAP_API_BASE_URL || process.env.VITE_API_BASE_URL || fileEnv.SITEMAP_API_BASE_URL || "https://api.legendbornnutrition.com/api").replace(/\/$/, "");
 const assetBaseUrl = String(process.env.VITE_ASSET_BASE_URL || fileEnv.VITE_ASSET_BASE_URL || apiBaseUrl.replace(/\/api(?:\/v\d+)?\/?$/, "")).replace(/\/$/, "");
 const defaultImage = `${siteUrl}/og-social.jpg`;
 const defaultImageAlt = "Ameyka Veda — Ayurveda-inspired wellness for modern Indian families";

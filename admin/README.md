@@ -27,7 +27,7 @@ The admin runs on `http://localhost:5174` by default.
 Required environment values:
 
 ```env
-VITE_API_BASE_URL=http://localhost:5005/api
+VITE_API_BASE_URL=https://api.legendbornnutrition.com/api
 VITE_STOREFRONT_URL=https://legendbornnutrition.com
 VITE_API_TIMEOUT_MS=20000
 ```

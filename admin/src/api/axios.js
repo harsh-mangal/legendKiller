@@ -2,7 +2,7 @@ import axios from "axios";
 import { clearAdminSession, getAdminToken } from "../utils/storage";
 
 const configured = String(import.meta.env.VITE_API_BASE_URL || "").trim();
-const developmentDefault = "http://localhost:5005/api";
+const developmentDefault = "https://api.legendbornnutrition.com/api";
 
 if (!configured && import.meta.env.PROD) {
   throw new Error("VITE_API_BASE_URL is required for the production admin build.");
