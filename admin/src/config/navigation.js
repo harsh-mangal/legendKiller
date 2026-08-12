@@ -53,7 +53,7 @@ export const navigationGroups = [
     label: "Settings",
     items: [
       { label: "Delivery & payments", path: "/delivery", icon: MapPin },
-      { label: "Ameyka Coins", path: "/ameyka-coins", icon: Coins },
+      { label: "VIPER Coins", path: "/ameyka-coins", icon: Coins },
       { label: "Operations", path: "/operations", icon: Settings2 },
     ],
   },
