@@ -1,6 +1,6 @@
-# Ameyka Veda Ecommerce Backend
+# legendbornnutrition Ecommerce Backend
 
-Production-focused Express/MongoDB API compatible with the current Ameyka Veda client.
+Production-focused Express/MongoDB API compatible with the current legendbornnutrition client.
 
 ## Included customer flows
 

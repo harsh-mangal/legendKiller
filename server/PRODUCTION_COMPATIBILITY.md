@@ -1,6 +1,6 @@
-# Ameyka Veda Backend — Production Compatibility
+# legendbornnutrition Backend — Production Compatibility
 
-This server has been refactored to match the current Ameyka Veda customer frontend API contract and to remove the launch-blocking order, payment, stock and guest-checkout flaws found in the audit.
+This server has been refactored to match the current legendbornnutrition customer frontend API contract and to remove the launch-blocking order, payment, stock and guest-checkout flaws found in the audit.
 
 ## Frontend-compatible customer endpoints
 

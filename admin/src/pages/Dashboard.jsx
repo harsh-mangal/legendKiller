@@ -43,7 +43,7 @@ export default function Dashboard() {
       <PageHeader
         eyebrow="Live store operations"
         title="Dashboard"
-        description="A concise view of sales, fulfilment pressure, inventory risk and customer follow-up across the Ameyka Veda store."
+        description="A concise view of sales, fulfilment pressure, inventory risk and customer follow-up across the legendbornnutrition store."
         actions={<><Link to="/orders"><Button variant="secondary"><ShoppingBag size={17} /> Open orders</Button></Link><Button onClick={load} disabled={state.loading}><RefreshCw size={17} className={state.loading ? "animate-spin" : ""} /> Refresh</Button></>}
       />
 

@@ -1,6 +1,6 @@
 # Admin, Storefront and Backend Compatibility
 
-This admin was aligned to the current Ameyka Veda client and backend code supplied with the project.
+This admin was aligned to the current legendbornnutrition client and backend code supplied with the project.
 
 ## Operational modules
 

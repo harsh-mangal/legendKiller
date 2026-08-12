@@ -14,7 +14,7 @@ export const validateEnvironment = () => {
 };
 
 export const env = {
-  port: Number(process.env.PORT || 5005),
+  port: Number(process.env.PORT || 5010),
   frontendUrl: (process.env.FRONTEND_URL || "https://legendkiller.com").replace(/\/$/, ""),
   reservationMinutes: Math.max(10, Number(process.env.PAYMENT_RESERVATION_MINUTES || 30)),
   returnWindowDays: Math.max(0, Number(process.env.RETURN_WINDOW_DAYS || 7)),

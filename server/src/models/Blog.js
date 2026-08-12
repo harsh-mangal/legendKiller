@@ -7,7 +7,7 @@ const blogSchema = new mongoose.Schema(
     excerpt: { type: String, trim: true },
     content: { type: String, required: true },
     coverImage: String,
-    author: { type: String, default: "Ameyka Veda" },
+    author: { type: String, default: "legendbornnutrition" },
     tags: [String],
     isPublished: { type: Boolean, default: true },
     publishedAt: Date,

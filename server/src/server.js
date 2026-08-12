@@ -8,7 +8,7 @@ import { releaseExpiredReservations } from "./controllers/orderController.js";
 validateEnvironment();
 await connectDB();
 
-const server = app.listen(env.port, () => console.log(`Ameyka Veda API listening on port ${env.port}`));
+const server = app.listen(env.port, () => console.log(`legendbornnutrition API listening on port ${env.port}`));
 const reservationTimer = setInterval(() => {
   releaseExpiredReservations().then((count) => {
     if (count) console.log(`Released ${count} expired payment reservation(s)`);

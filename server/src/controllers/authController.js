@@ -52,9 +52,9 @@ export const registerUser = async (req, res, next) => {
 
     sendMailSafely({
       to: user.email,
-      subject: "Welcome to Ameyka Veda",
+      subject: "Welcome to legendbornnutrition",
       html: welcomeTemplate({ name: user.name }),
-      text: `Welcome to Ameyka Veda, ${user.name}`,
+      text: `Welcome to legendbornnutrition, ${user.name}`,
     });
     sendUserResponse(res, user, "Registered successfully", 201);
   } catch (error) {
@@ -96,9 +96,9 @@ export const requestLoginOtp = async (req, res, next) => {
 
     await sendMailSafely({
       to: user.email,
-      subject: "Your Ameyka Veda login OTP",
+      subject: "Your legendbornnutrition login OTP",
       html: otpTemplate({ name: user.name, otp }),
-      text: `Your Ameyka Veda login OTP is ${otp}. It is valid for 10 minutes.`,
+      text: `Your legendbornnutrition login OTP is ${otp}. It is valid for 10 minutes.`,
     });
     res.json(generic);
   } catch (error) {
@@ -147,7 +147,7 @@ export const forgotPassword = async (req, res, next) => {
       const resetUrl = `${env.frontendUrl}/reset-password?token=${encodeURIComponent(rawToken)}`;
       await sendMailSafely({
         to: user.email,
-        subject: "Reset your Ameyka Veda password",
+        subject: "Reset your legendbornnutrition password",
         html: passwordResetTemplate({ name: user.name, resetUrl }),
         text: `Reset your password using this link: ${resetUrl}. The link is valid for 30 minutes.`,
       });

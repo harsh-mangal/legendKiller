@@ -1,6 +1,6 @@
-# Ameyka Veda Commerce Admin
+# legendbornnutrition Commerce Admin
 
-Private React/Vite operations dashboard for the Ameyka Veda ecommerce platform. It is designed against the current customer storefront and production-compatible Express/MongoDB backend contracts.
+Private React/Vite operations dashboard for the legendbornnutrition ecommerce platform. It is designed against the current customer storefront and production-compatible Express/MongoDB backend contracts.
 
 ## What it manages
 

@@ -35,7 +35,7 @@ const siteUrl = String(process.env.VITE_SITE_URL || fileEnv.VITE_SITE_URL || "ht
 const apiBaseUrl = String(process.env.SITEMAP_API_BASE_URL || process.env.VITE_API_BASE_URL || fileEnv.SITEMAP_API_BASE_URL || "https://api.legendbornnutrition.com/api").replace(/\/$/, "");
 const assetBaseUrl = String(process.env.VITE_ASSET_BASE_URL || fileEnv.VITE_ASSET_BASE_URL || apiBaseUrl.replace(/\/api(?:\/v\d+)?\/?$/, "")).replace(/\/$/, "");
 const defaultImage = `${siteUrl}/og-social.jpg`;
-const defaultImageAlt = "Ameyka Veda — Ayurveda-inspired wellness for modern Indian families";
+const defaultImageAlt = "legendbornnutrition — Ayurveda-inspired wellness for modern Indian families";
 
 const absoluteSiteUrl = (pathname = "/") => new URL(pathname, `${siteUrl}/`).toString();
 const absoluteAssetUrl = (value) => {
@@ -108,7 +108,7 @@ const dynamicPages = async () => {
   return [
     ...products.filter((item) => item?.slug).map((item) => ({
       path: `/products/${item.slug}`,
-      title: cleanText(item.seoTitle || `${item.name} | Ameyka Veda`),
+      title: cleanText(item.seoTitle || `${item.name} | legendbornnutrition`),
       description: makeDescription(item, `View ${item.name}, price, pack information and responsible-use details.`),
       type: "product",
       image: absoluteAssetUrl(item.images?.[0]) || defaultImage,
@@ -117,7 +117,7 @@ const dynamicPages = async () => {
       data: {
         name: item.name,
         sku: item.sku,
-        brand: item.brand || "Ameyka Veda",
+        brand: item.brand || "legendbornnutrition",
         price: Number(item.price || 0),
         stock: Number(item.availableStock ?? item.stock ?? 0),
         stockKnown: item.availableStock != null || item.stock != null,
@@ -129,8 +129,8 @@ const dynamicPages = async () => {
     })),
     ...categories.filter((item) => item?.slug).map((item) => ({
       path: `/categories/${item.slug}`,
-      title: `${cleanText(item.name)} Products | Ameyka Veda`,
-      description: makeDescription(item, `Browse Ameyka Veda products in the ${item.name} category.`),
+      title: `${cleanText(item.name)} Products | legendbornnutrition`,
+      description: makeDescription(item, `Browse legendbornnutrition products in the ${item.name} category.`),
       type: "category",
       image: absoluteAssetUrl(item.image) || defaultImage,
       imageAlt: cleanText(item.name, defaultImageAlt),
@@ -139,7 +139,7 @@ const dynamicPages = async () => {
     })),
     ...combos.filter((item) => item?.slug).map((item) => ({
       path: `/combos/${item.slug}`,
-      title: cleanText(item.seoTitle || `${item.name} Combo Pack | Ameyka Veda`),
+      title: cleanText(item.seoTitle || `${item.name} Combo Pack | legendbornnutrition`),
       description: makeDescription(item, `View ${item.name}, included products, price and availability.`),
       type: "product",
       image: absoluteAssetUrl(item.images?.[0] || item.products?.[0]?.product?.images?.[0]) || defaultImage,
@@ -154,15 +154,15 @@ const dynamicPages = async () => {
     })),
     ...articles.filter((item) => item?.slug).map((item) => ({
       path: `/articles/${item.slug}`,
-      title: `${cleanText(item.title)} | Ameyka Veda`,
-      description: makeDescription(item, `Read ${item.title} from Ameyka Veda.`),
+      title: `${cleanText(item.title)} | legendbornnutrition`,
+      description: makeDescription(item, `Read ${item.title} from legendbornnutrition.`),
       type: "article",
       image: absoluteAssetUrl(item.coverImage) || defaultImage,
       imageAlt: cleanText(item.title, defaultImageAlt),
       lastmod: item.updatedAt || item.publishedAt,
       data: {
         headline: item.title,
-        author: item.author || "Ameyka Veda",
+        author: item.author || "legendbornnutrition",
         publishedAt: item.publishedAt,
         updatedAt: item.updatedAt,
       },
@@ -247,7 +247,7 @@ const jsonLdFor = (page) => {
       "@context": "https://schema.org",
       "@type": "Organization",
       "@id": `${siteUrl}/#organization`,
-      name: "Ameyka Veda",
+      name: "legendbornnutrition",
       legalName: "Ameyka Life Sciences",
       url: `${siteUrl}/`,
       logo: `${siteUrl}/logo.png`,
@@ -257,7 +257,7 @@ const jsonLdFor = (page) => {
       "@context": "https://schema.org",
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
-      name: "Ameyka Veda",
+      name: "legendbornnutrition",
       url: `${siteUrl}/`,
       inLanguage: "en-IN",
     }];
@@ -271,7 +271,7 @@ const jsonLdFor = (page) => {
       description: page.description,
       image: page.image,
       url: canonical,
-      brand: { "@type": "Brand", name: page.data?.brand || "Ameyka Veda" },
+      brand: { "@type": "Brand", name: page.data?.brand || "legendbornnutrition" },
       offers: {
         "@type": "Offer",
         url: canonical,
@@ -318,7 +318,7 @@ const jsonLdFor = (page) => {
       url: canonical,
       datePublished: validDate(page.data?.publishedAt) || undefined,
       dateModified: validDate(page.data?.updatedAt) || undefined,
-      author: { "@type": "Person", name: page.data?.author || "Ameyka Veda" },
+      author: { "@type": "Person", name: page.data?.author || "legendbornnutrition" },
       publisher: { "@id": `${siteUrl}/#organization` },
     }, breadcrumb];
   }
@@ -354,7 +354,7 @@ const renderHead = (page, indexable = true) => {
     <meta property="og:type" content="${type}" />
     <meta property="og:title" content="${htmlEscape(page.title)}" />
     <meta property="og:description" content="${htmlEscape(page.description)}" />
-    <meta property="og:site_name" content="Ameyka Veda" />
+    <meta property="og:site_name" content="legendbornnutrition" />
     <meta property="og:locale" content="en_IN" />
     <meta property="og:url" content="${htmlEscape(canonical)}" />
     <meta property="og:image" content="${htmlEscape(image)}" />
@@ -369,8 +369,8 @@ ${scripts ? `${scripts}\n` : ""}    <!-- SEO:END -->`;
 
 const renderStaticFallback = (page, indexable) => {
   if (!indexable) return '<div id="root"></div>';
-  const heading = page.data?.name || page.data?.headline || page.title.replace(/\s*\|\s*Ameyka Veda.*$/i, "");
-  return `<div id="root"><main style="min-height:60vh;padding:9rem 1.5rem 4rem;font-family:system-ui,-apple-system,sans-serif;color:#172018;background:#fff"><div style="max-width:72rem;margin:0 auto"><p style="margin:0 0 1rem;color:#8a5a20;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Ameyka Veda</p><h1 style="max-width:52rem;margin:0;font-family:Georgia,serif;font-size:clamp(2rem,5vw,4rem);line-height:1.08">${htmlEscape(heading)}</h1><p style="max-width:46rem;margin:1.25rem 0 0;color:#526052;font-size:1rem;line-height:1.8">${htmlEscape(page.description)}</p><p style="margin-top:1.5rem"><a href="${htmlEscape(absoluteSiteUrl(page.path))}" style="color:#3f4725;font-weight:700">View this page</a></p></div></main></div>`;
+  const heading = page.data?.name || page.data?.headline || page.title.replace(/\s*\|\s*legendbornnutrition.*$/i, "");
+  return `<div id="root"><main style="min-height:60vh;padding:9rem 1.5rem 4rem;font-family:system-ui,-apple-system,sans-serif;color:#172018;background:#fff"><div style="max-width:72rem;margin:0 auto"><p style="margin:0 0 1rem;color:#8a5a20;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase">legendbornnutrition</p><h1 style="max-width:52rem;margin:0;font-family:Georgia,serif;font-size:clamp(2rem,5vw,4rem);line-height:1.08">${htmlEscape(heading)}</h1><p style="max-width:46rem;margin:1.25rem 0 0;color:#526052;font-size:1rem;line-height:1.8">${htmlEscape(page.description)}</p><p style="margin-top:1.5rem"><a href="${htmlEscape(absoluteSiteUrl(page.path))}" style="color:#3f4725;font-weight:700">View this page</a></p></div></main></div>`;
 };
 
 const writeRouteHtml = async (template, page, indexable) => {
@@ -395,7 +395,7 @@ const writeDistSeo = async (pages) => {
     const route = getRouteSeo(pathname);
     await writeRouteHtml(template, { ...route, path: pathname, type: "private", image: defaultImage, imageAlt: defaultImageAlt }, false);
   }
-  const notFound = { path: "/404", title: "Page Not Found | Ameyka Veda", description: "The requested page could not be found.", type: "not-found", image: defaultImage, imageAlt: defaultImageAlt };
+  const notFound = { path: "/404", title: "Page Not Found | legendbornnutrition", description: "The requested page could not be found.", type: "not-found", image: defaultImage, imageAlt: defaultImageAlt };
   const notFoundHtml = template
     .replace(/<!-- SEO:START -->[\s\S]*?<!-- SEO:END -->/, renderHead(notFound, false))
     .replace('<div id="root"></div>', renderStaticFallback(notFound, false));

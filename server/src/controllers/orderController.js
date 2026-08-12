@@ -53,9 +53,9 @@ const sendOrderEmail = async (order, user = null) => {
   try {
     await sendMail({
       to: recipient,
-      subject: `Ameyka Veda order received ${order.publicOrderNumber || order._id}`,
+      subject: `legendbornnutrition order received ${order.publicOrderNumber || order._id}`,
       html: orderPlacedTemplate({ userName: user?.name || order.shippingAddress?.fullName, order }),
-      text: `Your Ameyka Veda order ${order.publicOrderNumber || order._id} has been received. Total: ₹${order.totalPrice}`,
+      text: `Your legendbornnutrition order ${order.publicOrderNumber || order._id} has been received. Total: ₹${order.totalPrice}`,
     });
   } catch (error) {
     console.error("Order email failed:", error.message);

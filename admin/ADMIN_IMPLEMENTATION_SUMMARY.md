@@ -1,6 +1,6 @@
 # Professional Admin Implementation Summary
 
-This package replaces the original admin with a commerce operations dashboard aligned to the supplied Ameyka Veda storefront and backend.
+This package replaces the original admin with a commerce operations dashboard aligned to the supplied legendbornnutrition storefront and backend.
 
 ## Completed areas
 

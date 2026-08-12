@@ -27,7 +27,7 @@
   "devDependencies": {
     "nodemon": "^3.1.14"
   },
-  "description": "Production-ready Ameyka Veda ecommerce API",
+  "description": "Production-ready legendbornnutrition ecommerce API",
   "engines": {
     "node": ">=20.0.0"
   }

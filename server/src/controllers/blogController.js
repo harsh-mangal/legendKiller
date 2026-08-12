@@ -32,7 +32,7 @@ export const createBlog = async (req, res, next) => {
       excerpt: String(req.body.excerpt || "").trim(),
       content,
       coverImage: media[0]?.url || "",
-      author: String(req.body.author || "Ameyka Veda").trim(),
+      author: String(req.body.author || "legendbornnutrition").trim(),
       tags: parseArray(req.body.tags),
       isPublished,
       publishedAt: isPublished ? new Date() : null,
