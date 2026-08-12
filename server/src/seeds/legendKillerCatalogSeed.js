@@ -1,0 +1,571 @@
+// Legend Killer Category and Product Seed Data
+import Category from "../models/Category.js";
+import Product from "../models/Product.js";
+
+export const categorySeedData = [
+  {
+    "name": "Whey Protein & Isolates",
+    "slug": "whey-protein-isolates",
+    "description": "Ultra-filtered Whey Protein Isolates, Bio-Viper Hydrolysates, and Whey Concentrates engineered for peak muscle protein synthesis.",
+    "isActive": true
+  },
+  {
+    "name": "Pre-Workout & Energy",
+    "slug": "pre-workout-energy",
+    "description": "High-octane pre-workout formulas, nitric oxide pump boosters, and stamina igniters for intense gym sessions.",
+    "isActive": true
+  },
+  {
+    "name": "Creatine & Muscle Builders",
+    "slug": "creatine-anabolic-builders",
+    "description": "100% pure micronized Creatine Monohydrate, anabolic test boosters, and explosive power stacks.",
+    "isActive": true
+  },
+  {
+    "name": "Mass Gainers & Heavyweight Carbs",
+    "slug": "mass-gainers-heavyweight-carbs",
+    "description": "High-calorie mass gainers, multi-phase protein carbohydrates, and lean bulking fuels for maximum mass growth.",
+    "isActive": true
+  },
+  {
+    "name": "BCAA & Intra-Workout",
+    "slug": "bcaa-intra-workout",
+    "description": "2:1:1 BCAA matrices, EAAs, and electrolyte hydration blends for anti-catabolic endurance and rapid muscle recovery.",
+    "isActive": true
+  },
+  {
+    "name": "Fat Burners & Essentials",
+    "slug": "fat-burners-essentials",
+    "description": "Thermogenic fat igniters, Triple Strength Omega-3 Fish Oils, and high-potency athlete multivitamins.",
+    "isActive": true
+  }
+];
+
+export const productSeedData = [
+  {
+    "manufacturerName": "Legend Killer Nutrition Pvt Ltd",
+    "marketerName": "Legend Killer - The Viper Protocol",
+    "countryOfOrigin": "India",
+    "licenceType": "FSSAI",
+    "licenceNumber": "10021022000123",
+    "hsnCode": "21069099",
+    "gstRate": 18,
+    "vegetarian": true,
+    "batchTrackingEnabled": true,
+    "expiryTrackingEnabled": true,
+    "images": [],
+    "price": 3999,
+    "mrp": 5499,
+    "unit": "Tub",
+    "weight": "2 kg / 4.4 lbs",
+    "stock": 50,
+    "lowStockThreshold": 5,
+    "rating": 4.9,
+    "numReviews": 128,
+    "isFeatured": true,
+    "isBestSeller": true,
+    "isActive": true,
+    "name": "Legend Killer Raw Whey Isolate 2kg – 90% Pure Isolate (Chocolate Viper)",
+    "slug": "legend-killer-raw-whey-isolate-2kg",
+    "sku": "LK-WHEY-ISO-2KG",
+    "categorySlug": "whey-protein-isolates",
+    "shortDescription": "90% Pure Cross-Flow Microfiltered Whey Protein Isolate delivering 27g protein, 6.2g BCAAs, and 0g added sugar per scoop.",
+    "description": "Engineered for elite athletes and serious bodybuilders, Legend Killer Raw Whey Isolate delivers 27 grams of ultra-pure, fast-absorbing whey protein isolate per serving. Processed via Cross-Flow Microfiltration (CFM) to retain all vital bioactive fractions while stripping away unwanted fat, lactose, and carbohydrates.",
+    "longDescription": "Legend Killer Raw Whey Isolate 2kg is the ultimate protein protocol for lean muscle building and instant post-workout recovery. Each 30g serving delivers 27g of pure protein, 6.2g of naturally occurring BCAAs, and 4.8g of Glutamic acid. Enhanced with DigeZyme multi-enzyme complex for maximum bioavailability and rapid absorption with zero bloating or stomach discomfort. 100% lab tested and certified free of banned substances.",
+    "benefits": [
+      "27g Ultra-Pure Whey Isolate per serving",
+      "6.2g Naturally occurring BCAAs for rapid muscle repair",
+      "Cross-Flow Microfiltered (CFM) for maximum protein purity",
+      "Enriched with DigeZyme digestive enzyme complex",
+      "Zero added sugar, zero gluten, ultra-low lactose",
+      "100% Lab Tested & FSSAI Certified"
+    ],
+    "ingredients": [
+      "Cross-Flow Microfiltered Whey Protein Isolate",
+      "Cocoa Powder (Processed with Alkali)",
+      "Digestive Enzyme Blend (DigeZyme: Amylase, Protease, Lactase, Lipase, Cellulase)",
+      "Sunflower Lecithin",
+      "Natural Flavours",
+      "Sucralose"
+    ],
+    "howToUse": "Mix 1 scoop (30g) in 200–250ml of chilled water or skimmed milk. Consume immediately post-workout or first thing in the morning. Consume 1–2 servings daily based on your daily protein target.",
+    "suitableFor": [
+      "Bodybuilders & Weightlifters",
+      "Athletes & Fitness Enthusiasts",
+      "Men & Women seeking lean muscle mass",
+      "Lactose-sensitive fitness individuals"
+    ],
+    "warnings": [
+      "Not for medicinal use",
+      "Contains Milk derivatives",
+      "Store in a cool dry place out of reach of children",
+      "Pregnant or lactating women should consult a physician before use"
+    ],
+    "storageInstructions": "Store in a cool, dry place away from direct heat, moisture, and sunlight. Keep container tightly sealed after each use.",
+    "legalDisclaimer": "Health supplement. Not for medicinal use. This product is not intended to diagnose, treat, cure, or prevent any disease.",
+    "seoTitle": "Legend Killer Raw Whey Isolate 2kg | 27g Protein | Buy Online",
+    "seoDescription": "Buy Legend Killer Raw Whey Isolate 2kg with 27g pure protein, 6.2g BCAA, DigeZyme enzymes. 100% Authentic, Lab Tested Whey Isolate for muscle growth."
+  },
+  {
+    "manufacturerName": "Legend Killer Nutrition Pvt Ltd",
+    "marketerName": "Legend Killer - The Viper Protocol",
+    "countryOfOrigin": "India",
+    "licenceType": "FSSAI",
+    "licenceNumber": "10021022000123",
+    "hsnCode": "21069099",
+    "gstRate": 18,
+    "vegetarian": true,
+    "batchTrackingEnabled": true,
+    "expiryTrackingEnabled": true,
+    "images": [],
+    "price": 1499,
+    "mrp": 2199,
+    "unit": "Tub",
+    "weight": "300 g / 30 Servings",
+    "stock": 40,
+    "lowStockThreshold": 5,
+    "rating": 4.8,
+    "numReviews": 84,
+    "isFeatured": true,
+    "isBestSeller": true,
+    "isActive": true,
+    "name": "Viper Surge Pre-Workout Explosive Energy (Electric Citrus) – 300g",
+    "slug": "viper-surge-pre-workout-300g",
+    "sku": "LK-PRE-SURGE-300G",
+    "categorySlug": "pre-workout-energy",
+    "shortDescription": "High-intensity pre-workout matrix formulated with 350mg Caffeine, 4g L-Citrulline Malate, and 3g Beta-Alanine for explosive pumps.",
+    "description": "Unleash primal training power with Viper Surge Pre-Workout. Formulated for heavy lifters, this explosive energy matrix triggers intense muscle vasodilation, laser-sharp cognitive focus, and relentless fatigue endurance.",
+    "longDescription": "Viper Surge Pre-Workout is the core energy protocol of Legend Killer. Each scoop delivers 4g L-Citrulline Malate for skin-splitting muscle pumps, 3g Beta-Alanine to buffer lactic acid accumulation, 350mg Caffeine Anhydrous for intense neural drive, and 1g L-Tyrosine for razor focus. Zero sugar, zero crash, 100% high-grade performance.",
+    "benefits": [
+      "350mg Caffeine for relentless energy and drive",
+      "4g L-Citrulline Malate for maximum Nitric Oxide blood flow",
+      "3g Beta-Alanine to delay muscle fatigue & burn",
+      "1g L-Tyrosine + Taurine for intense mind-muscle connection",
+      "Zero sugar & zero jitter crash formula"
+    ],
+    "ingredients": [
+      "L-Citrulline Malate (2:1)",
+      "Beta-Alanine",
+      "Caffeine Anhydrous",
+      "Taurine",
+      "L-Tyrosine",
+      "Electrolyte Blend (Sodium, Potassium, Magnesium Citrate)",
+      "Natural Citric Acid & Flavours"
+    ],
+    "howToUse": "Assess tolerance: Mix 1/2 scoop in 200ml cold water 20–30 minutes before training. Advanced athletes: Mix 1 full scoop in 250–300ml cold water. Do not consume within 5 hours of bedtime.",
+    "suitableFor": [
+      "Advanced Bodybuilders",
+      "Powerlifters & Heavy Lifters",
+      "High-Intensity Functional Athletes"
+    ],
+    "warnings": [
+      "High caffeine content (350mg per scoop)",
+      "Do not exceed 1 scoop in a 24-hour period",
+      "Beta-alanine may cause a mild harmless skin tingling sensation",
+      "Not recommended for individuals sensitive to caffeine or under 18 years"
+    ],
+    "storageInstructions": "Store in a cool dry place. Keep tub sealed tight to prevent clumping due to hygroscopic ingredients.",
+    "legalDisclaimer": "Dietary supplement. High caffeine content. Consult a healthcare professional before use if you have any pre-existing medical conditions.",
+    "seoTitle": "Viper Surge Pre-Workout 300g | 350mg Caffeine & Citrulline",
+    "seoDescription": "Buy Viper Surge Pre-Workout 300g by Legend Killer. 350mg Caffeine, 4g L-Citrulline, 3g Beta-Alanine for intense energy, pumps and strength."
+  },
+  {
+    "manufacturerName": "Legend Killer Nutrition Pvt Ltd",
+    "marketerName": "Legend Killer - The Viper Protocol",
+    "countryOfOrigin": "India",
+    "licenceType": "FSSAI",
+    "licenceNumber": "10021022000123",
+    "hsnCode": "21069099",
+    "gstRate": 18,
+    "vegetarian": true,
+    "batchTrackingEnabled": true,
+    "expiryTrackingEnabled": true,
+    "images": [],
+    "price": 799,
+    "mrp": 1199,
+    "unit": "Tub",
+    "weight": "250 g / 83 Servings",
+    "stock": 65,
+    "lowStockThreshold": 10,
+    "rating": 4.9,
+    "numReviews": 156,
+    "isFeatured": true,
+    "isBestSeller": true,
+    "isActive": true,
+    "name": "Creatine Monohydrate Ultra Micronized 200 Mesh – 250g Unflavoured",
+    "slug": "creatine-monohydrate-micronized-250g",
+    "sku": "LK-CREATINE-250G",
+    "categorySlug": "creatine-anabolic-builders",
+    "shortDescription": "100% Pure Ultra Micronized Creatine Monohydrate (Mesh 200) for explosive strength, ATP regeneration, and muscle cell volumization.",
+    "description": "Fuel your muscle cells with 100% pure Creatine Monohydrate micronized to 200 mesh particle size for instant mixing and rapid gut absorption without stomach cramps.",
+    "longDescription": "Creatine Monohydrate is the most researched strength supplement in sports science. Legend Killer Ultra Micronized Creatine Monohydrate supplies 3g pure creatine per scoop. It rapidly regenerates ATP energy reserves during heavy compound lifting, increases muscle cell hydration, and stimulates muscle protein synthesis.",
+    "benefits": [
+      "3g Pure Ultra-Micronized Creatine Monohydrate per serving",
+      "200 Mesh ultrafine particle size for 100% solubility",
+      "Maximizes ATP energy output during heavy lifting reps",
+      "Volumizes muscle cells for fuller, harder muscles",
+      "Unflavoured – easily mixes with protein shakes or juice"
+    ],
+    "ingredients": [
+      "100% Pure Micronized Creatine Monohydrate (200 Mesh)"
+    ],
+    "howToUse": "Mix 1 scoop (3g) in 250ml water, fruit juice, or your post-workout protein shake. Drink plenty of water throughout the day (3–4 litres) while using Creatine.",
+    "suitableFor": [
+      "All weightlifters, bodybuilders, and sprinters",
+      "Men & Women seeking increased strength and muscle volume"
+    ],
+    "warnings": [
+      "Drink adequate water daily to maintain proper hydration",
+      "Do not exceed recommended dose"
+    ],
+    "storageInstructions": "Store in a cool dry place away from moisture and humidity.",
+    "legalDisclaimer": "Health supplement. Not for medicinal use.",
+    "seoTitle": "Creatine Monohydrate Ultra Micronized 250g | 100% Pure Creatine",
+    "seoDescription": "Buy Legend Killer Micronized Creatine Monohydrate 250g. Ultra-fine 200 mesh pure creatine for explosive strength, power, and muscle mass."
+  },
+  {
+    "manufacturerName": "Legend Killer Nutrition Pvt Ltd",
+    "marketerName": "Legend Killer - The Viper Protocol",
+    "countryOfOrigin": "India",
+    "licenceType": "FSSAI",
+    "licenceNumber": "10021022000123",
+    "hsnCode": "21069099",
+    "gstRate": 18,
+    "vegetarian": true,
+    "batchTrackingEnabled": true,
+    "expiryTrackingEnabled": true,
+    "images": [],
+    "price": 1999,
+    "mrp": 2799,
+    "unit": "Tub",
+    "weight": "1 kg / 2.2 lbs",
+    "stock": 35,
+    "lowStockThreshold": 5,
+    "rating": 4.7,
+    "numReviews": 62,
+    "isFeatured": false,
+    "isBestSeller": false,
+    "isActive": true,
+    "name": "Bio-Viper Whey Protein Concentrate (Double Chocolate) – 1kg",
+    "slug": "bio-viper-whey-protein-1kg",
+    "sku": "LK-WHEY-CONC-1KG",
+    "categorySlug": "whey-protein-isolates",
+    "shortDescription": "25g Premium Whey Protein Concentrate per serving with Probiotics and 80% higher digestive enzyme absorption.",
+    "description": "Bio-Viper Whey Protein combines premium instantized whey protein concentrate with a specialized multi-enzyme complex and probiotics for smooth digestion and optimal muscle building.",
+    "longDescription": "Bio-Viper Whey Protein 1kg provides 25g high-biological-value protein, 5.5g naturally occurring BCAAs, and 4g Glutamine per scoop. Formulated with our proprietary Bio-Enzyme digestive technology, it ensures high amino acid bioavailability without heavy bloating.",
+    "benefits": [
+      "25g Protein + 5.5g BCAA per serving",
+      "Enhanced Bio-Enzyme digestive matrix for 80% higher absorption",
+      "Supports daily protein targets & muscle repair",
+      "Rich creamy Double Chocolate milkshake taste"
+    ],
+    "ingredients": [
+      "Instantized Whey Protein Concentrate",
+      "Dutch Processed Cocoa Powder",
+      "Digestive Enzyme Blend (Protease, Lactase)",
+      "Probiotic Blend (Lactobacillus acidophilus)",
+      "Sucralose"
+    ],
+    "howToUse": "Mix 1 scoop (33g) with 200ml chilled water or milk. Shake vigorously for 15 seconds.",
+    "suitableFor": [
+      "Beginner & Intermediate Gym Goers",
+      "Fitness enthusiasts seeking daily protein support"
+    ],
+    "warnings": [
+      "Contains Milk derivatives"
+    ],
+    "storageInstructions": "Store in a cool dry place.",
+    "legalDisclaimer": "Health supplement. Not for medicinal use.",
+    "seoTitle": "Bio-Viper Whey Protein 1kg | 25g Protein + Digestive Enzymes",
+    "seoDescription": "Buy Bio-Viper Whey Protein 1kg by Legend Killer. 25g Whey Protein, 5.5g BCAA with Probiotics and Bio-Enzymes for zero bloating."
+  },
+  {
+    "manufacturerName": "Legend Killer Nutrition Pvt Ltd",
+    "marketerName": "Legend Killer - The Viper Protocol",
+    "countryOfOrigin": "India",
+    "licenceType": "FSSAI",
+    "licenceNumber": "10021022000123",
+    "hsnCode": "21069099",
+    "gstRate": 18,
+    "vegetarian": true,
+    "batchTrackingEnabled": true,
+    "expiryTrackingEnabled": true,
+    "images": [],
+    "price": 2699,
+    "mrp": 3899,
+    "unit": "Tub",
+    "weight": "3 kg / 6.6 lbs",
+    "stock": 25,
+    "lowStockThreshold": 5,
+    "rating": 4.8,
+    "numReviews": 45,
+    "isFeatured": true,
+    "isBestSeller": false,
+    "isActive": true,
+    "name": "Legend Mass Gainer Heavyweight High-Calorie Bulker – 3kg",
+    "slug": "legend-mass-gainer-heavyweight-3kg",
+    "sku": "LK-MASS-3KG",
+    "categorySlug": "mass-gainers-heavyweight-carbs",
+    "shortDescription": "Extreme bulking formula supplying 1250 Calories, 50g Multi-Phase Protein, 250g Complex Carbs, and 3g Creatine per serving.",
+    "description": "Pack on rock-hard muscle mass with Legend Mass Gainer Heavyweight. Purpose-built for hardgainers and off-season bodybuilders looking to break weight plateaus.",
+    "longDescription": "Legend Mass Gainer Heavyweight 3kg is loaded with 1250 dense calories, 50g of multi-stage release protein (Whey + Casein + Egg Isolate), 250g clean carbohydrate complex, and 3g pure Creatine Monohydrate per daily full serving. Fuel intense workouts and force muscle hyper-growth.",
+    "benefits": [
+      "1250 Dense Calories per daily full serving",
+      "50g Multi-Phase Protein Matrix for sustained amino delivery",
+      "250g Complex Carbs to replenish muscle glycogen",
+      "Fortified with 3g Creatine Monohydrate & 24 Essential Vitamins",
+      "Accelerates weight gain & muscle bulk"
+    ],
+    "ingredients": [
+      "Complex Carbohydrate Blend (Maltodextrin, Oat Flour)",
+      "Protein Blend (Whey Concentrate, Micellar Casein, Whey Isolate)",
+      "Creatine Monohydrate",
+      "Vitamin & Mineral Premix",
+      "Cocoa Powder",
+      "Natural Flavours"
+    ],
+    "howToUse": "Blend 2 scoops in 400ml whole milk or water. Drink between meals and/or immediately post-workout. Divide daily serving into 2 portions.",
+    "suitableFor": [
+      "Hardgainers struggling to build mass",
+      "Off-season bodybuilders & powerlifters"
+    ],
+    "warnings": [
+      "High calorie formula. Adjust intake based on daily caloric needs."
+    ],
+    "storageInstructions": "Store in a cool dry place.",
+    "legalDisclaimer": "Health supplement for weight gain.",
+    "seoTitle": "Legend Mass Gainer Heavyweight 3kg | 1250 Calories & 50g Protein",
+    "seoDescription": "Buy Legend Mass Gainer Heavyweight 3kg by Legend Killer. 1250 Cal, 50g Protein, 250g Carbs & Creatine for extreme mass & bulk."
+  },
+  {
+    "manufacturerName": "Legend Killer Nutrition Pvt Ltd",
+    "marketerName": "Legend Killer - The Viper Protocol",
+    "countryOfOrigin": "India",
+    "licenceType": "FSSAI",
+    "licenceNumber": "10021022000123",
+    "hsnCode": "21069099",
+    "gstRate": 18,
+    "vegetarian": true,
+    "batchTrackingEnabled": true,
+    "expiryTrackingEnabled": true,
+    "images": [],
+    "price": 1299,
+    "mrp": 1899,
+    "unit": "Tub",
+    "weight": "400 g / 30 Servings",
+    "stock": 40,
+    "lowStockThreshold": 5,
+    "rating": 4.9,
+    "numReviews": 51,
+    "isFeatured": false,
+    "isBestSeller": false,
+    "isActive": true,
+    "name": "BCAA Intra-Workout 2:1:1 Matrix (Mango Viper Punch) – 400g",
+    "slug": "bcaa-intra-workout-211-matrix-400g",
+    "sku": "LK-BCAA-400G",
+    "categorySlug": "bcaa-intra-workout",
+    "shortDescription": "7g Instantized BCAAs in clinical 2:1:1 ratio with Coconut Water Electrolytes to prevent muscle catabolism during heavy training.",
+    "description": "Protect your hard-earned muscle tissue during grueling gym sessions with Legend Killer BCAA Intra-Workout Matrix.",
+    "longDescription": "BCAA Intra-Workout Matrix delivers 7g of instantized Branch Chain Amino Acids (3.5g L-Leucine, 1.75g L-Isoleucine, 1.75g L-Valine) paired with 1g L-Glutamine and natural Coconut Water Powder. Hydrates muscle cells, reduces intra-workout fatigue, and stops muscle breakdown dead in its tracks.",
+    "benefits": [
+      "7g Instantized BCAA in optimal 2:1:1 scientific ratio",
+      "Stops intra-workout muscle tissue breakdown (catabolism)",
+      "Hydrates with natural Coconut Water Powder & Electrolytes",
+      "100% Vegan amino acids derived from fermentation",
+      "Refreshing Mango Viper Punch flavor"
+    ],
+    "ingredients": [
+      "L-Leucine",
+      "L-Isoleucine",
+      "L-Valine",
+      "Coconut Water Powder",
+      "L-Glutamine",
+      "Sodium Chloride",
+      "Potassium Chloride",
+      "Malic Acid",
+      "Natural Flavours"
+    ],
+    "howToUse": "Mix 1 scoop (13.3g) in 400–500ml cold water in a shaker. Sip continuously during your workout.",
+    "suitableFor": [
+      "Athletes training for > 60 minutes",
+      "Bodybuilders during cutting or bulking phases"
+    ],
+    "warnings": [
+      "Do not exceed recommended dose."
+    ],
+    "storageInstructions": "Store in a cool dry place.",
+    "legalDisclaimer": "Health supplement. Not for medicinal use.",
+    "seoTitle": "BCAA 2:1:1 Intra-Workout Matrix 400g | Coconut Water Electrolytes",
+    "seoDescription": "Buy Legend Killer BCAA 2:1:1 Intra-Workout 400g. 7g BCAA, Glutamine & Electrolytes for endurance, muscle recovery and hydration."
+  },
+  {
+    "manufacturerName": "Legend Killer Nutrition Pvt Ltd",
+    "marketerName": "Legend Killer - The Viper Protocol",
+    "countryOfOrigin": "India",
+    "licenceType": "FSSAI",
+    "licenceNumber": "10021022000123",
+    "hsnCode": "21069099",
+    "gstRate": 18,
+    "vegetarian": true,
+    "batchTrackingEnabled": true,
+    "expiryTrackingEnabled": true,
+    "images": [],
+    "price": 1199,
+    "mrp": 1799,
+    "unit": "Bottle",
+    "weight": "90 Capsules",
+    "stock": 50,
+    "lowStockThreshold": 8,
+    "rating": 4.8,
+    "numReviews": 73,
+    "isFeatured": true,
+    "isBestSeller": false,
+    "isActive": true,
+    "name": "Anabolic Test Stack - Natural Testosterone Booster (90 Caps)",
+    "slug": "anabolic-test-stack-90-caps",
+    "sku": "LK-TEST-STACK-90C",
+    "categorySlug": "creatine-anabolic-builders",
+    "shortDescription": "High-potency natural testosterone support matrix formulated with KSM-66 Ashwagandha, Tribulus 60%, Shilajit, Zinc, and Vitamin D3.",
+    "description": "Supercharge natural androgenic drive, stamina, and muscle protein synthesis with Legend Killer Anabolic Test Stack.",
+    "longDescription": "Anabolic Test Stack is a clinically backed natural testosterone booster engineered for male athletes. Featuring 600mg KSM-66 Ashwagandha, 500mg Tribulus Terrestris (60% Saponins), 200mg Purified Shilajit (50% Fulvic Acid), Zinc Monomethionine, and 2000 IU Vitamin D3 per serving. Increases free testosterone, reduces cortisol, and maximizes training aggressiveness.",
+    "benefits": [
+      "Promotes natural free testosterone production",
+      "Contains KSM-66 Ashwagandha for cortisol control & stamina",
+      "Supports heavy lifting drive & muscle protein synthesis",
+      "100% Natural herbal extracts with zero synthetic hormones",
+      "90 Veg Capsules (30-day full cycle supply)"
+    ],
+    "ingredients": [
+      "KSM-66 Ashwagandha Root Extract (5% Withanolides)",
+      "Tribulus Terrestris Extract (60% Saponins)",
+      "Purified Shilajit Extract (50% Fulvic Acid)",
+      "Fenugreek Seed Extract (50% Saponins)",
+      "Zinc Monomethionine",
+      "Vitamin D3 (Cholecalciferol)"
+    ],
+    "howToUse": "Take 3 capsules daily with water after dinner or 45 minutes before sleep.",
+    "suitableFor": [
+      "Male athletes & lifters aged 21 and above",
+      "Men seeking natural testosterone and vigor support"
+    ],
+    "warnings": [
+      "For adult male use only",
+      "Do not use if suffering from prostate or hormone-related conditions"
+    ],
+    "storageInstructions": "Store in a cool dry place.",
+    "legalDisclaimer": "Herbal dietary supplement for men.",
+    "seoTitle": "Anabolic Test Stack | KSM-66 Ashwagandha & Tribulus Test Booster",
+    "seoDescription": "Buy Anabolic Test Stack Testosterone Booster 90 Caps by Legend Killer. KSM-66, Tribulus, Shilajit & Zinc for natural testosterone & strength."
+  },
+  {
+    "manufacturerName": "Legend Killer Nutrition Pvt Ltd",
+    "marketerName": "Legend Killer - The Viper Protocol",
+    "countryOfOrigin": "India",
+    "licenceType": "FSSAI",
+    "licenceNumber": "10021022000123",
+    "hsnCode": "21069099",
+    "gstRate": 18,
+    "vegetarian": true,
+    "batchTrackingEnabled": true,
+    "expiryTrackingEnabled": true,
+    "images": [],
+    "price": 999,
+    "mrp": 1499,
+    "unit": "Bottle",
+    "weight": "60 Capsules",
+    "stock": 30,
+    "lowStockThreshold": 5,
+    "rating": 4.7,
+    "numReviews": 39,
+    "isFeatured": false,
+    "isBestSeller": false,
+    "isActive": true,
+    "name": "Viper Burner Thermo Fat Igniter (60 Capsules)",
+    "slug": "viper-burner-thermo-fat-igniter-60-caps",
+    "sku": "LK-FAT-BURN-60C",
+    "categorySlug": "fat-burners-essentials",
+    "shortDescription": "Advanced thermogenic fat incinerator with L-Carnitine L-Tartrate, Green Tea EGCG, Cayenne Pepper, and Bioperine.",
+    "description": "Torch stubborn subcutaneous fat while preserving hard-earned muscle mass with Viper Burner Thermo Fat Igniter.",
+    "longDescription": "Viper Burner Thermo Fat Igniter speeds up resting metabolic rate (RMR) through active thermogenesis. Formulated with 500mg L-Carnitine L-Tartrate to shuttle fatty acids into mitochondria, 250mg Green Tea Extract (50% EGCG), 200mg Caffeine Anhydrous, and Cayenne Pepper Extract.",
+    "benefits": [
+      "Accelerates thermogenic calorie burning rate",
+      "Converts stored body fat into usable training energy",
+      "Suppresses unwanted appetite cravings during cutting",
+      "Preserves lean muscle mass during caloric deficits"
+    ],
+    "ingredients": [
+      "L-Carnitine L-Tartrate",
+      "Green Tea Extract (50% EGCG)",
+      "Caffeine Anhydrous",
+      "Cayenne Pepper Extract (Capsaicin)",
+      "Bioperine (Black Pepper Extract)"
+    ],
+    "howToUse": "Take 1 capsule twice daily 30 minutes before meals or morning cardio. Do not exceed 2 capsules per day.",
+    "suitableFor": [
+      "Men & Women during cutting or fat loss phases"
+    ],
+    "warnings": [
+      "Contains caffeine. Do not combine with other stimulants."
+    ],
+    "storageInstructions": "Store in a cool dry place.",
+    "legalDisclaimer": "Weight management health supplement.",
+    "seoTitle": "Viper Burner Thermo Fat Igniter 60 Caps | Thermogenic Fat Burner",
+    "seoDescription": "Buy Viper Burner Thermo Fat Igniter 60 Caps by Legend Killer. L-Carnitine, Green Tea EGCG, Caffeine & Cayenne for rapid fat loss."
+  },
+  {
+    "manufacturerName": "Legend Killer Nutrition Pvt Ltd",
+    "marketerName": "Legend Killer - The Viper Protocol",
+    "countryOfOrigin": "India",
+    "licenceType": "FSSAI",
+    "licenceNumber": "10021022000123",
+    "hsnCode": "21069099",
+    "gstRate": 18,
+    "vegetarian": false,
+    "batchTrackingEnabled": true,
+    "expiryTrackingEnabled": true,
+    "images": [],
+    "price": 699,
+    "mrp": 999,
+    "unit": "Bottle",
+    "weight": "60 Softgels",
+    "stock": 70,
+    "lowStockThreshold": 10,
+    "rating": 4.9,
+    "numReviews": 112,
+    "isFeatured": false,
+    "isBestSeller": true,
+    "isActive": true,
+    "name": "Omega-3 Triple Strength Deep Sea Fish Oil 1000mg (60 Softgels)",
+    "slug": "omega-3-triple-strength-fish-oil-60-softgels",
+    "sku": "LK-OMEGA3-60SG",
+    "categorySlug": "fat-burners-essentials",
+    "shortDescription": "1000mg Triple Strength Fish Oil softgels providing 540mg EPA and 360mg DHA with enteric coating for zero fishy burps.",
+    "description": "Protect your joints, heart, and brain with Legend Killer Triple Strength Deep Sea Fish Oil.",
+    "longDescription": "Each enteric-coated softgel supplies 1000mg concentrated deep sea fish oil yielding 540mg EPA (Eicosapentaenoic acid) and 360mg DHA (Docosahexaenoic acid). Essential for heavy lifters to lubricate joint cartilage, reduce post-workout systemic inflammation, and support cardiac output.",
+    "benefits": [
+      "High potency: 540mg EPA + 360mg DHA per softgel",
+      "Supports heavy lifting joint lubrication & flexibility",
+      "Reduces exercise-induced muscle inflammation",
+      "Enteric coated technology prevents fishy burps",
+      "Molecularly distilled & heavy metal tested"
+    ],
+    "ingredients": [
+      "Deep Sea Fish Oil Concentrate (Anchovy/Sardine)",
+      "Gelatin (Capsule Shell)",
+      "Glycerin",
+      "Purified Water",
+      "Enteric Coating"
+    ],
+    "howToUse": "Take 1 softgel twice daily with meals.",
+    "suitableFor": [
+      "Athletes, lifters & active individuals"
+    ],
+    "warnings": [
+      "Contains Fish derivatives"
+    ],
+    "storageInstructions": "Store in a cool dry place.",
+    "legalDisclaimer": "Health supplement.",
+    "seoTitle": "Triple Strength Omega-3 Fish Oil 1000mg | 540 EPA 360 DHA",
+    "seoDescription": "Buy Legend Killer Triple Strength Omega-3 Fish Oil 60 Softgels. 540mg EPA & 360mg DHA for joint health, heart, and anti-inflammation."
+  }
+];

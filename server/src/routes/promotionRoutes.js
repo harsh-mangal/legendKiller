@@ -1,0 +1,11 @@
+import express from "express";
+import { createPromotion, deletePromotion, listPromotions, updatePromotion, validatePromotion } from "../controllers/promotionController.js";
+import { adminOnly, optionalAuth, protect } from "../middleware/authMiddleware.js";
+import { rateLimit } from "../middleware/rateLimitMiddleware.js";
+const router = express.Router();
+router.post("/validate", optionalAuth, rateLimit({ windowMs: 60_000, max: 30 }), validatePromotion);
+router.get("/admin", protect, adminOnly, listPromotions);
+router.post("/admin", protect, adminOnly, createPromotion);
+router.put("/admin/:id", protect, adminOnly, updatePromotion);
+router.delete("/admin/:id", protect, adminOnly, deletePromotion);
+export default router;

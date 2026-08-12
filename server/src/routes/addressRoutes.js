@@ -1,0 +1,11 @@
+import express from "express";
+import { createAddress, deleteAddress, listAddresses, setDefaultAddress, updateAddress } from "../controllers/addressController.js";
+import { protect } from "../middleware/authMiddleware.js";
+const router = express.Router();
+router.use(protect);
+router.get("/", listAddresses);
+router.post("/", createAddress);
+router.put("/:id", updateAddress);
+router.delete("/:id", deleteAddress);
+router.put("/:id/default", setDefaultAddress);
+export default router;

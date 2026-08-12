@@ -1,0 +1,62 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+  theme: {
+    extend: {
+      borderRadius: {
+        none: "0px",
+        sm: "1px",
+        DEFAULT: "2px",
+        md: "2px",
+        lg: "2px",
+        xl: "2px",
+        "2xl": "2px",
+        "3xl": "2px",
+        full: "9999px",
+      },
+      colors: {
+        brand: {
+          50: "#fffbeb",
+          100: "#fef3c7",
+          200: "#fde68a",
+          300: "#fcd34d",
+          400: "#fbbf24",
+          500: "#f59e0b",
+          600: "#d97706",
+          700: "#FF5500",
+          800: "#FF4D00",
+          900: "#D94200",
+          950: "#0A0A0C",
+        },
+        copper: {
+          50: "#fff5f2",
+          100: "#ffe6e0",
+          200: "#ffc2b3",
+          300: "#ff9480",
+          400: "#ff5e4d",
+          500: "#FF5500",
+          600: "#e63900",
+          700: "#FF1F00",
+          800: "#991800",
+          900: "#661000",
+        },
+        gold: {
+          50: "#fffdf0",
+          100: "#fff9c2",
+          200: "#fff085",
+          300: "#FFC700",
+          400: "#FFB800",
+          500: "#e6a100",
+          600: "#b87c00",
+          700: "#8a5800",
+          800: "#5c3d00",
+          900: "#3d2700",
+        },
+      },
+      boxShadow: {
+        panel: "0 16px 40px rgba(0, 0, 0, 0.6)",
+      },
+    },
+  },
+  plugins: [],
+};

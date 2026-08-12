@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    --brand-ink: #0A0A0C;
+    --brand-leaf: #FF5500;
+    --brand-leaf-dark: #D94200;
+    --brand-copper: #FF1F00;
+    --brand-gold: #FFB800;
+    --brand-mist: #ffffff;
+    --brand-line: #2A2A35;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: #0A0A0C;
+    color: #ffffff;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply m-0 min-h-screen overflow-x-hidden bg-[#0A0A0C] font-sans text-slate-100 antialiased;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display font-black uppercase tracking-tight text-white;
+    text-wrap: balance;
+  }
+
+  p {
+    @apply leading-7 text-slate-200;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply min-h-12 rounded-none border border-slate-700 bg-[#121216] px-3.5 text-base text-white shadow-none outline-none transition placeholder:text-slate-400 focus:border-[#FF5500] focus:ring-2 focus:ring-[#FF5500]/[0.3] sm:min-h-11 sm:text-sm;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply outline-none ring-2 ring-[#FF5500] ring-offset-2 ring-offset-[#0A0A0C];
+  }
+
+  ::selection {
+    @apply bg-[#FF5500] text-black font-extrabold;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-[1380px] px-4 sm:px-6 lg:px-10;
+  }
+
+  .page-section {
+    @apply py-10 sm:py-16 lg:py-24;
+  }
+
+  .btn-primary {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-none border-0 bg-gradient-to-r from-[#FFB800] via-[#FF5500] to-[#FF1F00] px-6 py-3 text-sm font-black uppercase tracking-wider text-black shadow-lg shadow-[#FF5500]/25 transition duration-200 hover:brightness-110 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-11;
+  }
+
+  .btn-outline {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-none border border-[#FF5500] bg-[#121216] px-6 py-3 text-sm font-black uppercase tracking-wider text-white shadow-none transition duration-200 hover:bg-[#FF5500] hover:text-black active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-11;
+  }
+
+  .icon-button {
+    @apply inline-flex h-11 w-11 items-center justify-center rounded-none border border-slate-800 bg-[#121216] text-slate-200 transition hover:border-[#FF5500] hover:bg-[#1A1A22] hover:text-[#FFB800] sm:h-10 sm:w-10;
+  }
+
+  .section-eyebrow {
+    @apply flex items-center gap-3 font-sans text-[10px] font-black uppercase tracking-[0.25em] text-[#FFB800] sm:text-[11px];
+  }
+
+  .section-eyebrow::before {
+    content: "";
+    @apply block h-0.5 w-7 bg-gradient-to-r from-[#FFB800] to-[#FF5500] sm:w-8;
+  }
+
+  .section-title {
+    @apply font-display text-[2rem] font-black uppercase leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl;
+  }
+
+  .card {
+    @apply rounded-none border border-slate-800 bg-[#121216] shadow-card transition-all hover:border-[#FF5500]/60;
+  }
+
+  .brand-panel {
+    @apply relative overflow-hidden rounded-none border border-[#FF5500]/40 bg-[#121216];
+    box-shadow: inset 0 0 0 1px rgba(255, 184, 0, 0.2);
+  }
+
+  .brand-panel::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    pointer-events: none;
+    border: 1px solid rgba(255, 85, 0, 0.25);
+  }
+
+  .veda-rule {
+    @apply h-0.5 w-full;
+    background: linear-gradient(90deg, transparent, #FF5500, #FFB800, #FF5500, transparent);
+  }
+
+  .heritage-pattern {
+    background-color: #0A0A0C;
+    background-image:
+      linear-gradient(30deg, rgba(255, 85, 0, 0.08) 12%, transparent 12.5%, transparent 87%, rgba(255, 85, 0, 0.08) 87.5%, rgba(255, 85, 0, 0.08)),
+      linear-gradient(150deg, rgba(255, 85, 0, 0.08) 12%, transparent 12.5%, transparent 87%, rgba(255, 85, 0, 0.08) 87.5%, rgba(255, 85, 0, 0.08)),
+      linear-gradient(30deg, rgba(255, 184, 0, 0.05) 12%, transparent 12.5%, transparent 87%, rgba(255, 184, 0, 0.05) 87.5%, rgba(255, 184, 0, 0.05)),
+      linear-gradient(150deg, rgba(255, 184, 0, 0.05) 12%, transparent 12.5%, transparent 87%, rgba(255, 184, 0, 0.05) 87.5%, rgba(255, 184, 0, 0.05));
+    background-position: 0 0, 0 0, 18px 32px, 18px 32px;
+    background-size: 36px 64px;
+  }
+
+  .editorial-kicker {
+    @apply font-sans text-[9px] font-black uppercase tracking-[0.28em] text-[#FFB800] sm:text-[10px];
+  }
+
+  .mobile-safe-bottom {
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  }
+
+  .mobile-bottom-offset {
+    padding-bottom: calc(5.25rem + env(safe-area-inset-bottom));
+  }
+
+  .touch-scroll {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .touch-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.marquee-track {
+  animation: marquee 22s linear infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

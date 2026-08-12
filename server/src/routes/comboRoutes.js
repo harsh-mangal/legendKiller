@@ -1,0 +1,12 @@
+import express from "express";
+import { createCombo, deleteCombo, getComboBySlug, getCombos, updateCombo } from "../controllers/comboController.js";
+import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import { upload } from "../middleware/uploadMiddleware.js";
+const router = express.Router();
+router.get("/", getCombos);
+router.get("/admin/all", protect, adminOnly, (req, res, next) => { req.adminView = true; next(); }, getCombos);
+router.get("/:slug", getComboBySlug);
+router.post("/", protect, adminOnly, upload.array("images", 6), createCombo);
+router.put("/:id", protect, adminOnly, upload.array("images", 6), updateCombo);
+router.delete("/:id", protect, adminOnly, deleteCombo);
+export default router;

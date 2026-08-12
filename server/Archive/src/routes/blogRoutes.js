@@ -1,0 +1,12 @@
+import express from "express";
+import { createBlog, deleteBlog, getBlogBySlug, getBlogs, updateBlog } from "../controllers/blogController.js";
+import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import { upload } from "../middleware/uploadMiddleware.js";
+
+const router = express.Router();
+router.get("/", getBlogs);
+router.get("/:slug", getBlogBySlug);
+router.post("/", protect, adminOnly, upload.array("media", 1), createBlog);
+router.put("/:id", protect, adminOnly, upload.array("media", 1), updateBlog);
+router.delete("/:id", protect, adminOnly, deleteBlog);
+export default router;

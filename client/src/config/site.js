@@ -1,0 +1,17 @@
+export const SITE = Object.freeze({
+  name: "Legend Killer",
+  tagline: "The Viper Protocol",
+  legalEntity: "Legend Killer Nutrition Pvt Ltd",
+  url: (import.meta.env.VITE_SITE_URL || "https://legendkiller.com").replace(/\/$/, ""),
+  language: "en-IN",
+  locale: "en_IN",
+  currency: "INR",
+  description: "High-performance nutritional protein supplements, whey isolates, pre-workouts, creatine, and anabolic muscle builders engineered for athletes.",
+  ogImagePath: "/og-social.jpg",
+  ogImageAlt: "Legend Killer — The Viper Protocol | High Performance Sports Nutrition & Supplements",
+  supportEmail: "support@legendkiller.com",
+  supportPhoneDisplay: "+91 98822 92197",
+  supportPhoneHref: "+919882292197",
+  location: "Bani Park, Jaipur, Rajasthan",
+  businessHours: "Monday to Saturday · 10:00 AM to 7:00 PM",
+});

@@ -1,0 +1,11 @@
+import express from "express";
+import { createTestimonial, deleteTestimonial, getTestimonials, updateTestimonial } from "../controllers/testimonialController.js";
+import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import { upload } from "../middleware/uploadMiddleware.js";
+
+const router = express.Router();
+router.get("/", getTestimonials);
+router.post("/", protect, adminOnly, upload.array("media", 1), createTestimonial);
+router.put("/:id", protect, adminOnly, upload.array("media", 1), updateTestimonial);
+router.delete("/:id", protect, adminOnly, deleteTestimonial);
+export default router;

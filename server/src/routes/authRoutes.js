@@ -1,0 +1,13 @@
+import express from "express";
+import { forgotPassword, getProfile, loginUser, loginWithOtp, registerUser, requestLoginOtp, resetPassword } from "../controllers/authController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { rateLimit } from "../middleware/rateLimitMiddleware.js";
+const router = express.Router();
+router.post("/register", rateLimit({ windowMs: 60 * 60 * 1000, max: 10 }), registerUser);
+router.post("/login", rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }), loginUser);
+router.post("/request-otp", rateLimit({ windowMs: 15 * 60 * 1000, max: 5, key: (req) => `${req.ip}:${String(req.body.email || "").toLowerCase()}` }), requestLoginOtp);
+router.post("/login-otp", rateLimit({ windowMs: 15 * 60 * 1000, max: 10, key: (req) => `${req.ip}:${String(req.body.email || "").toLowerCase()}` }), loginWithOtp);
+router.post("/forgot-password", rateLimit({ windowMs: 60 * 60 * 1000, max: 5, key: (req) => `${req.ip}:${String(req.body.email || "").toLowerCase()}` }), forgotPassword);
+router.post("/reset-password", rateLimit({ windowMs: 60 * 60 * 1000, max: 10 }), resetPassword);
+router.get("/profile", protect, getProfile);
+export default router;
