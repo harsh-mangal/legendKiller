@@ -20,8 +20,8 @@ export const SITE = Object.freeze({
   ogImagePath: "/og-social.jpg",
   ogImageAlt: "Legend Killer by Legend Born Nutrition — High Performance Sports Nutrition & Supplements",
   supportEmail: "support@legendbornnutrition.com",
-  supportPhoneDisplay: "+91 98822 92197",
-  supportPhoneHref: "+919882292197",
+  supportPhoneDisplay: "+91 92553 92553",
+  supportPhoneHref: "+919255392553",
   location: "PROPERTY IDNO.SRS/B04/227, NEAR VIVEKANAND SCHOOL, Sirsa, Haryana, 125055, India",
   registeredAddress: "PROPERTY IDNO.SRS/B04/227, NEAR VIVEKANAND SCHOOL, Sirsa, Sirsa, Sirsa, Haryana, India, 125055",
   address: {

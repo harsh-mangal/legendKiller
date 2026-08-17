@@ -120,3 +120,71 @@ ${urlEntries.join("\n")}
     next(error);
   }
 };
+
+export const getRobotsTxt = (req, res) => {
+  const robots = `# Legend Born Nutrition — Search Engine Crawling Policy
+# Domain: ${SITE_URL}
+
+User-agent: *
+Allow: /
+Allow: /products
+Allow: /products/*
+Allow: /categories
+Allow: /categories/*
+Allow: /articles
+Allow: /articles/*
+Allow: /combos
+Allow: /combos/*
+Allow: /about
+Allow: /contact
+Allow: /faq
+Allow: /verify/*
+Allow: /policies/*
+
+# Disallow private user-account and transactional routes
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
+Disallow: /orders/*
+Disallow: /order-result
+Disallow: /profile
+Disallow: /profile/*
+Disallow: /wishlist
+Disallow: /track-order
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/
+
+# Explicit Bot Directives
+User-agent: Googlebot
+Allow: /
+Allow: /*.js$
+Allow: /*.css$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.webp$
+Allow: /*.svg$
+
+User-agent: Googlebot-Image
+Allow: /
+Allow: /uploads/
+Allow: /*.jpg$
+Allow: /*.png$
+Allow: /*.webp$
+
+User-agent: Bingbot
+Allow: /
+
+# Canonical Sitemap Location
+Sitemap: ${SITE_URL}/sitemap.xml
+`;
+
+  res.set("Content-Type", "text/plain; charset=utf-8");
+  res.set("Cache-Control", "public, max-age=86400");
+  return res.status(200).send(robots);
+};

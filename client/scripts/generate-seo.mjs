@@ -277,7 +277,7 @@ const jsonLdFor = (page) => {
     },
     contactPoint: [{
       "@type": "ContactPoint",
-      telephone: "+919882292197",
+      telephone: "+919255392553",
       contactType: "customer service",
       email: "support@legendbornnutrition.com",
       areaServed: "IN",

@@ -17,7 +17,7 @@ export const buildInvoiceData = (order) => ({
     address: process.env.BUSINESS_ADDRESS || "PROPERTY IDNO.SRS/B04/227, NEAR VIVEKANAND SCHOOL, Sirsa, Haryana, 125055, India",
     gstin: process.env.BUSINESS_GSTIN || "08AABCL1234F1Z5",
     email: process.env.BUSINESS_SUPPORT_EMAIL || process.env.MAIL_FROM || "support@legendbornnutrition.com",
-    phone: process.env.BUSINESS_SUPPORT_PHONE || "+91 98822 92197",
+    phone: process.env.BUSINESS_SUPPORT_PHONE || "+91 92553 92553",
   },
   customer: order.shippingAddress,
   items: (order.items || []).map((item) => ({

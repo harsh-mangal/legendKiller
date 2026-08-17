@@ -45,65 +45,66 @@ export const STATIC_NOINDEX_ROUTES = Object.freeze([
 
 const exactStatic = new Map(STATIC_INDEXABLE_ROUTES.map((route) => [route.path, route]));
 
-export const getRouteSeo = (pathname, search = "") => {
-  const exact = exactStatic.get(pathname);
+export const getRouteSeo = (pathname = "/", search = "") => {
+  const normalized = pathname !== "/" ? pathname.replace(/\/+$/, "") : "/";
+  const exact = exactStatic.get(normalized);
   if (exact) {
-    const hasFacets = pathname === "/products" && Boolean(String(search || "").replace(/^\?/, ""));
-    return { ...exact, canonicalPath: pathname, indexable: !hasFacets, kind: pathname === "/" ? "home" : "page" };
+    const hasFacets = normalized === "/products" && Boolean(String(search || "").replace(/^\?/, ""));
+    return { ...exact, canonicalPath: normalized, indexable: !hasFacets, kind: normalized === "/" ? "home" : "page" };
   }
 
-  if (/^\/verify(\/[^/]+)?$/.test(pathname)) {
+  if (/^\/verify(\/[^/]+)?$/.test(normalized)) {
     return {
       title: `Product Authenticity Verification | ${BRAND}`,
       description: `Verify 100% genuine and original ${BRAND} products with official security certificates and lab test reports.`,
-      canonicalPath: pathname,
+      canonicalPath: normalized,
       indexable: true,
       kind: "page",
     };
   }
 
-  if (/^\/products\/[^/]+$/.test(pathname)) {
+  if (/^\/products\/[^/]+$/.test(normalized)) {
     return {
       title: `Supplement Details | ${BRAND}`,
       description: "Review protein content, ingredients, amino acid profile, and lab test reports before ordering.",
-      canonicalPath: pathname,
+      canonicalPath: normalized,
       indexable: true,
       kind: "product",
     };
   }
 
-  if (/^\/combos\/[^/]+$/.test(pathname)) {
+  if (/^\/combos\/[^/]+$/.test(normalized)) {
     return {
       title: `Supplement Stack | ${BRAND}`,
       description: `Review a ${BRAND} muscle building stack, included products, price and availability.`,
-      canonicalPath: pathname,
+      canonicalPath: normalized,
       indexable: true,
       kind: "combo",
     };
   }
 
-  if (/^\/categories\/[^/]+$/.test(pathname)) {
+  if (/^\/categories\/[^/]+$/.test(normalized)) {
     return {
       title: `Supplement Category | ${BRAND}`,
       description: `Browse ${BRAND} products in this fitness category.`,
-      canonicalPath: pathname,
+      canonicalPath: normalized,
       indexable: true,
       kind: "category",
     };
   }
 
-  if (/^\/articles\/[^/]+$/.test(pathname)) {
+  if (/^\/articles\/[^/]+$/.test(normalized)) {
     return {
       title: `Supplement Guide | ${BRAND}`,
       description: `Read scientific fitness and nutrition guidance from ${BRAND}.`,
-      canonicalPath: pathname,
+      canonicalPath: normalized,
       indexable: true,
       kind: "article",
     };
   }
 
   const privateRoute = STATIC_NOINDEX_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
+    (route) => normalized === route || normalized.startsWith(`${route}/`),
   );
 
   return {
@@ -111,7 +112,7 @@ export const getRouteSeo = (pathname, search = "") => {
     description: privateRoute
       ? `Secure customer shopping and account area for ${BRAND}.`
       : "The requested page could not be found.",
-    canonicalPath: pathname,
+    canonicalPath: normalized,
     indexable: false,
     kind: privateRoute ? "private" : "not-found",
   };

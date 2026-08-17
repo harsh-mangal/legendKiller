@@ -49,12 +49,22 @@ function ProtectedRoute({ children }) {
   return isLoggedIn ? children : <Navigate to="/login" replace state={{ from: `${location.pathname}${location.search}` }} />;
 }
 
+function TrailingSlashRemover() {
+  const location = useLocation();
+  if (location.pathname !== "/" && location.pathname.endsWith("/")) {
+    return <Navigate to={{ pathname: location.pathname.replace(/\/+$/, ""), search: location.search, hash: location.hash }} replace />;
+  }
+  return null;
+}
+
 export default function App() {
   return (
-    <Suspense fallback={<RouteLoading />}>
-      <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
+    <>
+      <TrailingSlashRemover />
+      <Suspense fallback={<RouteLoading />}>
+        <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/:slug" element={<ProductViewPage />} />
         <Route path="/combos/:slug" element={<ComboViewPage />} />
@@ -107,6 +117,7 @@ export default function App() {
       </Route>
       </Routes>
     </Suspense>
+    </>
   );
 }
 
