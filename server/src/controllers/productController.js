@@ -92,6 +92,35 @@ export const getProductBySlug = async (req, res, next) => {
   }
 };
 
+export const getRelatedProducts = async (req, res, next) => {
+  try {
+    const product = await Product.findOne({ slug: req.params.slug, isActive: true });
+    if (!product) throw new ApiError(404, "Product not found");
+
+    let related = await Product.find({
+      _id: { $ne: product._id },
+      category: product.category,
+      isActive: true,
+    })
+      .populate("category", "name slug")
+      .limit(6);
+
+    if (related.length < 4) {
+      const fallback = await Product.find({
+        _id: { $nin: [product._id, ...related.map((p) => p._id)] },
+        isActive: true,
+      })
+        .populate("category", "name slug")
+        .limit(6 - related.length);
+      related = [...related, ...fallback];
+    }
+
+    res.json({ success: true, data: related.map(publicProduct) });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createProduct = async (req, res, next) => {
   try {
     const commercial = validateCommercialFields(req.body);
