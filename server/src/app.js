@@ -17,6 +17,7 @@ import productRoutes from "./routes/productRoutes.js";
 import promotionRoutes from "./routes/promotionRoutes.js";
 import testimonialRoutes from "./routes/testimonialRoutes.js";
 import amyekaCoinRoutes from "./routes/amyekaCoinRoutes.js";
+import sitemapRoutes from "./routes/sitemapRoutes.js";
 import { getDashboardSummary, getUsers, updateUserBlockStatus } from "./controllers/adminController.js";
 import { razorpayWebhook } from "./controllers/orderController.js";
 import { adminOnly, protect } from "./middleware/authMiddleware.js";
@@ -56,6 +57,8 @@ app.get("/ready", (req, res) => {
   res.status(ready ? 200 : 503).json({ success: ready, status: ready ? "ready" : "not-ready", databaseState: mongoose.connection.readyState });
 });
 
+app.use("/", sitemapRoutes);
+app.use("/api", sitemapRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/addresses", addressRoutes);
 app.use("/api/banners", bannerRoutes);
