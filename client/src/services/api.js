@@ -1,7 +1,7 @@
 import { clearStoredSession, getStoredToken } from "../utils/storage";
 import { getCatalogType } from "../utils/catalog";
 
-export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://api.legendkiller.com/api").replace(/\/$/, "");
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://api.legendbornnutrition.com/api").replace(/\/$/, "");
 export const STATIC_BASE_URL = (import.meta.env.VITE_ASSET_BASE_URL || API_BASE_URL.replace(/\/api(?:\/v\d+)?\/?$/, "")).replace(/\/$/, "");
 const COIN_API_PATH = (import.meta.env.VITE_COIN_API_PATH || "/amyeka-coins").replace(/\/$/, "");
 const REQUEST_TIMEOUT_MS = Math.max(3000, Number(import.meta.env.VITE_API_TIMEOUT_MS || 15000));
@@ -215,6 +215,8 @@ export const productApi = {
   },
   getProductBySlug: async (slug, options = {}) =>
     normalizeProduct(unwrapData(await request(`/products/${encodeURIComponent(slug)}`, { ...options, auth: "none" }))),
+  verifyByCode: async (code, options = {}) =>
+    request(`/products/verify/${encodeURIComponent(code)}`, { ...options, auth: "none" }),
   getRelatedProducts: async (slug, options = {}) =>
     extractArray(await request(`/products/${encodeURIComponent(slug)}/related`, { ...options, auth: "none" })).map(normalizeProduct),
   addReview: async (slug, payload) =>

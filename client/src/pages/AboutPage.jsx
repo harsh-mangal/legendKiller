@@ -1,5 +1,19 @@
-import { BadgeCheck, CheckCircle2, Dumbbell, Flame, ShieldCheck, Zap } from "lucide-react";
+import {
+  BadgeCheck,
+  Building2,
+  CheckCircle2,
+  Dumbbell,
+  ExternalLink,
+  Flame,
+  Globe,
+  MapPin,
+  ShieldAlert,
+  ShieldCheck,
+  Users,
+  Zap,
+} from "lucide-react";
 import { Link } from "react-router-dom";
+import { SITE } from "../config/site";
 
 const principles = [
   [Dumbbell, "100% Raw Imported Whey", "Cross-Flow Microfiltered whey protein isolates with zero amino spiking and zero filler ingredients."],
@@ -14,9 +28,28 @@ const commitments = [
   [CheckCircle2, "Fast Express Delivery", "Priority dispatch across 25,000+ Indian pincodes with live SMS and WhatsApp tracking."],
 ];
 
+const entityFacts = [
+  { label: "Legal Entity", value: SITE.legalEntity },
+  { label: "Company", value: SITE.companyName || "Legend Born Nutrition" },
+  { label: "Brand Name", value: `${SITE.name} (${SITE.tagline})` },
+  { label: "Founding Year", value: SITE.foundingDate || "2024" },
+  { label: "Headquarters", value: SITE.location },
+  { label: "Official Website", value: SITE.url.replace(/^https?:\/\//, "") },
+  { label: "Industry", value: "Sports Nutrition & Dietary Supplements" },
+  { label: "Operating Region", value: "India & Pan-Asia Distribution" },
+];
+
+const officialChannels = [
+  { name: "Instagram", handle: "@legendbornnutrition", url: SITE.socials?.instagram || "https://www.instagram.com/legendbornnutrition" },
+  { name: "YouTube", handle: "@legendbornnutrition", url: SITE.socials?.youtube || "https://www.youtube.com/@legendbornnutrition" },
+  { name: "Twitter / X", handle: "@legendbornnutr", url: SITE.socials?.twitter || "https://twitter.com/legendbornnutr" },
+  { name: "LinkedIn", handle: "Legend Born Nutrition", url: SITE.socials?.linkedin || "https://www.linkedin.com/company/legendbornnutrition" },
+];
+
 export default function AboutPage() {
   return (
     <section>
+      {/* Hero Section */}
       <div className="relative overflow-hidden border-b border-slate-800 bg-[#0A0A0C]">
         <div className="container-page relative grid gap-9 py-12 sm:py-16 lg:min-h-[560px] lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:gap-12 lg:py-20">
           <div>
@@ -59,6 +92,7 @@ export default function AboutPage() {
         </div>
       </div>
 
+      {/* Brand Pillars */}
       <div className="page-section bg-[#121216]">
         <div className="container-page">
           <div className="grid gap-5 border-b border-slate-800 pb-6 sm:gap-8 sm:pb-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
@@ -85,6 +119,77 @@ export default function AboutPage() {
         </div>
       </div>
 
+      {/* Corporate Entity Home Section for Google Knowledge Graph */}
+      <div className="page-section bg-[#0A0A0C] border-t border-slate-800">
+        <div className="container-page">
+          <div className="grid gap-5 border-b border-slate-800 pb-6 sm:gap-8 sm:pb-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
+            <div>
+              <p className="section-eyebrow">Entity Home &amp; Corporate Identity</p>
+              <h2 className="section-title">Official Brand Registry</h2>
+            </div>
+            <p className="text-sm leading-7 text-slate-400">
+              Official corporate registration and verified authority profiles for <strong className="text-white">Legend Born Nutrition</strong> (operating brand <strong className="text-white">Legend Killer</strong>). This page serves as the official Entity Home for search engine knowledge graphs and brand verification.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-2">
+            {/* Corporate Profile Card */}
+            <div className="border border-slate-800 bg-[#121216] p-6 sm:p-8">
+              <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
+                <Building2 size={24} className="text-[#FF5500]" />
+                <h3 className="text-lg font-black uppercase text-white">Corporate Identity</h3>
+              </div>
+              <dl className="mt-6 divide-y divide-slate-800/80">
+                {entityFacts.map(({ label, value }) => (
+                  <div key={label} className="grid grid-cols-1 py-3 text-xs sm:grid-cols-[140px_1fr]">
+                    <dt className="font-bold uppercase tracking-wider text-slate-400">{label}</dt>
+                    <dd className="font-medium text-slate-200 mt-1 sm:mt-0">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            {/* Official Digital Channels & sameAs Authority Card */}
+            <div className="border border-slate-800 bg-[#121216] p-6 sm:p-8">
+              <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
+                <Globe size={24} className="text-[#FFB800]" />
+                <h3 className="text-lg font-black uppercase text-white">Official Verified Channels</h3>
+              </div>
+              <p className="mt-4 text-xs leading-6 text-slate-400">
+                Official social and digital media channels verified and maintained by Legend Born Nutrition:
+              </p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {officialChannels.map(({ name, handle, url }) => (
+                  <a
+                    key={name}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between border border-slate-800 bg-[#0A0A0C] p-3.5 transition hover:border-[#FF5500] hover:bg-[#181820]"
+                  >
+                    <div>
+                      <p className="text-xs font-bold text-white">{name}</p>
+                      <p className="text-[11px] text-[#FFB800]">{handle}</p>
+                    </div>
+                    <ExternalLink size={14} className="text-slate-500" />
+                  </a>
+                ))}
+              </div>
+
+              <div className="mt-6 border-t border-slate-800 pt-5 text-xs text-slate-400">
+                <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                  <ShieldCheck size={16} /> FSSAI &amp; GMP Quality Certified
+                </div>
+                <p className="mt-2 text-[11px] leading-5 text-slate-400">
+                  Registered under Indian Food Safety Regulations and manufactured in ISO 22000 compliant facilities.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Vision & Promise */}
       <div className="bg-gradient-to-r from-[#FFB800] via-[#FF5500] to-[#FF1F00] py-10 text-black sm:py-20">
         <div className="container-page grid gap-px bg-black/20 md:grid-cols-2">
           <div className="bg-[#0A0A0C] p-5 sm:p-10 lg:p-12 text-white">

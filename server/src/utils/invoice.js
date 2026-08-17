@@ -13,10 +13,10 @@ export const buildInvoiceData = (order) => ({
   orderNumber: order.publicOrderNumber || String(order._id),
   invoiceDate: order.paidAt || order.createdAt,
   business: {
-    name: process.env.BUSINESS_LEGAL_NAME || "Legend Killer Nutrition Pvt Ltd",
-    address: process.env.BUSINESS_ADDRESS || "Bani Park, Jaipur, Rajasthan",
+    name: process.env.BUSINESS_LEGAL_NAME || "LEGEND BORN NUTRITION PRIVATE LIMITED",
+    address: process.env.BUSINESS_ADDRESS || "PROPERTY IDNO.SRS/B04/227, NEAR VIVEKANAND SCHOOL, Sirsa, Haryana, 125055, India",
     gstin: process.env.BUSINESS_GSTIN || "08AABCL1234F1Z5",
-    email: process.env.BUSINESS_SUPPORT_EMAIL || process.env.MAIL_FROM || "support@legendkiller.com",
+    email: process.env.BUSINESS_SUPPORT_EMAIL || process.env.MAIL_FROM || "support@legendbornnutrition.com",
     phone: process.env.BUSINESS_SUPPORT_PHONE || "+91 98822 92197",
   },
   customer: order.shippingAddress,

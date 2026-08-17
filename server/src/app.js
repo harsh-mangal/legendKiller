@@ -30,7 +30,7 @@ app.set("trust proxy", Number(process.env.TRUST_PROXY || 1));
 app.use(requestContext);
 app.use(securityHeaders);
 
-const allowedOrigins = (process.env.CORS_ORIGIN || "https://legendkiller.com,http://localhost:3000,http://localhost:5173,https://www.legendkiller.com,https://admin.legendkiller.com")
+const allowedOrigins = (process.env.CORS_ORIGIN || "https://legendbornnutrition.com,https://www.legendbornnutrition.com,https://admin.legendbornnutrition.com,https://legendkiller.com,https://www.legendkiller.com,https://admin.legendkiller.com,http://localhost:3000,http://localhost:5173")
   .split(",").map((origin) => origin.trim()).filter(Boolean);
 app.use(cors({
   origin(origin, callback) {

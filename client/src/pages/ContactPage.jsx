@@ -7,13 +7,13 @@ import { contactApi, getErrorMessage } from "../services/api";
 
 function ContactInfo({ icon: Icon, title, value, href }) {
   const content = (
-    <div className="flex items-center gap-3.5 border border-slate-800 bg-[#121216] p-4 rounded-none shadow-md">
-      <div className="grid h-10 w-10 shrink-0 place-items-center bg-[#1A1A22] text-[#FF5500]">
+    <div className="flex items-start gap-3.5 border border-slate-800 bg-[#121216] p-4 rounded-none shadow-md">
+      <div className="grid h-10 w-10 shrink-0 place-items-center bg-[#1A1A22] text-[#FF5500] mt-0.5">
         <Icon size={19} />
       </div>
       <div className="min-w-0">
         <p className="text-[10px] font-black uppercase tracking-wider text-[#FFB800]">{title}</p>
-        <p className="truncate text-sm font-bold text-white">{value}</p>
+        <p className="text-sm font-bold text-white break-words leading-relaxed">{value}</p>
       </div>
     </div>
   );

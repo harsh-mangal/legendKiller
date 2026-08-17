@@ -17,9 +17,7 @@ const organizationSchema = () => ({
   telephone: SITE.supportPhoneHref,
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Jaipur",
-    addressRegion: "Rajasthan",
-    addressCountry: "IN",
+    ...(SITE.address || {}),
   },
   contactPoint: {
     "@type": "ContactPoint",

@@ -1,7 +1,8 @@
 const BRAND = "Legend Killer";
+const COMPANY = "Legend Born Nutrition";
 
 export const DEFAULT_DESCRIPTION =
-  "Shop high-performance Whey Protein Isolates, Pre-Workout, Creatine Monohydrate, and Mass Gainers engineered for elite athletes and bodybuilders.";
+  "Shop high-performance Whey Protein Isolates, Pre-Workout, Creatine Monohydrate, and Mass Gainers from Legend Born Nutrition engineered for elite athletes.";
 
 export const POLICY_TITLES = Object.freeze({
   privacy: "Privacy Policy",
@@ -13,17 +14,17 @@ export const POLICY_TITLES = Object.freeze({
 });
 
 export const STATIC_INDEXABLE_ROUTES = Object.freeze([
-  { path: "/", title: `${BRAND} | The Viper Protocol | Protein & Sports Nutrition`, description: DEFAULT_DESCRIPTION },
-  { path: "/products", title: `Protein & Sports Nutrition Supplements | ${BRAND}`, description: `Explore the ${BRAND} performance range with transparent macros, amino acid profiles, and lab test reports.` },
-  { path: "/categories", title: `Shop Fitness Supplements by Goal | ${BRAND}`, description: `Browse ${BRAND} protein powders, pre-workouts, creatine, and mass gainers by fitness goal.` },
-  { path: "/articles", title: `Bodybuilding & Supplement Guides | ${BRAND}`, description: `Read scientific guides on whey protein timing, creatine loading, pre-workout nutrition, and muscle growth.` },
-  { path: "/about", title: `About ${BRAND} | The Viper Protocol`, description: `Learn how ${BRAND} delivers 100% raw imported protein isolates with clinical dosages and NABL lab certification.` },
-  { path: "/contact", title: `Contact ${BRAND} | Athlete Support`, description: `Contact ${BRAND} for product guidance, order tracking, express delivery, and account support.` },
-  { path: "/faq", title: `Frequently Asked Questions | ${BRAND}`, description: "Answers about supplement authenticity, scratch codes, protein dosage, pre-workout, shipping, and returns." },
+  { path: "/", title: `${BRAND} | ${COMPANY} | The Viper Protocol`, description: DEFAULT_DESCRIPTION },
+  { path: "/products", title: `Protein & Sports Nutrition Supplements | ${BRAND} by ${COMPANY}`, description: `Explore the ${BRAND} performance range by ${COMPANY} with transparent macros, amino acid profiles, and lab test reports.` },
+  { path: "/categories", title: `Shop Fitness Supplements by Goal | ${BRAND} by ${COMPANY}`, description: `Browse ${BRAND} protein powders, pre-workouts, creatine, and mass gainers by fitness goal.` },
+  { path: "/articles", title: `Bodybuilding & Supplement Guides | ${COMPANY}`, description: `Read scientific guides on whey protein timing, creatine loading, pre-workout nutrition, and muscle growth.` },
+  { path: "/about", title: `About ${BRAND} | ${COMPANY} | The Viper Protocol`, description: `Learn how ${COMPANY} delivers 100% raw imported protein isolates with clinical dosages and NABL lab certification.` },
+  { path: "/contact", title: `Contact ${COMPANY} | ${BRAND} Athlete Support`, description: `Contact ${COMPANY} for product guidance, order tracking, express delivery, and account support.` },
+  { path: "/faq", title: `Frequently Asked Questions | ${BRAND} by ${COMPANY}`, description: "Answers about supplement authenticity, scratch codes, protein dosage, pre-workout, shipping, and returns." },
   ...Object.entries(POLICY_TITLES).map(([key, title]) => ({
     path: `/policies/${key}`,
-    title: `${title} | ${BRAND}`,
-    description: `Review the ${title.toLowerCase()} for ${BRAND}.`,
+    title: `${title} | ${COMPANY}`,
+    description: `Review the ${title.toLowerCase()} for ${COMPANY} (${BRAND}).`,
   })),
 ]);
 
@@ -49,6 +50,16 @@ export const getRouteSeo = (pathname, search = "") => {
   if (exact) {
     const hasFacets = pathname === "/products" && Boolean(String(search || "").replace(/^\?/, ""));
     return { ...exact, canonicalPath: pathname, indexable: !hasFacets, kind: pathname === "/" ? "home" : "page" };
+  }
+
+  if (/^\/verify(\/[^/]+)?$/.test(pathname)) {
+    return {
+      title: `Product Authenticity Verification | ${BRAND}`,
+      description: `Verify 100% genuine and original ${BRAND} products with official security certificates and lab test reports.`,
+      canonicalPath: pathname,
+      indexable: true,
+      kind: "page",
+    };
   }
 
   if (/^\/products\/[^/]+$/.test(pathname)) {

@@ -75,6 +75,9 @@ const productSchema = new mongoose.Schema(
     numReviews: { type: Number, default: 0, min: 0 },
     reviews: [reviewSchema],
     isActive: { type: Boolean, default: true },
+    authenticityCode: { type: String, uppercase: true, trim: true, unique: true, sparse: true },
+    verificationCount: { type: Number, default: 0, min: 0 },
+    lastVerifiedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
@@ -82,6 +85,11 @@ const productSchema = new mongoose.Schema(
 productSchema.pre("validate", function () {
   if (Number(this.mrp) < Number(this.price)) {
     this.invalidate("mrp", "MRP cannot be lower than the selling price");
+  }
+  if (!this.authenticityCode) {
+    const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const slugPrefix = (this.slug || "LK").replace(/[^A-Z0-9]/gi, "").substring(0, 8).toUpperCase();
+    this.authenticityCode = `LK-AUTH-${slugPrefix}-${randomSuffix}`;
   }
 });
 

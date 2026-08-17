@@ -35,7 +35,7 @@ const siteUrl = String(process.env.VITE_SITE_URL || fileEnv.VITE_SITE_URL || "ht
 const apiBaseUrl = String(process.env.SITEMAP_API_BASE_URL || process.env.VITE_API_BASE_URL || fileEnv.SITEMAP_API_BASE_URL || "https://api.legendbornnutrition.com/api").replace(/\/$/, "");
 const assetBaseUrl = String(process.env.VITE_ASSET_BASE_URL || fileEnv.VITE_ASSET_BASE_URL || apiBaseUrl.replace(/\/api(?:\/v\d+)?\/?$/, "")).replace(/\/$/, "");
 const defaultImage = `${siteUrl}/og-social.jpg`;
-const defaultImageAlt = "legendbornnutrition — Ayurveda-inspired wellness for modern Indian families";
+const defaultImageAlt = "Legend Killer by Legend Born Nutrition — High Performance Sports Nutrition & Whey Protein Isolates";
 
 const absoluteSiteUrl = (pathname = "/") => new URL(pathname, `${siteUrl}/`).toString();
 const absoluteAssetUrl = (value) => {
@@ -108,7 +108,7 @@ const dynamicPages = async () => {
   return [
     ...products.filter((item) => item?.slug).map((item) => ({
       path: `/products/${item.slug}`,
-      title: cleanText(item.seoTitle || `${item.name} | legendbornnutrition`),
+      title: cleanText(item.seoTitle || `${item.name} | Legend Killer`),
       description: makeDescription(item, `View ${item.name}, price, pack information and responsible-use details.`),
       type: "product",
       image: absoluteAssetUrl(item.images?.[0]) || defaultImage,
@@ -117,7 +117,7 @@ const dynamicPages = async () => {
       data: {
         name: item.name,
         sku: item.sku,
-        brand: item.brand || "legendbornnutrition",
+        brand: item.brand || "Legend Killer",
         price: Number(item.price || 0),
         stock: Number(item.availableStock ?? item.stock ?? 0),
         stockKnown: item.availableStock != null || item.stock != null,
@@ -129,8 +129,8 @@ const dynamicPages = async () => {
     })),
     ...categories.filter((item) => item?.slug).map((item) => ({
       path: `/categories/${item.slug}`,
-      title: `${cleanText(item.name)} Products | legendbornnutrition`,
-      description: makeDescription(item, `Browse legendbornnutrition products in the ${item.name} category.`),
+      title: `${cleanText(item.name)} Products | Legend Killer`,
+      description: makeDescription(item, `Browse Legend Killer products in the ${item.name} category.`),
       type: "category",
       image: absoluteAssetUrl(item.image) || defaultImage,
       imageAlt: cleanText(item.name, defaultImageAlt),
@@ -139,7 +139,7 @@ const dynamicPages = async () => {
     })),
     ...combos.filter((item) => item?.slug).map((item) => ({
       path: `/combos/${item.slug}`,
-      title: cleanText(item.seoTitle || `${item.name} Combo Pack | legendbornnutrition`),
+      title: cleanText(item.seoTitle || `${item.name} Combo Pack | Legend Killer`),
       description: makeDescription(item, `View ${item.name}, included products, price and availability.`),
       type: "product",
       image: absoluteAssetUrl(item.images?.[0] || item.products?.[0]?.product?.images?.[0]) || defaultImage,
@@ -154,15 +154,15 @@ const dynamicPages = async () => {
     })),
     ...articles.filter((item) => item?.slug).map((item) => ({
       path: `/articles/${item.slug}`,
-      title: `${cleanText(item.title)} | legendbornnutrition`,
-      description: makeDescription(item, `Read ${item.title} from legendbornnutrition.`),
+      title: `${cleanText(item.title)} | Legend Killer`,
+      description: makeDescription(item, `Read ${item.title} from Legend Killer.`),
       type: "article",
       image: absoluteAssetUrl(item.coverImage) || defaultImage,
       imageAlt: cleanText(item.title, defaultImageAlt),
       lastmod: item.updatedAt || item.publishedAt,
       data: {
         headline: item.title,
-        author: item.author || "legendbornnutrition",
+        author: item.author || "Legend Killer",
         publishedAt: item.publishedAt,
         updatedAt: item.updatedAt,
       },
@@ -242,25 +242,105 @@ const jsonLdFor = (page) => {
     itemListElement: breadcrumbItems.map((item, index) => ({ "@type": "ListItem", position: index + 1, ...item })),
   };
 
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${siteUrl}/#organization`,
+    name: "Legend Born Nutrition",
+    alternateName: [
+      "LEGEND BORN NUTRITION PRIVATE LIMITED",
+      "Legend Killer",
+      "The Viper Protocol",
+      "Legend Killer Nutrition",
+      "Legend Born",
+    ],
+    legalName: "LEGEND BORN NUTRITION PRIVATE LIMITED",
+    url: `${siteUrl}/`,
+    logo: {
+      "@type": "ImageObject",
+      "@id": `${siteUrl}/#logo`,
+      url: `${siteUrl}/logo.png`,
+      caption: "Legend Born Nutrition Logo",
+      width: "512",
+      height: "512",
+    },
+    image: `${siteUrl}/og-social.jpg`,
+    description: "Legend Born Nutrition Private Limited is India's high-performance sports nutrition company manufacturing Legend Killer supplements including 100% pure whey protein isolates, creatine monohydrate, and clinical pre-workout formulas.",
+    foundingDate: "2024",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "PROPERTY IDNO.SRS/B04/227, NEAR VIVEKANAND SCHOOL",
+      addressLocality: "Sirsa",
+      addressRegion: "Haryana",
+      postalCode: "125055",
+      addressCountry: "IN",
+    },
+    contactPoint: [{
+      "@type": "ContactPoint",
+      telephone: "+919882292197",
+      contactType: "customer service",
+      email: "support@legendbornnutrition.com",
+      areaServed: "IN",
+      availableLanguage: ["en", "hi"],
+    }],
+    sameAs: [
+      "https://www.instagram.com/legendbornnutrition",
+      "https://www.youtube.com/@legendbornnutrition",
+      "https://twitter.com/legendbornnutr",
+      "https://www.linkedin.com/company/legendbornnutrition",
+      "https://www.facebook.com/legendbornnutrition",
+    ],
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    name: "Legend Born Nutrition",
+    alternateName: "Legend Killer",
+    url: `${siteUrl}/`,
+    publisher: { "@id": `${siteUrl}/#organization` },
+    inLanguage: "en-IN",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${siteUrl}/products?search={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   if (page.type === "home") {
+    return [organizationSchema, websiteSchema];
+  }
+
+  if (page.path === "/about") {
     return [{
       "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": `${siteUrl}/#organization`,
-      name: "legendbornnutrition",
-      legalName: "Ameyka Life Sciences",
-      url: `${siteUrl}/`,
-      logo: `${siteUrl}/logo.png`,
-      email: "contact@ameykalifesciences.com",
-      telephone: "+919882292197",
-    }, {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "@id": `${siteUrl}/#website`,
-      name: "legendbornnutrition",
-      url: `${siteUrl}/`,
+      "@type": "AboutPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: page.title,
+      description: page.description,
       inLanguage: "en-IN",
-    }];
+      mainEntity: { "@id": `${siteUrl}/#organization` },
+      isPartOf: { "@id": `${siteUrl}/#website` },
+    }, organizationSchema, breadcrumb];
+  }
+
+  if (page.path === "/contact") {
+    return [{
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: page.title,
+      description: page.description,
+      inLanguage: "en-IN",
+      mainEntity: { "@id": `${siteUrl}/#organization` },
+      isPartOf: { "@id": `${siteUrl}/#website` },
+    }, breadcrumb];
   }
 
   if (page.type === "product") {
@@ -271,15 +351,18 @@ const jsonLdFor = (page) => {
       description: page.description,
       image: page.image,
       url: canonical,
-      brand: { "@type": "Brand", name: page.data?.brand || "legendbornnutrition" },
+      brand: { "@id": `${siteUrl}/#organization` },
+      manufacturer: { "@id": `${siteUrl}/#organization` },
       offers: {
         "@type": "Offer",
         url: canonical,
         priceCurrency: "INR",
         price: page.data?.price,
+        itemCondition: "https://schema.org/NewCondition",
         availability: page.data?.stockKnown && page.data?.stock <= 0
           ? "https://schema.org/OutOfStock"
           : "https://schema.org/InStock",
+        seller: { "@id": `${siteUrl}/#organization` },
       },
     };
     if (page.data?.sku) product.sku = page.data.sku;
@@ -318,7 +401,7 @@ const jsonLdFor = (page) => {
       url: canonical,
       datePublished: validDate(page.data?.publishedAt) || undefined,
       dateModified: validDate(page.data?.updatedAt) || undefined,
-      author: { "@type": "Person", name: page.data?.author || "legendbornnutrition" },
+      author: { "@id": `${siteUrl}/#organization` },
       publisher: { "@id": `${siteUrl}/#organization` },
     }, breadcrumb];
   }
@@ -354,7 +437,7 @@ const renderHead = (page, indexable = true) => {
     <meta property="og:type" content="${type}" />
     <meta property="og:title" content="${htmlEscape(page.title)}" />
     <meta property="og:description" content="${htmlEscape(page.description)}" />
-    <meta property="og:site_name" content="legendbornnutrition" />
+    <meta property="og:site_name" content="Legend Born Nutrition" />
     <meta property="og:locale" content="en_IN" />
     <meta property="og:url" content="${htmlEscape(canonical)}" />
     <meta property="og:image" content="${htmlEscape(image)}" />
@@ -369,8 +452,8 @@ ${scripts ? `${scripts}\n` : ""}    <!-- SEO:END -->`;
 
 const renderStaticFallback = (page, indexable) => {
   if (!indexable) return '<div id="root"></div>';
-  const heading = page.data?.name || page.data?.headline || page.title.replace(/\s*\|\s*legendbornnutrition.*$/i, "");
-  return `<div id="root"><main style="min-height:60vh;padding:9rem 1.5rem 4rem;font-family:system-ui,-apple-system,sans-serif;color:#172018;background:#fff"><div style="max-width:72rem;margin:0 auto"><p style="margin:0 0 1rem;color:#8a5a20;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase">legendbornnutrition</p><h1 style="max-width:52rem;margin:0;font-family:Georgia,serif;font-size:clamp(2rem,5vw,4rem);line-height:1.08">${htmlEscape(heading)}</h1><p style="max-width:46rem;margin:1.25rem 0 0;color:#526052;font-size:1rem;line-height:1.8">${htmlEscape(page.description)}</p><p style="margin-top:1.5rem"><a href="${htmlEscape(absoluteSiteUrl(page.path))}" style="color:#3f4725;font-weight:700">View this page</a></p></div></main></div>`;
+  const heading = page.data?.name || page.data?.headline || page.title.replace(/\s*\|\s*(?:Legend Killer|Legend Born Nutrition|legendbornnutrition).*$/i, "");
+  return `<div id="root"><main style="min-height:60vh;padding:9rem 1.5rem 4rem;font-family:system-ui,-apple-system,sans-serif;color:#f8fafc;background:#0A0A0C"><div style="max-width:72rem;margin:0 auto"><p style="margin:0 0 1rem;color:#FF5500;font-size:.75rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase">Legend Born Nutrition</p><h1 style="max-width:52rem;margin:0;font-family:system-ui,-apple-system,sans-serif;font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.08;color:#ffffff">${htmlEscape(heading)}</h1><p style="max-width:46rem;margin:1.25rem 0 0;color:#cbd5e1;font-size:1rem;line-height:1.8">${htmlEscape(page.description)}</p><p style="margin-top:1.5rem"><a href="${htmlEscape(absoluteSiteUrl(page.path))}" style="color:#FFB800;font-weight:700">View this page</a></p></div></main></div>`;
 };
 
 const writeRouteHtml = async (template, page, indexable) => {
@@ -395,7 +478,7 @@ const writeDistSeo = async (pages) => {
     const route = getRouteSeo(pathname);
     await writeRouteHtml(template, { ...route, path: pathname, type: "private", image: defaultImage, imageAlt: defaultImageAlt }, false);
   }
-  const notFound = { path: "/404", title: "Page Not Found | legendbornnutrition", description: "The requested page could not be found.", type: "not-found", image: defaultImage, imageAlt: defaultImageAlt };
+  const notFound = { path: "/404", title: "Page Not Found | Legend Born Nutrition", description: "The requested page could not be found.", type: "not-found", image: defaultImage, imageAlt: defaultImageAlt };
   const notFoundHtml = template
     .replace(/<!-- SEO:START -->[\s\S]*?<!-- SEO:END -->/, renderHead(notFound, false))
     .replace('<div id="root"></div>', renderStaticFallback(notFound, false));
