@@ -2,7 +2,7 @@ import Banner from "../models/bannerModel.js";
 import {
   deleteLocalFile,
   getBannerDefaultSize,
-  saveBannerWebp,
+  saveBannerMedia,
 } from "../utils/bannerImageHelper.js";
 
 const toBoolean = (value, defaultValue = true) => {
@@ -11,6 +11,8 @@ const toBoolean = (value, defaultValue = true) => {
   if (value === false || value === "false") return false;
   return defaultValue;
 };
+
+const isVideoUrl = (url = "") => /\.(mp4|webm|mov|mkv|ogg)$/i.test(url);
 
 const getFullUrl = (req, url = "") => {
   if (!url) return "";
@@ -22,17 +24,26 @@ const getFullUrl = (req, url = "") => {
 const formatBanner = (req, banner) => {
   const item = banner.toObject ? banner.toObject() : banner;
 
+  const desktopUrl = getFullUrl(req, item.image);
+  const mobileUrl = getFullUrl(req, item.mobileImage);
+  const mediaType = item.mediaType || (isVideoUrl(desktopUrl) ? "video" : "image");
+  const mobileMediaType = item.mobileMediaType || (isVideoUrl(mobileUrl) ? "video" : "image");
+
   return {
     ...item,
-    image: getFullUrl(req, item.image),
-    mobileImage: getFullUrl(req, item.mobileImage),
+    image: desktopUrl,
+    mobileImage: mobileUrl,
+    mediaType,
+    mobileMediaType,
     imageMeta: {
       ...item.imageMeta,
       url: getFullUrl(req, item.imageMeta?.url),
+      mediaType: item.imageMeta?.mediaType || mediaType,
     },
     mobileImageMeta: {
       ...item.mobileImageMeta,
       url: getFullUrl(req, item.mobileImageMeta?.url),
+      mediaType: item.mobileImageMeta?.mediaType || mobileMediaType,
     },
   };
 };
@@ -147,11 +158,11 @@ export const createBanner = async (req, res) => {
     if (!desktopFile) {
       return res.status(400).json({
         success: false,
-        message: "Desktop banner image is required",
+        message: "Desktop banner media (image or video) is required",
       });
     }
 
-    const desktopMeta = await saveBannerWebp({
+    const desktopMeta = await saveBannerMedia({
       file: desktopFile,
       page,
       type: "desktop",
@@ -160,7 +171,7 @@ export const createBanner = async (req, res) => {
     });
 
     const mobileMeta = mobileFile
-      ? await saveBannerWebp({
+      ? await saveBannerMedia({
           file: mobileFile,
           page,
           type: "mobile",
@@ -172,6 +183,8 @@ export const createBanner = async (req, res) => {
     const banner = await Banner.create({
       page,
       title,
+      mediaType: desktopMeta.mediaType || "image",
+      mobileMediaType: mobileMeta?.mediaType || "image",
       image: desktopMeta.url,
       mobileImage: mobileMeta?.url || "",
       imageMeta: desktopMeta,
@@ -237,7 +250,7 @@ export const updateBanner = async (req, res) => {
     if (desktopFile) {
       deleteLocalFile(banner.image);
 
-      const desktopMeta = await saveBannerWebp({
+      const desktopMeta = await saveBannerMedia({
         file: desktopFile,
         page: finalPage,
         type: "desktop",
@@ -247,12 +260,13 @@ export const updateBanner = async (req, res) => {
 
       banner.image = desktopMeta.url;
       banner.imageMeta = desktopMeta;
+      banner.mediaType = desktopMeta.mediaType || "image";
     }
 
     if (mobileFile) {
       deleteLocalFile(banner.mobileImage);
 
-      const mobileMeta = await saveBannerWebp({
+      const mobileMeta = await saveBannerMedia({
         file: mobileFile,
         page: finalPage,
         type: "mobile",
@@ -262,6 +276,7 @@ export const updateBanner = async (req, res) => {
 
       banner.mobileImage = mobileMeta.url;
       banner.mobileImageMeta = mobileMeta;
+      banner.mobileMediaType = mobileMeta.mediaType || "image";
     }
 
     if (page !== undefined) banner.page = page;

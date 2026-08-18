@@ -69,18 +69,75 @@ export default function CategoriesPage() {
         />
       )}
       {banners.length > 0 && (
-        <div className="relative h-[240px] overflow-hidden bg-[#0A0A0C] border-b border-slate-800 sm:h-[320px] lg:h-[420px]">
-          {banners.map((banner, index) => (
-            <div key={banner._id || index} className={`absolute inset-0 transition-opacity duration-700 ${index === activeIndex ? "opacity-100" : "pointer-events-none opacity-0"}`} aria-hidden={index !== activeIndex}>
-              <picture>
-                {banner.mobileImage && <source media="(max-width: 640px)" srcSet={banner.mobileImage} />}
-                <ProductImage src={banner.image} alt={banner.title || `Category promotion ${index + 1}`} className="h-full w-full object-cover" fallbackClassName="h-full w-full" />
-              </picture>
-            </div>
-          ))}
+        <div className="relative aspect-[1920/350] min-h-[140px] sm:min-h-[220px] lg:min-h-[350px] overflow-hidden bg-[#0A0A0C] border-b border-slate-800">
+          {banners.map((banner, index) => {
+            const isVideo =
+              banner.mediaType === "video" ||
+              /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(banner.image || "");
+            const isMobileVideo =
+              banner.mobileMediaType === "video" ||
+              /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(banner.mobileImage || "");
+
+            return (
+              <div
+                key={banner._id || index}
+                className={`absolute inset-0 transition-opacity duration-700 ${
+                  index === activeIndex
+                    ? "opacity-100"
+                    : "pointer-events-none opacity-0"
+                }`}
+                aria-hidden={index !== activeIndex}
+              >
+                {isVideo ? (
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="h-full w-full object-cover"
+                  >
+                    {banner.mobileImage && isMobileVideo && (
+                      <source
+                        src={banner.mobileImage}
+                        media="(max-width: 640px)"
+                      />
+                    )}
+                    <source src={banner.image} />
+                  </video>
+                ) : (
+                  <picture className="block h-full w-full">
+                    {banner.mobileImage && !isMobileVideo && (
+                      <source
+                        media="(max-width: 640px)"
+                        srcSet={banner.mobileImage}
+                      />
+                    )}
+                    <ProductImage
+                      src={banner.image}
+                      alt={banner.title || `Category promotion ${index + 1}`}
+                      className="h-full w-full object-cover"
+                      fallbackClassName="h-full w-full bg-[#0A0A0C]"
+                    />
+                  </picture>
+                )}
+              </div>
+            );
+          })}
           {banners.length > 1 && (
             <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-              {banners.map((banner, index) => <button key={banner._id || index} type="button" onClick={() => setActiveIndex(index)} aria-label={`Show category promotion ${index + 1}`} aria-current={index === activeIndex} className={`h-2 rounded-none ${index === activeIndex ? "w-8 bg-[#FF5500]" : "w-2 bg-slate-600"}`} />)}
+              {banners.map((banner, index) => (
+                <button
+                  key={banner._id || index}
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  aria-label={`Show category promotion ${index + 1}`}
+                  aria-current={index === activeIndex}
+                  className={`h-1.5 transition-all duration-300 ${
+                    index === activeIndex ? "w-8 bg-[#FF5500]" : "w-2.5 bg-white/40 hover:bg-white/80"
+                  }`}
+                />
+              ))}
             </div>
           )}
         </div>

@@ -43,9 +43,9 @@ export const validateImageFiles = (files = [], { maxFiles = 6, maxMb = 10, allow
   return "";
 };
 
-const DEFAULT_VIDEO_TYPES = new Set(["video/mp4", "video/webm", "video/quicktime"]);
+const DEFAULT_VIDEO_TYPES = new Set(["video/mp4", "video/webm", "video/quicktime", "video/ogg", "video/x-matroska"]);
 
-export const validateVideoFiles = (files = [], { maxFiles = 2, maxMb = 10, allowedTypes = DEFAULT_VIDEO_TYPES } = {}) => {
+export const validateVideoFiles = (files = [], { maxFiles = 2, maxMb = 100, allowedTypes = DEFAULT_VIDEO_TYPES } = {}) => {
   const list = Array.from(files || []);
   if (list.length > maxFiles) return `Select no more than ${maxFiles} videos.`;
   const invalidType = list.find((file) => !allowedTypes.has(file.type));
@@ -55,3 +55,32 @@ export const validateVideoFiles = (files = [], { maxFiles = 2, maxMb = 10, allow
   if (oversized) return `${oversized.name || "A video"} must be smaller than ${maxMb} MB.`;
   return "";
 };
+
+const DEFAULT_MEDIA_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+  "video/ogg",
+  "video/x-matroska",
+]);
+
+export const validateMediaFiles = (files = [], { maxFiles = 2, maxMb = 100, allowedTypes = DEFAULT_MEDIA_TYPES } = {}) => {
+  const list = Array.from(files || []);
+  if (list.length > maxFiles) return `Select no more than ${maxFiles} files.`;
+  const invalidType = list.find((file) => {
+    if (allowedTypes.has(file.type)) return false;
+    if (file.type?.startsWith("image/") || file.type?.startsWith("video/")) return false;
+    if (/\.(jpg|jpeg|png|webp|gif|mp4|webm|mov|ogg|mkv)$/i.test(file.name || "")) return false;
+    return true;
+  });
+  if (invalidType) return `${invalidType.name || "File"} must be JPG, PNG, WEBP image or MP4, WEBM, MOV video.`;
+  const maximumBytes = maxMb * 1024 * 1024;
+  const oversized = list.find((file) => Number(file.size || 0) > maximumBytes);
+  if (oversized) return `${oversized.name || "File"} must be smaller than ${maxMb} MB.`;
+  return "";
+};
+

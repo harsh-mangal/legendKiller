@@ -8,6 +8,7 @@ const imageMetaSchema = new mongoose.Schema(
     sizeKB: { type: Number, default: 0 },
     originalName: { type: String, default: "" },
     format: { type: String, default: "webp" },
+    mediaType: { type: String, enum: ["image", "video"], default: "image" },
   },
   { _id: false }
 );
@@ -25,6 +26,18 @@ const bannerSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: "",
+    },
+
+    mediaType: {
+      type: String,
+      enum: ["image", "video"],
+      default: "image",
+    },
+
+    mobileMediaType: {
+      type: String,
+      enum: ["image", "video"],
+      default: "image",
     },
 
     image: {
@@ -50,8 +63,8 @@ const bannerSchema = new mongoose.Schema(
     },
 
     recommendedSize: {
-      desktop: { type: String, default: "" },
-      mobile: { type: String, default: "" },
+      desktop: { type: String, default: "1920 x 350 px" },
+      mobile: { type: String, default: "750 x 350 px" },
     },
 
     link: {
