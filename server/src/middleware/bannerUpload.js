@@ -1,23 +1,4 @@
-import fs from "fs";
-import os from "os";
-import path from "path";
 import multer from "multer";
-
-const tempDir = path.join(os.tmpdir(), "legendkiller-banner-uploads");
-if (!fs.existsSync(tempDir)) {
-  fs.mkdirSync(tempDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, tempDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname || "") || "";
-    cb(null, file.fieldname + "-" + uniqueSuffix + ext);
-  },
-});
 
 const allowedMimeTypes = new Set([
   "image/jpeg",
@@ -32,7 +13,7 @@ const allowedMimeTypes = new Set([
 ]);
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
     if (
       allowedMimeTypes.has(file.mimetype) ||
@@ -49,30 +30,10 @@ const upload = multer({
       );
     }
   },
-  limits: { fileSize: 200 * 1024 * 1024, files: 2, fields: 20 },
+  limits: { fileSize: 100 * 1024 * 1024, files: 2, fields: 20 },
 });
 
-const bannerFieldsMiddleware = upload.fields([
+export const uploadBannerImages = upload.fields([
   { name: "image", maxCount: 1 },
   { name: "mobileImage", maxCount: 1 },
 ]);
-
-export const uploadBannerImages = (req, res, next) => {
-  bannerFieldsMiddleware(req, res, (err) => {
-    if (err) {
-      if (err instanceof multer.MulterError) {
-        if (err.code === "LIMIT_FILE_SIZE") {
-          return res.status(400).json({
-            success: false,
-            message: "File size exceeds limit (Max 200MB per banner media)",
-          });
-        }
-        return res.status(400).json({ success: false, message: err.message });
-      }
-      return res
-        .status(400)
-        .json({ success: false, message: err.message || "File upload failed" });
-    }
-    next();
-  });
-};

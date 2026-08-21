@@ -155,45 +155,45 @@ export const createBanner = async (req, res) => {
     const desktopFile = req.files?.image?.[0];
     const mobileFile = req.files?.mobileImage?.[0];
 
-    if (!desktopFile && !mobileFile) {
+    if (!desktopFile) {
       return res.status(400).json({
         success: false,
-        message: "At least one banner media file (Desktop or Mobile) is required",
+        message: "Desktop banner media (1920x540) is required",
       });
     }
 
-    const desktopMeta = desktopFile
-      ? await saveBannerMedia({
-          file: desktopFile,
-          page,
-          type: "desktop",
-          width: width || defaults.desktop.width,
-          height: height || defaults.desktop.height,
-        })
-      : null;
+    if (!mobileFile) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile banner media (1920x960) is required",
+      });
+    }
 
-    const mobileMeta = mobileFile
-      ? await saveBannerMedia({
-          file: mobileFile,
-          page,
-          type: "mobile",
-          width: mobileWidth || defaults.mobile.width,
-          height: mobileHeight || defaults.mobile.height,
-        })
-      : null;
+    const desktopMeta = await saveBannerMedia({
+      file: desktopFile,
+      page,
+      type: "desktop",
+      width: width || defaults.desktop.width,
+      height: height || defaults.desktop.height,
+    });
 
-    const primaryMeta = desktopMeta || mobileMeta;
-    const secondaryMeta = mobileMeta || desktopMeta;
+    const mobileMeta = await saveBannerMedia({
+      file: mobileFile,
+      page,
+      type: "mobile",
+      width: mobileWidth || defaults.mobile.width,
+      height: mobileHeight || defaults.mobile.height,
+    });
 
     const banner = await Banner.create({
       page,
       title,
-      mediaType: primaryMeta?.mediaType || "image",
-      mobileMediaType: secondaryMeta?.mediaType || "image",
-      image: primaryMeta?.url || "",
-      mobileImage: secondaryMeta?.url || primaryMeta?.url || "",
-      imageMeta: primaryMeta || {},
-      mobileImageMeta: secondaryMeta || primaryMeta || {},
+      mediaType: desktopMeta.mediaType || "image",
+      mobileMediaType: mobileMeta?.mediaType || "image",
+      image: desktopMeta.url,
+      mobileImage: mobileMeta?.url || "",
+      imageMeta: desktopMeta,
+      mobileImageMeta: mobileMeta || {},
       recommendedSize: defaults.recommendedSize,
       link,
       sortOrder: Number(sortOrder || 0),
@@ -252,17 +252,22 @@ export const updateBanner = async (req, res) => {
     const desktopFile = req.files?.image?.[0];
     const mobileFile = req.files?.mobileImage?.[0];
 
-    if (!banner.image && !banner.mobileImage && !desktopFile && !mobileFile) {
+    if (!banner.image && !desktopFile) {
       return res.status(400).json({
         success: false,
-        message: "At least one banner media file is required",
+        message: "Desktop banner media (1920x540) is required",
+      });
+    }
+
+    if (!banner.mobileImage && !mobileFile) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile banner media (1920x960) is required",
       });
     }
 
     if (desktopFile) {
-      if (banner.image !== banner.mobileImage) {
-        deleteLocalFile(banner.image);
-      }
+      deleteLocalFile(banner.image);
 
       const desktopMeta = await saveBannerMedia({
         file: desktopFile,
@@ -275,19 +280,10 @@ export const updateBanner = async (req, res) => {
       banner.image = desktopMeta.url;
       banner.imageMeta = desktopMeta;
       banner.mediaType = desktopMeta.mediaType || "image";
-
-      // If mobileImage was fallback to same old desktop image, update mobile too
-      if (!banner.mobileImage || banner.mobileImage === banner.image) {
-        banner.mobileImage = desktopMeta.url;
-        banner.mobileImageMeta = desktopMeta;
-        banner.mobileMediaType = desktopMeta.mediaType || "image";
-      }
     }
 
     if (mobileFile) {
-      if (banner.mobileImage !== banner.image) {
-        deleteLocalFile(banner.mobileImage);
-      }
+      deleteLocalFile(banner.mobileImage);
 
       const mobileMeta = await saveBannerMedia({
         file: mobileFile,

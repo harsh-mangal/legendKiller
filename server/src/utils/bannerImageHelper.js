@@ -59,14 +59,7 @@ export const saveBannerMedia = async ({
     const safeName = `${page}-${type}-${Date.now()}-${crypto.randomUUID()}.${ext}`;
     const finalPath = path.join(uploadDir, safeName);
 
-    if (file.path && fs.existsSync(file.path)) {
-      fs.copyFileSync(file.path, finalPath);
-      try {
-        fs.unlinkSync(file.path);
-      } catch (_) {}
-    } else if (file.buffer) {
-      fs.writeFileSync(finalPath, file.buffer);
-    }
+    fs.writeFileSync(finalPath, file.buffer);
 
     const stats = fs.statSync(finalPath);
 
@@ -84,9 +77,8 @@ export const saveBannerMedia = async ({
   // Otherwise handle as Image
   const safeName = `${page}-${type}-${Date.now()}-${crypto.randomUUID()}.webp`;
   const finalPath = path.join(uploadDir, safeName);
-  const inputSource = file.path && fs.existsSync(file.path) ? file.path : file.buffer;
 
-  await sharp(inputSource)
+  await sharp(file.buffer)
     .rotate()
     .resize({
       width: finalWidth,
@@ -99,12 +91,6 @@ export const saveBannerMedia = async ({
       effort: 5,
     })
     .toFile(finalPath);
-
-  if (file.path && fs.existsSync(file.path)) {
-    try {
-      fs.unlinkSync(file.path);
-    } catch (_) {}
-  }
 
   const stats = fs.statSync(finalPath);
 
