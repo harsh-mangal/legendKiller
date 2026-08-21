@@ -179,6 +179,7 @@ export default function Banners() {
   const [mobilePreview, setMobilePreview] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const preset = PAGE_PRESETS[form.page] || PAGE_PRESETS.home;
   const counts = useMemo(
@@ -221,6 +222,7 @@ export default function Banners() {
     setForm(newForm(page));
     setDesktopPreview("");
     setMobilePreview("");
+    setUploadProgress(0);
     if (desktopRef.current) desktopRef.current.value = "";
     if (mobileRef.current) mobileRef.current.value = "";
   };
@@ -248,7 +250,7 @@ export default function Banners() {
 
   const changeFile = (field, file) => {
     if (!file) return;
-    const mediaError = validateMediaFiles([file], { maxFiles: 1, maxMb: 100 });
+    const mediaError = validateMediaFiles([file], { maxFiles: 1, maxMb: 200 });
     if (mediaError) {
       toast.error(mediaError);
       return;
@@ -261,12 +263,12 @@ export default function Banners() {
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!form.image && (!editing || !desktopPreview)) {
-      toast.error("Desktop banner media (1920×540) is required.");
-      return;
-    }
-    if (!form.mobileImage && (!editing || !mobilePreview)) {
-      toast.error("Mobile banner media (1920×960) is required.");
+    const hasAnyMedia =
+      form.image ||
+      form.mobileImage ||
+      (editing && (desktopPreview || mobilePreview));
+    if (!hasAnyMedia) {
+      toast.error("Please choose at least one media file (Desktop or Mobile).");
       return;
     }
     if (form.title.trim().length > 160) {
@@ -310,8 +312,21 @@ export default function Banners() {
 
     try {
       setSaving(true);
-      if (editing) await API.put(`/banners/admin/${editing._id}`, body);
-      else await API.post("/banners/admin/create", body);
+      setUploadProgress(0);
+      const config = {
+        timeout: 600000, // 10 minutes timeout for large video uploads
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percent);
+          }
+        },
+      };
+
+      if (editing) await API.put(`/banners/admin/${editing._id}`, body, config);
+      else await API.post("/banners/admin/create", body, config);
       toast.success(editing ? "Banner updated." : "Banner created.");
       setActivePage(form.page);
       setEditorOpen(false);
@@ -321,6 +336,7 @@ export default function Banners() {
       toast.error(getErrorMessage(error, "Unable to save banner."));
     } finally {
       setSaving(false);
+      setUploadProgress(0);
     }
   };
 
@@ -542,24 +558,43 @@ export default function Banners() {
         open={editorOpen}
         onClose={() => !saving && setEditorOpen(false)}
         title={editing ? "Edit banner" : "Create banner"}
-        description="Upload images (JPG, PNG, WEBP) or looping videos (MP4, WEBM, MOV) up to 100MB. Both Desktop (1920 × 540 px) and Mobile (1920 × 960 px) banner media are mandatory."
+        description="Upload media (JPG, PNG, WEBP, MP4, WEBM, MOV) up to 200MB. You can upload both Desktop (1920 × 540) and Mobile (1920 × 960) files together or upload them one by one. If mobile media is left empty, desktop media is automatically used for mobile viewports."
         size="xl"
         footer={
-          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <Button
-              variant="secondary"
-              onClick={() => setEditorOpen(false)}
-              disabled={saving}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" form="banner-form" disabled={saving}>
-              {saving
-                ? "Uploading & Saving…"
-                : editing
-                ? "Save changes"
-                : "Create banner"}
-            </Button>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {saving && uploadProgress > 0 ? (
+              <div className="flex-1 space-y-1 text-left">
+                <div className="flex justify-between text-xs font-bold text-stone-700">
+                  <span>Uploading Media...</span>
+                  <span className="text-[#FF5500] font-mono">{uploadProgress}%</span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                  <div
+                    className="h-full bg-[#FF5500] transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+              </div>
+            ) : <div />}
+
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button
+                variant="secondary"
+                onClick={() => setEditorOpen(false)}
+                disabled={saving}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" form="banner-form" disabled={saving}>
+                {saving
+                  ? uploadProgress > 0
+                    ? `Uploading (${uploadProgress}%)…`
+                    : "Saving banner…"
+                  : editing
+                  ? "Save changes"
+                  : "Create banner"}
+              </Button>
+            </div>
           </div>
         }
       >
