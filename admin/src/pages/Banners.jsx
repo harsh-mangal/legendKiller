@@ -11,6 +11,8 @@ import {
   Trash2,
   Upload,
   Video,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import API, { assetUrl } from "../api/axios";
 import { getErrorMessage } from "../utils/errors";
@@ -36,14 +38,14 @@ const PAGE_PRESETS = {
   home: {
     label: "Home page",
     description: "Primary campaign banners shown on the storefront landing page.",
-    desktop: { width: 1920, height: 350 },
-    mobile: { width: 750, height: 350 },
+    desktop: { width: 1920, height: 540 },
+    mobile: { width: 1920, height: 960 },
   },
   categories: {
     label: "Category page",
     description: "Wide banners used above category and catalogue discovery.",
-    desktop: { width: 1920, height: 350 },
-    mobile: { width: 750, height: 260 },
+    desktop: { width: 1920, height: 540 },
+    mobile: { width: 1920, height: 960 },
   },
 };
 
@@ -69,6 +71,26 @@ const isVideoMedia = (target) => {
 
 function Preview({ src, label, ratio, icon: Icon, file }) {
   const isVideo = isVideoMedia(file) || isVideoMedia(src);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef(null);
+
+  const toggleMute = () => {
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    if (videoRef.current) {
+      videoRef.current.muted = nextMuted;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          if (!nextMuted) {
+            videoRef.current.muted = true;
+            setIsMuted(true);
+            videoRef.current.play().catch(() => {});
+          }
+        });
+      }
+    }
+  };
 
   return (
     <div>
@@ -78,24 +100,50 @@ function Preview({ src, label, ratio, icon: Icon, file }) {
         </span>
         {src && (
           <Badge tone={isVideo ? "info" : "neutral"}>
-            {isVideo ? <><Video size={12} className="mr-1" /> Video (Autoplay)</> : "Image"}
+            {isVideo ? (
+              <>
+                <Video size={12} className="mr-1" /> Video
+              </>
+            ) : (
+              "Image"
+            )}
           </Badge>
         )}
       </div>
       <div
-        className="overflow-hidden rounded-xl border border-stone-200 bg-stone-950"
+        className="relative overflow-hidden rounded-xl border border-stone-200 bg-stone-950"
         style={{ aspectRatio: ratio }}
       >
         {src ? (
           isVideo ? (
-            <video
-              src={src}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="h-full w-full object-cover"
-            />
+            <>
+              <video
+                ref={videoRef}
+                src={src}
+                autoPlay
+                loop
+                muted={isMuted}
+                playsInline
+                className="h-full w-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={toggleMute}
+                className="absolute top-2 right-2 z-10 flex items-center gap-1 rounded-md bg-stone-900/80 px-2 py-1 text-[11px] font-medium text-stone-200 backdrop-blur-sm hover:bg-stone-900 transition"
+              >
+                {isMuted ? (
+                  <>
+                    <VolumeX size={13} className="text-red-400" />
+                    <span>Unmute</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 size={13} className="text-emerald-400" />
+                    <span>Mute</span>
+                  </>
+                )}
+              </button>
+            </>
           ) : (
             <img
               src={src}
@@ -213,8 +261,12 @@ export default function Banners() {
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!editing && !form.image) {
-      toast.error("A desktop banner image or video is required.");
+    if (!form.image && (!editing || !desktopPreview)) {
+      toast.error("Desktop banner media (1920×540) is required.");
+      return;
+    }
+    if (!form.mobileImage && (!editing || !mobilePreview)) {
+      toast.error("Mobile banner media (1920×960) is required.");
       return;
     }
     if (form.title.trim().length > 160) {
@@ -314,7 +366,7 @@ export default function Banners() {
       <PageHeader
         eyebrow="Storefront content"
         title="Banners & Video Media"
-        description="Manage high-performance 1920 × 350 desktop banners, mobile media, and looping MP4/WEBM video hero banners."
+        description="Manage high-performance 1920 × 540 desktop banners, 1920 × 960 mobile media, and looping MP4/WEBM video hero banners."
         actions={
           <>
             <Button variant="secondary" onClick={load}>
@@ -374,7 +426,7 @@ export default function Banners() {
         ) : items.length === 0 ? (
           <EmptyState
             title="No banners for this page"
-            description="Create the first campaign banner or video hero and preview both desktop (1920×350) and mobile media."
+            description="Create the first campaign banner or video hero and preview both desktop (1920×540) and mobile (1920×960) media."
             action={
               <Button onClick={openCreate}>
                 <Plus size={17} /> Add banner
@@ -391,7 +443,7 @@ export default function Banners() {
                   key={item._id}
                   className="overflow-hidden rounded-2xl border border-stone-200 bg-white"
                 >
-                  <div className="relative aspect-[1920/350] bg-stone-950">
+                  <div className="relative aspect-[1920/540] bg-stone-950">
                     {item.image ? (
                       isVideo ? (
                         <video
@@ -440,7 +492,7 @@ export default function Banners() {
                       </div>
                       {item.mobileImage && (
                         <Badge tone="info">
-                          <Smartphone size={13} className="mr-1" /> Mobile Media
+                          <Smartphone size={13} className="mr-1" /> Mobile Media (1920×960)
                         </Badge>
                       )}
                     </div>
@@ -448,7 +500,7 @@ export default function Banners() {
                       <p className="text-[11px] text-stone-500">
                         Recommended:{" "}
                         {PAGE_PRESETS[item.page]?.desktop.width || 1920} ×{" "}
-                        {PAGE_PRESETS[item.page]?.desktop.height || 350}px
+                        {PAGE_PRESETS[item.page]?.desktop.height || 540}px
                       </p>
                       <div className="flex gap-1">
                         <IconButton
@@ -490,7 +542,7 @@ export default function Banners() {
         open={editorOpen}
         onClose={() => !saving && setEditorOpen(false)}
         title={editing ? "Edit banner" : "Create banner"}
-        description="Upload images (JPG, PNG, WEBP) or looping videos (MP4, WEBM, MOV) up to 100MB. Recommended resolution: 1920 × 350 px."
+        description="Upload images (JPG, PNG, WEBP) or looping videos (MP4, WEBM, MOV) up to 100MB. Both Desktop (1920 × 540 px) and Mobile (1920 × 960 px) banner media are mandatory."
         size="xl"
         footer={
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
@@ -547,7 +599,7 @@ export default function Banners() {
                     title: event.target.value,
                   }))
                 }
-                placeholder="Example: Raw Whey Isolate 1920x350 Promo"
+                placeholder="Example: Raw Whey Isolate Promo"
               />
             </Field>
             <Field
@@ -592,14 +644,14 @@ export default function Banners() {
             />
             <div className="rounded-xl border border-stone-200 bg-stone-50 p-4 text-xs leading-5 text-stone-600">
               <p className="font-bold text-stone-900">
-                Media &amp; Resolution Specs
+                Media &amp; Resolution Specs (Mandatory)
               </p>
               <p className="mt-1">
                 <strong>Desktop:</strong> {preset.desktop.width} ×{" "}
-                {preset.desktop.height} px (Ratio: ~5.48:1)
+                {preset.desktop.height} px (Mandatory · Ratio: 3.55:1)
                 <br />
                 <strong>Mobile:</strong> {preset.mobile.width} ×{" "}
-                {preset.mobile.height} px
+                {preset.mobile.height} px (Mandatory · Ratio: 2:1)
                 <br />
                 <strong>Supported formats:</strong> MP4, WEBM, MOV (Video) ·
                 WebP, PNG, JPG (Image). Up to 100 MB.
@@ -610,15 +662,15 @@ export default function Banners() {
           <div className="space-y-5">
             <Preview
               src={desktopPreview}
-              label="Desktop preview (1920 × 350)"
+              label="Desktop preview (1920 × 540)"
               ratio={`${preset.desktop.width}/${preset.desktop.height}`}
               icon={Monitor}
               file={form.image}
             />
             <Field
-              label="Desktop media (Image or Video)"
-              required={!editing}
-              hint="Image (WebP/PNG/JPG) or Video (MP4/WEBM/MOV). Maximum 100 MB."
+              label="Desktop media (1920 × 540 Image or Video)"
+              required
+              hint="Mandatory 1920×540 media for desktop viewports. Maximum 100 MB."
             >
               <label className="btn btn-secondary btn-md w-full cursor-pointer">
                 <Upload size={17} />{" "}
@@ -641,14 +693,15 @@ export default function Banners() {
 
             <Preview
               src={mobilePreview}
-              label="Mobile preview (750 × 350)"
+              label="Mobile preview (1920 × 960)"
               ratio={`${preset.mobile.width}/${preset.mobile.height}`}
               icon={Smartphone}
               file={form.mobileImage}
             />
             <Field
-              label="Mobile media (Optional)"
-              hint="Recommended crop for mobile screens. Image or Video."
+              label="Mobile media (1920 × 960 Image or Video)"
+              required
+              hint="Mandatory 1920×960 media for mobile viewports. Prevents letterboxing on mobile phones."
             >
               <label className="btn btn-secondary btn-md w-full cursor-pointer">
                 <Upload size={17} />{" "}

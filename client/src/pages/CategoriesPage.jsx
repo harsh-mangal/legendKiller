@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { Volume2, VolumeX } from "lucide-react";
 import Seo, { absoluteUrl } from "../components/seo/Seo";
 import ProductImage from "../components/ui/ProductImage";
 import Alert from "../components/ui/Alert";
@@ -13,6 +14,8 @@ export default function CategoriesPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isMuted, setIsMuted] = useState(true);
+  const bannerContainerRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -43,6 +46,24 @@ export default function CategoriesPage() {
     return () => window.clearInterval(timer);
   }, [banners.length]);
 
+  useEffect(() => {
+    if (!bannerContainerRef.current) return;
+    const videos = bannerContainerRef.current.querySelectorAll("video");
+    videos.forEach((video) => {
+      video.muted = isMuted;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          if (!isMuted) {
+            video.muted = true;
+            setIsMuted(true);
+            video.play().catch(() => {});
+          }
+        });
+      }
+    });
+  }, [isMuted, activeIndex]);
+
   return (
     <section className="pb-10 sm:pb-16 bg-[#0A0A0C]">
       {!loading && (
@@ -69,7 +90,7 @@ export default function CategoriesPage() {
         />
       )}
       {banners.length > 0 && (
-        <div className="relative aspect-[1920/350] min-h-[140px] sm:min-h-[220px] lg:min-h-[350px] overflow-hidden bg-[#0A0A0C] border-b border-slate-800">
+        <div ref={bannerContainerRef} className="relative aspect-[1920/960] sm:aspect-[1920/540] overflow-hidden bg-[#0A0A0C] border-b border-slate-800">
           {banners.map((banner, index) => {
             const isVideo =
               banner.mediaType === "video" ||
@@ -83,49 +104,89 @@ export default function CategoriesPage() {
                 key={banner._id || index}
                 className={`absolute inset-0 transition-opacity duration-700 ${
                   index === activeIndex
-                    ? "opacity-100"
-                    : "pointer-events-none opacity-0"
+                    ? "opacity-100 z-10"
+                    : "pointer-events-none opacity-0 z-0"
                 }`}
                 aria-hidden={index !== activeIndex}
               >
-                {isVideo ? (
-                  <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="metadata"
-                    className="h-full w-full object-cover"
-                  >
-                    {banner.mobileImage && isMobileVideo && (
-                      <source
-                        src={banner.mobileImage}
-                        media="(max-width: 640px)"
-                      />
-                    )}
-                    <source src={banner.image} />
-                  </video>
-                ) : (
-                  <picture className="block h-full w-full">
-                    {banner.mobileImage && !isMobileVideo && (
-                      <source
-                        media="(max-width: 640px)"
-                        srcSet={banner.mobileImage}
-                      />
-                    )}
+                <div className="block sm:hidden h-full w-full">
+                  {isMobileVideo ? (
+                    <video
+                      autoPlay
+                      loop
+                      muted={isMuted}
+                      playsInline
+                      preload="metadata"
+                      className="h-full w-full object-cover"
+                    >
+                      <source src={banner.mobileImage || banner.image} />
+                    </video>
+                  ) : (
+                    <ProductImage
+                      src={banner.mobileImage || banner.image}
+                      alt={banner.title || `Category promotion mobile ${index + 1}`}
+                      className="h-full w-full object-cover"
+                      fallbackClassName="h-full w-full bg-[#0A0A0C]"
+                    />
+                  )}
+                </div>
+                <div className="hidden sm:block h-full w-full">
+                  {isVideo ? (
+                    <video
+                      autoPlay
+                      loop
+                      muted={isMuted}
+                      playsInline
+                      preload="metadata"
+                      className="h-full w-full object-cover"
+                    >
+                      <source src={banner.image} />
+                    </video>
+                  ) : (
                     <ProductImage
                       src={banner.image}
                       alt={banner.title || `Category promotion ${index + 1}`}
                       className="h-full w-full object-cover"
                       fallbackClassName="h-full w-full bg-[#0A0A0C]"
                     />
-                  </picture>
-                )}
+                  )}
+                </div>
               </div>
             );
           })}
+          {Boolean(
+            banners[activeIndex] &&
+              (banners[activeIndex].mediaType === "video" ||
+                banners[activeIndex].mobileMediaType === "video" ||
+                /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(banners[activeIndex].image || "") ||
+                /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(banners[activeIndex].mobileImage || ""))
+          ) && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsMuted((prev) => !prev);
+              }}
+              aria-label={isMuted ? "Unmute video sound" : "Mute video sound"}
+              title={isMuted ? "Unmute sound" : "Mute sound"}
+              className="absolute top-3 right-3 z-30 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md border border-white/20 hover:bg-black/80 transition cursor-pointer shadow-lg active:scale-95"
+            >
+              {isMuted ? (
+                <>
+                  <VolumeX size={15} className="text-red-400" />
+                  <span>Unmute</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 size={15} className="text-emerald-400" />
+                  <span>Mute</span>
+                </>
+              )}
+            </button>
+          )}
           {banners.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+            <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
               {banners.map((banner, index) => (
                 <button
                   key={banner._id || index}

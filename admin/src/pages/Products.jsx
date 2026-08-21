@@ -9,6 +9,7 @@ import { isFiniteNumber, isWholeNumber, validateImageFiles, validateVideoFiles }
 import { downloadCsv } from "../utils/csv";
 import { useObjectUrls } from "../hooks/useObjectUrl";
 import { generateQrCodeSvg } from "../utils/qrcode";
+import { generateBarcodeSvg } from "../utils/barcode";
 
 const blank = {
   name: "", slug: "", sku: "", category: "", shortDescription: "", description: "", longDescription: "",
@@ -190,25 +191,41 @@ export default function Products() {
                 <div className="inline-flex items-center gap-2 bg-emerald-950 border border-emerald-700/60 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-emerald-400">
                   <ShieldCheck size={14} /> Security Protocol
                 </div>
-                <h3 className="text-xl font-black uppercase text-white">Product Authenticity & QR Code</h3>
+                <h3 className="text-xl font-black uppercase text-white">Product Authenticity, QR Code & Barcode</h3>
                 <p className="text-xs text-stone-300 max-w-md leading-5">
-                  This QR code is uniquely tied to <strong className="text-white">{form.name || "this product"}</strong>. Print this QR code on packaging or tubs so customers can scan it directly with their smartphones to confirm 100% genuine product authenticity.
+                  Both 2D QR Code and 1D Code 128 Barcode are uniquely assigned to <strong className="text-white">{form.name || "this product"}</strong>. Print them on labels, containers, or tubs for smartphone verification scans and optical warehouse scanning.
                 </p>
                 <div className="pt-2 text-xs font-mono text-stone-300">
                   <p><strong>Auth Code:</strong> <span className="text-[#FFB800]">{form.authenticityCode || "Auto-generated on save"}</span></p>
+                  <p><strong>SKU:</strong> <span className="text-stone-200">{form.sku || "N/A"}</span></p>
                   <p><strong>Total Scans:</strong> <span className="text-emerald-400">{form.verificationCount || 0} scans verified</span></p>
                 </div>
               </div>
 
-              <div className="flex flex-col items-center justify-center rounded-xl bg-white p-4 text-stone-950 shadow-md shrink-0">
-                {form.authenticityCode ? (
-                  <div dangerouslySetInnerHTML={{ __html: generateQrCodeSvg(`${STOREFRONT_URL}/verify/${form.authenticityCode}`, { size: 160 }) }} />
-                ) : (
-                  <div className="grid h-40 w-40 place-items-center bg-stone-100 text-stone-400 text-xs font-bold text-center p-2">
-                    QR Code will generate after saving
-                  </div>
-                )}
-                <p className="mt-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider">Scan to Verify</p>
+              <div className="flex flex-col sm:flex-row gap-4 items-center shrink-0">
+                {/* QR Code */}
+                <div className="flex flex-col items-center justify-center rounded-xl bg-white p-3 text-stone-950 shadow-md">
+                  {form.authenticityCode ? (
+                    <div dangerouslySetInnerHTML={{ __html: generateQrCodeSvg(`${STOREFRONT_URL}/verify/${form.authenticityCode}`, { size: 140 }) }} />
+                  ) : (
+                    <div className="grid h-36 w-36 place-items-center bg-stone-100 text-stone-400 text-xs font-bold text-center p-2">
+                      QR Code will generate after saving
+                    </div>
+                  )}
+                  <p className="mt-1.5 text-[10px] font-bold text-stone-500 uppercase tracking-wider">QR Verification</p>
+                </div>
+
+                {/* Code 128 Barcode */}
+                <div className="flex flex-col items-center justify-center rounded-xl bg-white p-3 text-stone-950 shadow-md">
+                  {form.authenticityCode ? (
+                    <div dangerouslySetInnerHTML={{ __html: generateBarcodeSvg(form.authenticityCode, { width: 220, height: 140, fontSize: 11 }) }} />
+                  ) : (
+                    <div className="grid h-36 w-48 place-items-center bg-stone-100 text-stone-400 text-xs font-bold text-center p-2">
+                      Barcode will generate after saving
+                    </div>
+                  )}
+                  <p className="mt-1.5 text-[10px] font-bold text-stone-500 uppercase tracking-wider">Code 128 Barcode</p>
+                </div>
               </div>
             </div>
 
@@ -229,7 +246,25 @@ export default function Products() {
                     toast.success("QR Code SVG downloaded!");
                   }}
                 >
-                  <Download size={15} /> Download SVG for Printing
+                  <Download size={15} /> Download QR SVG
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    const svgStr = generateBarcodeSvg(form.authenticityCode, { width: 600, height: 180, fontSize: 16 });
+                    const blob = new Blob([svgStr], { type: "image/svg+xml" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `${form.slug || "product"}-barcode.svg`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast.success("Barcode SVG downloaded!");
+                  }}
+                >
+                  <Download size={15} /> Download Barcode SVG
                 </Button>
 
                 <Button

@@ -7,6 +7,7 @@ import { reviewThanksTemplate, sendMail } from "../utils/mailer.js";
 import { ApiError } from "../utils/apiError.js";
 import { escapeRegex, makeSlug, normalizeEmail, parseArray, parseBoolean, parseNumber } from "../utils/validation.js";
 import { generateQrCodeDataUrl, generateQrCodeSvg } from "../utils/qrcode.js";
+import { generateBarcodeDataUrl, generateBarcodeSvg } from "../utils/barcode.js";
 
 const legalFields = [
   "sku", "warnings", "storageInstructions", "legalDisclaimer", "manufacturerName", "marketerName", "countryOfOrigin",
@@ -350,6 +351,7 @@ export const verifyProductByCode = async (req, res, next) => {
     const clientUrl = process.env.CLIENT_URL || process.env.STOREFRONT_URL || "http://localhost:5173";
     const verificationUrl = `${clientUrl}/verify/${product.authenticityCode}`;
     const qrCodeDataUrl = generateQrCodeDataUrl(verificationUrl);
+    const barcodeDataUrl = generateBarcodeDataUrl(product.authenticityCode);
 
     res.json({
       success: true,
@@ -379,6 +381,7 @@ export const verifyProductByCode = async (req, res, next) => {
         lastVerifiedAt: product.lastVerifiedAt,
         verificationUrl,
         qrCodeDataUrl,
+        barcodeDataUrl,
         certificate: {
           badge: "VERIFIED AUTHENTIC BY LEGEND KILLER PROTOCOL",
           purityGuarantee: "100% Pure WPC / WPI - Zero Amino Spiking",
@@ -408,6 +411,8 @@ export const getProductQrCode = async (req, res, next) => {
     const verificationUrl = `${clientUrl}/verify/${product.authenticityCode}`;
     const qrCodeDataUrl = generateQrCodeDataUrl(verificationUrl);
     const qrCodeSvg = generateQrCodeSvg(verificationUrl);
+    const barcodeDataUrl = generateBarcodeDataUrl(product.authenticityCode);
+    const barcodeSvg = generateBarcodeSvg(product.authenticityCode);
 
     res.json({
       success: true,
@@ -417,6 +422,8 @@ export const getProductQrCode = async (req, res, next) => {
         verificationUrl,
         qrCodeDataUrl,
         qrCodeSvg,
+        barcodeDataUrl,
+        barcodeSvg,
       },
     });
   } catch (error) {

@@ -158,7 +158,14 @@ export const createBanner = async (req, res) => {
     if (!desktopFile) {
       return res.status(400).json({
         success: false,
-        message: "Desktop banner media (image or video) is required",
+        message: "Desktop banner media (1920x540) is required",
+      });
+    }
+
+    if (!mobileFile) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile banner media (1920x960) is required",
       });
     }
 
@@ -170,15 +177,13 @@ export const createBanner = async (req, res) => {
       height: height || defaults.desktop.height,
     });
 
-    const mobileMeta = mobileFile
-      ? await saveBannerMedia({
-          file: mobileFile,
-          page,
-          type: "mobile",
-          width: mobileWidth || defaults.mobile.width,
-          height: mobileHeight || defaults.mobile.height,
-        })
-      : null;
+    const mobileMeta = await saveBannerMedia({
+      file: mobileFile,
+      page,
+      type: "mobile",
+      width: mobileWidth || defaults.mobile.width,
+      height: mobileHeight || defaults.mobile.height,
+    });
 
     const banner = await Banner.create({
       page,
@@ -246,6 +251,20 @@ export const updateBanner = async (req, res) => {
 
     const desktopFile = req.files?.image?.[0];
     const mobileFile = req.files?.mobileImage?.[0];
+
+    if (!banner.image && !desktopFile) {
+      return res.status(400).json({
+        success: false,
+        message: "Desktop banner media (1920x540) is required",
+      });
+    }
+
+    if (!banner.mobileImage && !mobileFile) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile banner media (1920x960) is required",
+      });
+    }
 
     if (desktopFile) {
       deleteLocalFile(banner.image);

@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ShieldCheck, CheckCircle2, AlertTriangle, ExternalLink, Award, FileCheck2, Zap, ArrowRight } from "lucide-react";
 import { productApi, getErrorMessage } from "../services/api";
 import { money, formatDate } from "../utils/format";
+import { generateBarcodeSvg } from "../utils/barcode";
 
 export default function ProductVerifyPage() {
   const { code } = useParams();
@@ -170,6 +171,24 @@ export default function ProductVerifyPage() {
               <p><strong className="text-white">Country of Origin:</strong> {data.countryOfOrigin}</p>
               <p><strong className="text-white">Licence Type:</strong> {data.licenceType}</p>
             </div>
+          </div>
+
+          {/* Official Code 128 Barcode Verification Stamp */}
+          <div className="mt-6 border border-slate-800 bg-[#0A0A0C] p-4 text-center">
+            <p className="text-xs font-black uppercase tracking-wider text-slate-400">Official Code 128 Product Barcode</p>
+            <div className="mt-3 flex justify-center">
+              <div
+                className="inline-block rounded-lg bg-white p-3 shadow-md"
+                dangerouslySetInnerHTML={{
+                  __html: generateBarcodeSvg(data.authenticityCode || data.sku, {
+                    width: 280,
+                    height: 80,
+                    fontSize: 11,
+                  }),
+                }}
+              />
+            </div>
+            <p className="mt-2 text-[11px] font-mono text-slate-400">Scanner Code: <span className="font-bold text-white">{data.authenticityCode}</span></p>
           </div>
 
           {/* Direct CTA */}

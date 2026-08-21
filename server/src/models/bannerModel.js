@@ -48,8 +48,8 @@ const bannerSchema = new mongoose.Schema(
 
     mobileImage: {
       type: String,
+      required: true,
       trim: true,
-      default: "",
     },
 
     imageMeta: {
@@ -63,8 +63,8 @@ const bannerSchema = new mongoose.Schema(
     },
 
     recommendedSize: {
-      desktop: { type: String, default: "1920 x 350 px" },
-      mobile: { type: String, default: "750 x 350 px" },
+      desktop: { type: String, default: "1920 x 540 px" },
+      mobile: { type: String, default: "1920 x 960 px" },
     },
 
     link: {

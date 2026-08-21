@@ -14,21 +14,21 @@ export const ensureBannerUploadDir = () => {
 export const getBannerDefaultSize = (page = "home") => {
   if (page === "categories") {
     return {
-      desktop: { width: 1920, height: 350 },
-      mobile: { width: 750, height: 260 },
+      desktop: { width: 1920, height: 540 },
+      mobile: { width: 1920, height: 960 },
       recommendedSize: {
-        desktop: "1920 x 350 px",
-        mobile: "750 x 260 px",
+        desktop: "1920 x 540 px",
+        mobile: "1920 x 960 px",
       },
     };
   }
 
   return {
-    desktop: { width: 1920, height: 350 },
-    mobile: { width: 750, height: 350 },
+    desktop: { width: 1920, height: 540 },
+    mobile: { width: 1920, height: 960 },
     recommendedSize: {
-      desktop: "1920 x 350 px",
-      mobile: "750 x 350 px",
+      desktop: "1920 x 540 px",
+      mobile: "1920 x 960 px",
     },
   };
 };
@@ -48,6 +48,9 @@ export const saveBannerMedia = async ({
     file.mimetype?.startsWith("video/") ||
     /\.(mp4|webm|mov|mkv|ogg)$/i.test(file.originalname || "");
 
+  const finalWidth = Number(width) || (type === "desktop" ? 1920 : 1920);
+  const finalHeight = Number(height) || (type === "desktop" ? 540 : 960);
+
   if (isVideo) {
     const ext =
       path.extname(file.originalname || "").toLowerCase().replace(".", "") ||
@@ -59,8 +62,6 @@ export const saveBannerMedia = async ({
     fs.writeFileSync(finalPath, file.buffer);
 
     const stats = fs.statSync(finalPath);
-    const finalWidth = Number(width) || (type === "desktop" ? 1920 : 750);
-    const finalHeight = Number(height) || (type === "desktop" ? 350 : 350);
 
     return {
       url: `/uploads/banners/${safeName}`,
@@ -74,9 +75,6 @@ export const saveBannerMedia = async ({
   }
 
   // Otherwise handle as Image
-  const finalWidth = Number(width) || (type === "desktop" ? 1920 : 750);
-  const finalHeight = Number(height) || (type === "desktop" ? 350 : 350);
-
   const safeName = `${page}-${type}-${Date.now()}-${crypto.randomUUID()}.webp`;
   const finalPath = path.join(uploadDir, safeName);
 
