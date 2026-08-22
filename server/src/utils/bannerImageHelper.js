@@ -1,8 +1,12 @@
+import { execFile } from "child_process";
 import crypto from "crypto";
 import fs from "fs";
+import os from "os";
 import path from "path";
 import sharp from "sharp";
+import { promisify } from "util";
 
+const execFileAsync = promisify(execFile);
 const uploadDir = path.join(process.cwd(), "uploads", "banners");
 
 export const ensureBannerUploadDir = () => {
@@ -33,6 +37,43 @@ export const getBannerDefaultSize = (page = "home") => {
   };
 };
 
+const compressAndOptimizeVideo = async (inputPath, outputPath) => {
+  try {
+    const args = [
+      "-y",
+      "-i",
+      inputPath,
+      "-vf",
+      "scale='min(1920,iw)':'-2'",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "faster",
+      "-crf",
+      "26",
+      "-pix_fmt",
+      "yuv420p",
+      "-c:a",
+      "aac",
+      "-b:a",
+      "128k",
+      "-ar",
+      "44100",
+      "-movflags",
+      "+faststart",
+      outputPath,
+    ];
+    await execFileAsync("ffmpeg", args, { timeout: 180000 });
+    return true;
+  } catch (error) {
+    console.warn(
+      "FFmpeg video compression failed or unavailable, saving original file:",
+      error.message
+    );
+    return false;
+  }
+};
+
 export const saveBannerMedia = async ({
   file,
   page,
@@ -52,14 +93,45 @@ export const saveBannerMedia = async ({
   const finalHeight = Number(height) || (type === "desktop" ? 540 : 960);
 
   if (isVideo) {
-    const ext =
-      path.extname(file.originalname || "").toLowerCase().replace(".", "") ||
-      (file.mimetype?.includes("webm") ? "webm" : "mp4");
-
-    const safeName = `${page}-${type}-${Date.now()}-${crypto.randomUUID()}.${ext}`;
+    const safeName = `${page}-${type}-${Date.now()}-${crypto.randomUUID()}.mp4`;
     const finalPath = path.join(uploadDir, safeName);
 
-    fs.writeFileSync(finalPath, file.buffer);
+    let tempInputPath = null;
+    let inputSource = null;
+
+    if (file.path && fs.existsSync(file.path)) {
+      inputSource = file.path;
+    } else if (file.buffer) {
+      tempInputPath = path.join(
+        os.tmpdir(),
+        `temp-vid-${Date.now()}-${crypto.randomUUID()}`
+      );
+      fs.writeFileSync(tempInputPath, file.buffer);
+      inputSource = tempInputPath;
+    }
+
+    let compressedSuccess = false;
+    if (inputSource && fs.existsSync(inputSource)) {
+      compressedSuccess = await compressAndOptimizeVideo(
+        inputSource,
+        finalPath
+      );
+    }
+
+    if (!compressedSuccess && inputSource && fs.existsSync(inputSource)) {
+      fs.copyFileSync(inputSource, finalPath);
+    }
+
+    if (tempInputPath && fs.existsSync(tempInputPath)) {
+      try {
+        fs.unlinkSync(tempInputPath);
+      } catch (_) {}
+    }
+    if (file.path && fs.existsSync(file.path)) {
+      try {
+        fs.unlinkSync(file.path);
+      } catch (_) {}
+    }
 
     const stats = fs.statSync(finalPath);
 
@@ -69,7 +141,7 @@ export const saveBannerMedia = async ({
       height: finalHeight,
       sizeKB: Number((stats.size / 1024).toFixed(2)),
       originalName: file.originalname,
-      format: ext,
+      format: "mp4",
       mediaType: "video",
     };
   }
@@ -77,8 +149,10 @@ export const saveBannerMedia = async ({
   // Otherwise handle as Image
   const safeName = `${page}-${type}-${Date.now()}-${crypto.randomUUID()}.webp`;
   const finalPath = path.join(uploadDir, safeName);
+  const inputSource =
+    file.path && fs.existsSync(file.path) ? file.path : file.buffer;
 
-  await sharp(file.buffer)
+  await sharp(inputSource)
     .rotate()
     .resize({
       width: finalWidth,
@@ -91,6 +165,12 @@ export const saveBannerMedia = async ({
       effort: 5,
     })
     .toFile(finalPath);
+
+  if (file.path && fs.existsSync(file.path)) {
+    try {
+      fs.unlinkSync(file.path);
+    } catch (_) {}
+  }
 
   const stats = fs.statSync(finalPath);
 

@@ -59,19 +59,27 @@ export default function Hero() {
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const videos = containerRef.current.querySelectorAll("video");
-    videos.forEach((video) => {
-      video.muted = isMuted;
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          if (!isMuted) {
-            video.muted = true;
-            setIsMuted(true);
-            video.play().catch(() => {});
+    const slides = containerRef.current.querySelectorAll("[data-slide-index]");
+    slides.forEach((slide) => {
+      const idx = Number(slide.getAttribute("data-slide-index"));
+      const videos = slide.querySelectorAll("video");
+      videos.forEach((video) => {
+        video.muted = isMuted;
+        if (idx === activeIndex) {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              if (!isMuted) {
+                video.muted = true;
+                setIsMuted(true);
+                video.play().catch(() => {});
+              }
+            });
           }
-        });
-      }
+        } else {
+          video.pause();
+        }
+      });
     });
   }, [isMuted, activeIndex]);
 
@@ -186,6 +194,7 @@ export default function Hero() {
         return (
           <div
             key={banner._id || index}
+            data-slide-index={index}
             className={`absolute inset-0 transition-opacity duration-700 ${
               index === activeIndex
                 ? "opacity-100 z-10"

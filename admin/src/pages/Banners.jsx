@@ -261,12 +261,12 @@ export default function Banners() {
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!form.image && (!editing || !desktopPreview)) {
-      toast.error("Desktop banner media (1920×540) is required.");
-      return;
-    }
-    if (!form.mobileImage && (!editing || !mobilePreview)) {
-      toast.error("Mobile banner media (1920×960) is required.");
+    const hasAnyMedia =
+      form.image ||
+      form.mobileImage ||
+      (editing && (desktopPreview || mobilePreview));
+    if (!hasAnyMedia) {
+      toast.error("Please choose at least one media file (Desktop or Mobile).");
       return;
     }
     if (form.title.trim().length > 160) {

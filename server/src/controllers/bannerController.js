@@ -155,45 +155,45 @@ export const createBanner = async (req, res) => {
     const desktopFile = req.files?.image?.[0];
     const mobileFile = req.files?.mobileImage?.[0];
 
-    if (!desktopFile) {
+    if (!desktopFile && !mobileFile) {
       return res.status(400).json({
         success: false,
-        message: "Desktop banner media (1920x540) is required",
+        message: "At least one banner media file (Desktop or Mobile) is required",
       });
     }
 
-    if (!mobileFile) {
-      return res.status(400).json({
-        success: false,
-        message: "Mobile banner media (1920x960) is required",
-      });
-    }
+    const desktopMeta = desktopFile
+      ? await saveBannerMedia({
+          file: desktopFile,
+          page,
+          type: "desktop",
+          width: width || defaults.desktop.width,
+          height: height || defaults.desktop.height,
+        })
+      : null;
 
-    const desktopMeta = await saveBannerMedia({
-      file: desktopFile,
-      page,
-      type: "desktop",
-      width: width || defaults.desktop.width,
-      height: height || defaults.desktop.height,
-    });
+    const mobileMeta = mobileFile
+      ? await saveBannerMedia({
+          file: mobileFile,
+          page,
+          type: "mobile",
+          width: mobileWidth || defaults.mobile.width,
+          height: mobileHeight || defaults.mobile.height,
+        })
+      : null;
 
-    const mobileMeta = await saveBannerMedia({
-      file: mobileFile,
-      page,
-      type: "mobile",
-      width: mobileWidth || defaults.mobile.width,
-      height: mobileHeight || defaults.mobile.height,
-    });
+    const primaryMeta = desktopMeta || mobileMeta;
+    const secondaryMeta = mobileMeta || desktopMeta;
 
     const banner = await Banner.create({
       page,
       title,
-      mediaType: desktopMeta.mediaType || "image",
-      mobileMediaType: mobileMeta?.mediaType || "image",
-      image: desktopMeta.url,
-      mobileImage: mobileMeta?.url || "",
-      imageMeta: desktopMeta,
-      mobileImageMeta: mobileMeta || {},
+      mediaType: primaryMeta?.mediaType || "image",
+      mobileMediaType: secondaryMeta?.mediaType || "image",
+      image: primaryMeta?.url || "",
+      mobileImage: secondaryMeta?.url || primaryMeta?.url || "",
+      imageMeta: primaryMeta || {},
+      mobileImageMeta: secondaryMeta || primaryMeta || {},
       recommendedSize: defaults.recommendedSize,
       link,
       sortOrder: Number(sortOrder || 0),
@@ -252,17 +252,10 @@ export const updateBanner = async (req, res) => {
     const desktopFile = req.files?.image?.[0];
     const mobileFile = req.files?.mobileImage?.[0];
 
-    if (!banner.image && !desktopFile) {
+    if (!banner.image && !banner.mobileImage && !desktopFile && !mobileFile) {
       return res.status(400).json({
         success: false,
-        message: "Desktop banner media (1920x540) is required",
-      });
-    }
-
-    if (!banner.mobileImage && !mobileFile) {
-      return res.status(400).json({
-        success: false,
-        message: "Mobile banner media (1920x960) is required",
+        message: "At least one banner media file is required",
       });
     }
 
