@@ -54,7 +54,12 @@ export default function CategoriesPage() {
       const videos = slide.querySelectorAll("video");
       videos.forEach((video) => {
         video.muted = isMuted;
-        if (idx === activeIndex) {
+        const isVisibleByCss =
+          video.offsetParent !== null &&
+          window.getComputedStyle(video).display !== "none" &&
+          window.getComputedStyle(video.parentElement).display !== "none";
+
+        if (idx === activeIndex && isVisibleByCss) {
           const playPromise = video.play();
           if (playPromise !== undefined) {
             playPromise.catch(() => {

@@ -216,11 +216,14 @@ export default function Banners() {
     [desktopPreview, mobilePreview]
   );
 
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const resetEditor = (page = activePage) => {
     setEditing(null);
     setForm(newForm(page));
     setDesktopPreview("");
     setMobilePreview("");
+    setUploadProgress(0);
     if (desktopRef.current) desktopRef.current.value = "";
     if (mobileRef.current) mobileRef.current.value = "";
   };
@@ -243,12 +246,13 @@ export default function Banners() {
     });
     setDesktopPreview(assetUrl(item.image));
     setMobilePreview(assetUrl(item.mobileImage));
+    setUploadProgress(0);
     setEditorOpen(true);
   };
 
   const changeFile = (field, file) => {
     if (!file) return;
-    const mediaError = validateMediaFiles([file], { maxFiles: 1, maxMb: 100 });
+    const mediaError = validateMediaFiles([file], { maxFiles: 1, maxMb: 200 });
     if (mediaError) {
       toast.error(mediaError);
       return;
@@ -308,10 +312,24 @@ export default function Banners() {
     if (form.image) body.append("image", form.image);
     if (form.mobileImage) body.append("mobileImage", form.mobileImage);
 
+    const requestConfig = {
+      timeout: 600000,
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          const percent = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress(percent);
+        }
+      },
+    };
+
     try {
       setSaving(true);
-      if (editing) await API.put(`/banners/admin/${editing._id}`, body);
-      else await API.post("/banners/admin/create", body);
+      setUploadProgress(0);
+      if (editing)
+        await API.put(`/banners/admin/${editing._id}`, body, requestConfig);
+      else await API.post("/banners/admin/create", body, requestConfig);
       toast.success(editing ? "Banner updated." : "Banner created.");
       setActivePage(form.page);
       setEditorOpen(false);
@@ -321,6 +339,7 @@ export default function Banners() {
       toast.error(getErrorMessage(error, "Unable to save banner."));
     } finally {
       setSaving(false);
+      setUploadProgress(0);
     }
   };
 
@@ -545,21 +564,45 @@ export default function Banners() {
         description="Upload images (JPG, PNG, WEBP) or looping videos (MP4, WEBM, MOV) up to 100MB. Both Desktop (1920 × 540 px) and Mobile (1920 × 960 px) banner media are mandatory."
         size="xl"
         footer={
-          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <Button
-              variant="secondary"
-              onClick={() => setEditorOpen(false)}
-              disabled={saving}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" form="banner-form" disabled={saving}>
-              {saving
-                ? "Uploading & Saving…"
-                : editing
-                ? "Save changes"
-                : "Create banner"}
-            </Button>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {saving ? (
+              <div className="flex-1 space-y-1 sm:max-w-xs">
+                <div className="flex items-center justify-between text-xs font-medium text-slate-300">
+                  <span>
+                    {uploadProgress < 100
+                      ? `Uploading media (${uploadProgress}%)…`
+                      : "Processing & compressing video on server…"}
+                  </span>
+                  <span>{uploadProgress}%</span>
+                </div>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+                  <div
+                    className="h-full bg-[#FF5500] transition-all duration-200"
+                    style={{ width: `${Math.max(5, uploadProgress)}%` }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div />
+            )}
+            <div className="flex items-center gap-2 justify-end">
+              <Button
+                variant="secondary"
+                onClick={() => setEditorOpen(false)}
+                disabled={saving}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" form="banner-form" disabled={saving}>
+                {saving
+                  ? uploadProgress < 100
+                    ? `Uploading (${uploadProgress}%)`
+                    : "Processing video…"
+                  : editing
+                  ? "Save changes"
+                  : "Create banner"}
+              </Button>
+            </div>
           </div>
         }
       >

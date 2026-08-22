@@ -2,7 +2,7 @@ import sharp from "sharp";
 import path from "path";
 import { mkdir, copyFile } from "fs/promises";
 
-const sourceImage = "/Users/harshmangal/.gemini/antigravity/brain/6cb8a81e-f130-4fe5-ba84-ac03150ddc53/.user_uploaded/media_1786981149768.jpg";
+const sourceImage = "/Users/harshmangal/.gemini/antigravity/brain/a469730d-548d-40c6-acd9-14067428ab6f/.user_uploaded/media_1787431427378.png";
 const clientPublic = "/Users/harshmangal/Documents/GitHub/legendKiller/client/public";
 const adminPublic = "/Users/harshmangal/Documents/GitHub/legendKiller/admin/public";
 

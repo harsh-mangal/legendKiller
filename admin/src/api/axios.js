@@ -38,8 +38,10 @@ API.interceptors.response.use(
         window.location.assign(`/login?next=${encodeURIComponent(next)}`);
       }
     }
-    if (error.code === "ECONNABORTED") {
-      error.message = "The server took too long to respond. Please try again.";
+    if (error.response?.status === 413) {
+      error.message = "The uploaded media is too large for the server (413 Request Entity Too Large). Please compress your video or set Nginx 'client_max_body_size 250M;'.";
+    } else if (error.code === "ECONNABORTED") {
+      error.message = "The upload took too long to complete. Please try again or check network speed.";
     } else if (!error.response) {
       error.message = "Unable to reach the API server. Check the API URL and backend status.";
     }
