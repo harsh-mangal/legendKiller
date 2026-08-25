@@ -71,16 +71,16 @@ export default function Navbar() {
 
         {/* Main Navbar */}
         <div className="relative border-b border-slate-800 bg-[#0A0A0C]/95 backdrop-blur-xl">
-          <div className="container-page relative flex h-18 items-center justify-between gap-3 sm:h-20 lg:h-24">
+          <div className="container-page relative flex h-16 items-center justify-between gap-3 sm:h-20 lg:h-22">
             <div className="flex items-center gap-2 lg:flex-none">
               <button type="button" onClick={() => setSidebarOpen(true)} className="icon-button lg:hidden" aria-label="Open navigation menu">
                 <Menu size={22} className="text-white" />
               </button>
             </div>
 
-            <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:left-auto lg:translate-x-0">
-              <Link to="/" className="block shrink-0" aria-label="Legend Killer Home">
-                <img src="/logo.png" alt="Legend Killer" className="h-12 w-auto object-contain sm:h-15 md:h-17 lg:h-20 transition-all duration-300" />
+            <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:left-auto lg:translate-x-0 flex items-center justify-center py-1">
+              <Link to="/" className="flex items-center shrink-0" aria-label="Legend Killer Home">
+                <img src="/logo.png" alt="Legend Killer" className="h-10 w-auto max-h-12 sm:h-12 sm:max-h-14 md:h-14 lg:h-16 object-contain transition-all duration-300" />
               </Link>
             </div>
 

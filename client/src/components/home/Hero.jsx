@@ -134,9 +134,14 @@ export default function Hero() {
               autoPlay
               loop
               muted={isMuted}
+              defaultMuted
               playsInline
-              preload="metadata"
-              className="h-full w-full object-cover"
+              webkit-playsinline="true"
+              disablePictureInPicture
+              disableRemotePlayback
+              controls={false}
+              preload="auto"
+              className="h-full w-full object-cover pointer-events-none select-none"
               aria-label={banner.title || `Promotional video ${index + 1}`}
             >
               <source src={banner.image} />
@@ -159,9 +164,14 @@ export default function Hero() {
               autoPlay
               loop
               muted={isMuted}
+              defaultMuted
               playsInline
-              preload="metadata"
-              className="h-full w-full object-cover"
+              webkit-playsinline="true"
+              disablePictureInPicture
+              disableRemotePlayback
+              controls={false}
+              preload="auto"
+              className="h-full w-full object-cover pointer-events-none select-none"
               aria-label={
                 banner.title || `Promotional mobile video ${index + 1}`
               }

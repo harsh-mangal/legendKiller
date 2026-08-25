@@ -22,7 +22,7 @@ export default function Layout() {
     <div className={`${bottomNavHidden ? "" : "mobile-bottom-offset"} flex min-h-screen flex-col bg-white text-slate-800 lg:pb-0`}>
       <RouteMeta />
       <Navbar />
-      <main className="flex-1 pt-[100px] sm:pt-[112px] lg:pt-[128px]">
+      <main className="flex-1 pt-[92px] sm:pt-[112px] lg:pt-[120px]">
         <Outlet />
       </main>
       <Footer />

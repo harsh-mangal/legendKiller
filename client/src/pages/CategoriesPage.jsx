@@ -129,9 +129,14 @@ export default function CategoriesPage() {
                       autoPlay
                       loop
                       muted={isMuted}
+                      defaultMuted
                       playsInline
-                      preload="metadata"
-                      className="h-full w-full object-cover"
+                      webkit-playsinline="true"
+                      disablePictureInPicture
+                      disableRemotePlayback
+                      controls={false}
+                      preload="auto"
+                      className="h-full w-full object-cover pointer-events-none select-none"
                     >
                       <source src={banner.mobileImage || banner.image} />
                     </video>
@@ -150,9 +155,14 @@ export default function CategoriesPage() {
                       autoPlay
                       loop
                       muted={isMuted}
+                      defaultMuted
                       playsInline
-                      preload="metadata"
-                      className="h-full w-full object-cover"
+                      webkit-playsinline="true"
+                      disablePictureInPicture
+                      disableRemotePlayback
+                      controls={false}
+                      preload="auto"
+                      className="h-full w-full object-cover pointer-events-none select-none"
                     >
                       <source src={banner.image} />
                     </video>
