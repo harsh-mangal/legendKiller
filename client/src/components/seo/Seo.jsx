@@ -67,6 +67,7 @@ export const clearStructuredData = (namespace) => {
 export const applySeo = ({
   title,
   description,
+  keywords,
   canonicalPath,
   image = SITE.ogImagePath,
   imageAlt = SITE.ogImageAlt,
@@ -80,6 +81,7 @@ export const applySeo = ({
 
   if (title) document.title = title;
   setMeta("name", "description", description);
+  if (keywords) setMeta("name", "keywords", keywords);
   setMeta("property", "og:title", title);
   setMeta("property", "og:description", description);
   setMeta("property", "og:type", type);
@@ -130,6 +132,7 @@ export default function Seo(props) {
   }, [
     props.title,
     props.description,
+    props.keywords,
     props.canonicalPath,
     props.image,
     props.imageAlt,

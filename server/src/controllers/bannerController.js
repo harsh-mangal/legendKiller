@@ -143,10 +143,10 @@ export const createBanner = async (req, res) => {
       mobileHeight,
     } = req.body;
 
-    if (!page || !["home", "categories"].includes(page)) {
+    if (!page || !["home", "home_benefits", "home_protocol", "categories"].includes(page)) {
       return res.status(400).json({
         success: false,
-        message: "Valid page is required: home or categories",
+        message: "Valid placement is required: home, home_benefits, home_protocol, or categories",
       });
     }
 
@@ -240,10 +240,10 @@ export const updateBanner = async (req, res) => {
 
     const finalPage = page || banner.page;
 
-    if (!["home", "categories"].includes(finalPage)) {
+    if (!["home", "home_benefits", "home_protocol", "categories"].includes(finalPage)) {
       return res.status(400).json({
         success: false,
-        message: "Valid page is required: home or categories",
+        message: "Valid placement is required: home, home_benefits, home_protocol, or categories",
       });
     }
 

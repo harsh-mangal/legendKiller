@@ -17,7 +17,7 @@ const bannerSchema = new mongoose.Schema(
   {
     page: {
       type: String,
-      enum: ["home", "categories"],
+      enum: ["home", "home_benefits", "home_protocol", "categories"],
       required: true,
       index: true,
     },

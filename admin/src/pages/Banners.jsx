@@ -36,13 +36,25 @@ import {
 
 const PAGE_PRESETS = {
   home: {
-    label: "Home page",
-    description: "Primary campaign banners shown on the storefront landing page.",
+    label: "Home Hero Carousel",
+    description: "Primary campaign banners shown on the storefront landing page hero slider.",
     desktop: { width: 1920, height: 540 },
     mobile: { width: 1920, height: 960 },
   },
+  home_benefits: {
+    label: "Benefits / Trust Strip Banner",
+    description: "Horizontal media banner for the trust/benefits strip right under hero.",
+    desktop: { width: 2600, height: 240 },
+    mobile: { width: 1080, height: 240 },
+  },
+  home_protocol: {
+    label: "Training Protocol Banner",
+    description: "Media banner for the 'Target Your Training Protocol' section left block.",
+    desktop: { width: 1200, height: 1200 },
+    mobile: { width: 1080, height: 1080 },
+  },
   categories: {
-    label: "Category page",
+    label: "Category Page Banner",
     description: "Wide banners used above category and catalogue discovery.",
     desktop: { width: 1920, height: 540 },
     mobile: { width: 1920, height: 960 },

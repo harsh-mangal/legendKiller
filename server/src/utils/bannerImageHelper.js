@@ -16,6 +16,28 @@ export const ensureBannerUploadDir = () => {
 };
 
 export const getBannerDefaultSize = (page = "home") => {
+  if (page === "home_benefits") {
+    return {
+      desktop: { width: 2600, height: 240 },
+      mobile: { width: 1080, height: 240 },
+      recommendedSize: {
+        desktop: "2600 x 240 px",
+        mobile: "1080 x 240 px",
+      },
+    };
+  }
+
+  if (page === "home_protocol") {
+    return {
+      desktop: { width: 1200, height: 1200 },
+      mobile: { width: 1080, height: 1080 },
+      recommendedSize: {
+        desktop: "1200 x 1200 px",
+        mobile: "1080 x 1080 px",
+      },
+    };
+  }
+
   if (page === "categories") {
     return {
       desktop: { width: 1920, height: 540 },

@@ -18,12 +18,12 @@ import RecentlyViewed from "../components/home/RecentlyViewed";
 import ProductImage from "../components/ui/ProductImage";
 import { COMMERCE } from "../config/commerce";
 import { useAuth } from "../context/AuthContext";
-import { categoryApi } from "../services/api";
+import { bannerApi, categoryApi } from "../services/api";
 import { money } from "../utils/format";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white">
+    <main className="min-h-screen overflow-x-hidden bg-[#0A0A0C]">
       <h1 className="sr-only">Legend Killer — High Performance Sports Nutrition & Whey Protein Isolates</h1>
       <Hero />
 
@@ -66,6 +66,27 @@ export default function HomePage() {
 }
 
 function ShoppingBenefits() {
+  const [benefitsBanner, setBenefitsBanner] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+
+    bannerApi
+      .getBanners("home_benefits", { signal: controller.signal })
+      .then((items) => {
+        if (active && Array.isArray(items) && items.length > 0) {
+          setBenefitsBanner(items[0]);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, []);
+
   const items = [
     {
       icon: CreditCard,
@@ -90,6 +111,76 @@ function ShoppingBenefits() {
       description: "Help whenever required",
     },
   ];
+
+  if (benefitsBanner) {
+    const isDesktopVideo =
+      benefitsBanner.mediaType === "video" ||
+      /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(benefitsBanner.image || "");
+    const isMobileVideo =
+      benefitsBanner.mobileMediaType === "video" ||
+      /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(benefitsBanner.mobileImage || "");
+
+    const mediaNode = (
+      <div className="relative overflow-hidden border-b border-slate-800 bg-[#0A0A0C]">
+        <div className="block sm:hidden w-full">
+          {isMobileVideo ? (
+            <video
+              autoPlay
+              loop
+              muted
+              defaultMuted
+              playsInline
+              webkit-playsinline="true"
+              disablePictureInPicture
+              disableRemotePlayback
+              controls={false}
+              className="w-full object-cover pointer-events-none select-none"
+            >
+              <source src={benefitsBanner.mobileImage || benefitsBanner.image} />
+            </video>
+          ) : (
+            <img
+              src={benefitsBanner.mobileImage || benefitsBanner.image}
+              alt={benefitsBanner.title || "Shopping Benefits Banner"}
+              className="w-full object-cover"
+            />
+          )}
+        </div>
+        <div className="hidden sm:block w-full">
+          {isDesktopVideo ? (
+            <video
+              autoPlay
+              loop
+              muted
+              defaultMuted
+              playsInline
+              webkit-playsinline="true"
+              disablePictureInPicture
+              disableRemotePlayback
+              controls={false}
+              className="w-full object-cover pointer-events-none select-none"
+            >
+              <source src={benefitsBanner.image} />
+            </video>
+          ) : (
+            <img
+              src={benefitsBanner.image}
+              alt={benefitsBanner.title || "Shopping Benefits Banner"}
+              className="w-full object-cover"
+            />
+          )}
+        </div>
+      </div>
+    );
+
+    return benefitsBanner.link ? (
+      <Link to={benefitsBanner.link} className="block transition hover:opacity-95">
+        {mediaNode}
+      </Link>
+    ) : (
+      mediaNode
+    );
+  }
 
   return (
     <section className="hidden border-b border-slate-200 bg-white sm:block">

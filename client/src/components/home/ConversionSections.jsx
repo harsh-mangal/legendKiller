@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Zap,
@@ -12,6 +13,7 @@ import {
   ClipboardCheck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { bannerApi } from "../../services/api";
 
 const goals = [
   {
@@ -91,20 +93,64 @@ export default function ConversionSections() {
 }
 
 function FitnessGoals() {
+  const [protocolBanner, setProtocolBanner] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+
+    bannerApi
+      .getBanners("home_protocol", { signal: controller.signal })
+      .then((items) => {
+        if (active && Array.isArray(items) && items.length > 0) {
+          setProtocolBanner(items[0]);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, []);
+
+  const isDesktopVideo =
+    protocolBanner &&
+    (protocolBanner.mediaType === "video" ||
+      /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(protocolBanner.image || ""));
+  const isMobileVideo =
+    protocolBanner &&
+    (protocolBanner.mobileMediaType === "video" ||
+      /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(protocolBanner.mobileImage || ""));
+
   return (
     <section className="border-y border-slate-800 bg-[#0A0A0C] py-12 text-white sm:py-20">
       <div className="container-page">
         <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
           <div>
-            <p className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.25em] text-[#FFB800]">
-              <span className="h-0.5 w-8 bg-gradient-to-r from-[#FFB800] to-[#FF5500]" /> Fuel Your Greatness
-            </p>
-            <h2 className="mt-4 max-w-lg font-display text-3xl font-black uppercase leading-tight text-white sm:text-5xl">
-              Target Your Training Protocol.
-            </h2>
-            <p className="mt-4 max-w-lg text-sm leading-7 text-slate-400 sm:text-base">
-              Engineered with raw imported ingredients, clinical dosages, and zero filler. Select your fitness objective below.
-            </p>
+            {protocolBanner ? (
+              <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-[#121216] shadow-card">
+                {protocolBanner.link ? (
+                  <Link to={protocolBanner.link} className="group block h-full w-full">
+                    {renderProtocolMedia(protocolBanner, isDesktopVideo, isMobileVideo)}
+                  </Link>
+                ) : (
+                  renderProtocolMedia(protocolBanner, isDesktopVideo, isMobileVideo)
+                )}
+              </div>
+            ) : (
+              <div>
+                <p className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.25em] text-[#FFB800]">
+                  <span className="h-0.5 w-8 bg-gradient-to-r from-[#FFB800] to-[#FF5500]" /> Fuel Your Greatness
+                </p>
+                <h2 className="mt-4 max-w-lg font-display text-3xl font-black uppercase leading-tight text-white sm:text-5xl">
+                  Target Your Training Protocol.
+                </h2>
+                <p className="mt-4 max-w-lg text-sm leading-7 text-slate-400 sm:text-base">
+                  Engineered with raw imported ingredients, clinical dosages, and zero filler. Select your fitness objective below.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4">
@@ -126,6 +172,66 @@ function FitnessGoals() {
         </div>
       </div>
     </section>
+  );
+}
+
+function renderProtocolMedia(banner, isDesktopVideo, isMobileVideo) {
+  return (
+    <div className="relative h-full w-full">
+      <div className="block sm:hidden w-full h-full">
+        {isMobileVideo ? (
+          <video
+            autoPlay
+            loop
+            muted
+            defaultMuted
+            playsInline
+            webkit-playsinline="true"
+            disablePictureInPicture
+            disableRemotePlayback
+            controls={false}
+            className="w-full h-full object-cover pointer-events-none select-none"
+          >
+            <source src={banner.mobileImage || banner.image} />
+          </video>
+        ) : (
+          <img
+            src={banner.mobileImage || banner.image}
+            alt={banner.title || "Training Protocol Banner"}
+            className="w-full h-full object-cover"
+          />
+        )}
+      </div>
+      <div className="hidden sm:block w-full h-full">
+        {isDesktopVideo ? (
+          <video
+            autoPlay
+            loop
+            muted
+            defaultMuted
+            playsInline
+            webkit-playsinline="true"
+            disablePictureInPicture
+            disableRemotePlayback
+            controls={false}
+            className="w-full h-full object-cover pointer-events-none select-none"
+          >
+            <source src={banner.image} />
+          </video>
+        ) : (
+          <img
+            src={banner.image}
+            alt={banner.title || "Training Protocol Banner"}
+            className="w-full h-full object-cover"
+          />
+        )}
+      </div>
+      {banner.title && (
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-4 text-white">
+          <p className="text-xs font-black uppercase tracking-wider text-[#FFB800]">{banner.title}</p>
+        </div>
+      )}
+    </div>
   );
 }
 

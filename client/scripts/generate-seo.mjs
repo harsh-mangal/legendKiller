@@ -110,6 +110,7 @@ const dynamicPages = async () => {
       path: `/products/${item.slug}`,
       title: cleanText(item.seoTitle || `${item.name} | Legend Killer`),
       description: makeDescription(item, `View ${item.name}, price, pack information and responsible-use details.`),
+      keywords: `${item.name}, ${item.brand || "Legend Killer"}, ${item.category?.name || "Fitness Supplement"}, Whey Protein, Buy ${item.name} Online, Legend Born Nutrition`,
       type: "product",
       image: absoluteAssetUrl(item.images?.[0]) || defaultImage,
       imageAlt: cleanText(item.name, defaultImageAlt),
@@ -131,6 +132,7 @@ const dynamicPages = async () => {
       path: `/categories/${item.slug}`,
       title: `${cleanText(item.name)} Products | Legend Killer`,
       description: makeDescription(item, `Browse Legend Killer products in the ${item.name} category.`),
+      keywords: `${item.name}, ${item.name} Supplements, Legend Killer ${item.name}, Buy ${item.name} India, Legend Born Nutrition`,
       type: "category",
       image: absoluteAssetUrl(item.image) || defaultImage,
       imageAlt: cleanText(item.name, defaultImageAlt),
@@ -141,6 +143,7 @@ const dynamicPages = async () => {
       path: `/combos/${item.slug}`,
       title: cleanText(item.seoTitle || `${item.name} Combo Pack | Legend Killer`),
       description: makeDescription(item, `View ${item.name}, included products, price and availability.`),
+      keywords: `${item.name}, ${item.name} Stack, Legend Killer Combo, Bodybuilding Combo Pack, Discount Supplement Stack`,
       type: "product",
       image: absoluteAssetUrl(item.images?.[0] || item.products?.[0]?.product?.images?.[0]) || defaultImage,
       imageAlt: cleanText(item.name, defaultImageAlt),
@@ -156,6 +159,7 @@ const dynamicPages = async () => {
       path: `/articles/${item.slug}`,
       title: `${cleanText(item.title)} | Legend Killer`,
       description: makeDescription(item, `Read ${item.title} from Legend Killer.`),
+      keywords: `${item.title}, Fitness Guide, Bodybuilding Tips, Legend Born Blog, Nutrition Article`,
       type: "article",
       image: absoluteAssetUrl(item.coverImage) || defaultImage,
       imageAlt: cleanText(item.title, defaultImageAlt),
@@ -419,6 +423,7 @@ const jsonLdFor = (page) => {
 const renderHead = (page, indexable = true) => {
   const canonical = absoluteSiteUrl(page.path);
   const image = page.image || defaultImage;
+  const keywords = page.keywords || "Legend Killer, Legend Born Nutrition, Whey Protein Isolate, Pre Workout Supplement, Creatine Monohydrate, Sports Nutrition India";
   const robots = indexable ? "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" : "noindex,follow";
   const type = page.type === "article" ? "article" : page.type === "product" ? "product" : "website";
   const schemas = indexable ? jsonLdFor(page) : [];
@@ -429,6 +434,7 @@ const renderHead = (page, indexable = true) => {
   return `<!-- SEO:START -->
     <title>${htmlEscape(page.title)}</title>
     <meta name="description" content="${htmlEscape(page.description)}" />
+    <meta name="keywords" content="${htmlEscape(keywords)}" />
     <meta name="robots" content="${robots}" />
     <meta name="googlebot" content="${robots}" />
     <link rel="canonical" href="${htmlEscape(canonical)}" />

@@ -117,7 +117,7 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full aspect-[1920/960] sm:aspect-[1920/540] overflow-hidden bg-[#0A0A0C] border-b border-slate-800"
+      className="relative w-full aspect-[1920/960] sm:aspect-[1920/540] overflow-hidden bg-[#0A0A0C]"
       aria-label="Promotional hero banners"
     >
       {banners.map((banner, index) => {

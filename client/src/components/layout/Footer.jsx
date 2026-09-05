@@ -61,8 +61,8 @@ export default function Footer() {
       <div className="bg-[#0A0A0C] text-white">
         <div className="container-page grid gap-10 py-10 sm:py-16 lg:grid-cols-[0.9fr_1.3fr] lg:gap-16">
           <div>
-            <Link to="/" className="inline-block rounded bg-[#121216] border border-slate-800 p-3" aria-label="Legend Killer home">
-              <img src="/logo.png" alt="Legend Killer" className="h-12 w-auto object-contain" />
+            <Link to="/" className="inline-block p-0 transition hover:opacity-90" aria-label="Legend Killer home">
+              <img src="/logo.png" alt="Legend Killer" className="h-20 sm:h-28 md:h-32 lg:h-36 w-auto max-w-[340px] sm:max-w-[440px] lg:max-w-[520px] object-contain block" />
             </Link>
             <p className="mt-5 max-w-md text-sm leading-7 text-slate-400">
               Legend Killer — The Viper Protocol. High-performance sports nutrition engineered for elite bodybuilders, athletes, and fitness legends.

@@ -25,8 +25,8 @@ export default function Sidebar({ open, onClose, links }) {
       <button type="button" onClick={onClose} className="absolute inset-0 bg-black/80 backdrop-blur-sm" aria-label="Close menu" />
       <aside ref={dialogRef} className="mobile-safe-bottom absolute left-0 top-0 flex h-full w-[88vw] max-w-[360px] flex-col overflow-y-auto bg-[#0A0A0C] border-r border-slate-800 px-5 pt-[calc(1rem+env(safe-area-inset-top))] shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
         <div className="flex items-center justify-between gap-4 border-b border-slate-800 pb-4">
-          <Link to="/" onClick={onClose} className="block" aria-label="Legend Killer Home">
-            <img src="/logo.png" alt="Legend Killer" className="h-10 w-auto object-contain" />
+          <Link to="/" onClick={onClose} className="block p-0" aria-label="Legend Killer Home">
+            <img src="/logo.png" alt="Legend Killer" className="h-14 sm:h-16 w-auto max-w-[260px] object-contain block" />
           </Link>
           <button ref={initialFocusRef} type="button" onClick={onClose} className="icon-button" aria-label="Close menu"><X size={20} className="text-white" /></button>
         </div>
