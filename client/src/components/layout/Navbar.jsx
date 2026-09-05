@@ -56,9 +56,32 @@ export default function Navbar() {
     <>
       <header className={`fixed inset-x-0 top-0 z-50 transition duration-300 ${scrolled ? "shadow-[0_10px_30px_rgba(0,0,0,0.8)] border-b border-[#FF5500]/30" : ""}`}>
         {/* Top Ticker Bar */}
-        <div className="bg-gradient-to-r from-[#FFB800] via-[#FF5500] to-[#FF1F00] text-black">
+        <div className="bg-gradient-to-r from-[#FFB800] via-[#FF5500] to-[#FF1F00] text-black overflow-hidden">
           <div className="container-page flex h-7 items-center justify-between text-[10px] font-black uppercase tracking-wider sm:h-8 sm:text-[11px]">
-            <div className="flex items-center gap-2 truncate">
+            {/* Mobile Ticker - Smooth Continuous Scrolling Marquee */}
+            <div className="flex overflow-hidden w-full sm:hidden">
+              <div className="marquee-track flex whitespace-nowrap gap-8 items-center shrink-0">
+                <div className="flex items-center gap-2">
+                  <Zap size={14} className="animate-bounce" />
+                  <span>THE VIPER PROTOCOL | UP TO 40% OFF ON PROTEIN & PRE-WORKOUT</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap size={14} className="animate-bounce" />
+                  <span>FREE EXPRESS SHIPPING ON ORDERS ABOVE ₹999</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap size={14} className="animate-bounce" />
+                  <span>THE VIPER PROTOCOL | UP TO 40% OFF ON PROTEIN & PRE-WORKOUT</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap size={14} className="animate-bounce" />
+                  <span>FREE EXPRESS SHIPPING ON ORDERS ABOVE ₹999</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Tablet & Desktop Ticker */}
+            <div className="hidden sm:flex items-center gap-2 truncate">
               <Zap size={14} className="animate-bounce" />
               <span>THE VIPER PROTOCOL | UP TO 40% OFF ON PROTEIN & PRE-WORKOUT</span>
             </div>
@@ -70,17 +93,26 @@ export default function Navbar() {
         </div>
 
         {/* Main Navbar */}
-        <div className="relative border-b border-slate-900/60 bg-[#0A0A0C]/95 backdrop-blur-xl">
-          <div className="container-page relative flex h-20 items-center justify-between gap-2 sm:h-22 lg:h-24">
-            <div className="flex items-center gap-2 lg:flex-none">
-              <button type="button" onClick={() => setSidebarOpen(true)} className="icon-button lg:hidden" aria-label="Open navigation menu">
+        <div className="relative border-b border-slate-900/80 bg-[#0A0A0C]/95 backdrop-blur-xl">
+          <div className="container-page relative flex h-18 sm:h-22 lg:h-26 items-center justify-between gap-2">
+            <div className="w-[88px] flex shrink-0 items-center justify-start xl:w-auto xl:flex-none">
+              <button
+                type="button"
+                onClick={() => setSidebarOpen(true)}
+                className="icon-button xl:hidden"
+                aria-label="Open navigation menu"
+              >
                 <Menu size={22} className="text-white" />
               </button>
             </div>
 
-            <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:left-auto lg:translate-x-0 flex items-center justify-center p-0">
-              <Link to="/" className="flex items-center shrink-0 p-0" aria-label="Legend Killer Home">
-                <img src="/logo.png" alt="Legend Killer" className="h-16 sm:h-20 md:h-22 lg:h-24 w-auto max-w-[200px] min-[370px]:max-w-[235px] min-[420px]:max-w-[270px] sm:max-w-[380px] md:max-w-[480px] lg:max-w-[560px] object-contain transition-all duration-300 block" />
+            <div className="flex-1 flex items-center justify-center overflow-hidden px-1 xl:overflow-visible">
+              <Link to="/" className="flex items-center justify-center shrink-0 max-w-full" aria-label="Legend Killer Home">
+                <img
+                  src="/logo.png"
+                  alt="Legend Killer"
+                  className="h-14 sm:h-18 md:h-20 lg:h-24 w-auto max-w-full object-contain transition-all duration-300 block"
+                />
               </Link>
             </div>
 
@@ -108,18 +140,37 @@ export default function Navbar() {
               })}
             </nav>
 
-            <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-              <button type="button" onClick={() => setSearchOpen((value) => !value)} className="icon-button" aria-label={searchOpen ? "Close search" : "Open search"} aria-expanded={searchOpen}>
+            <div className="w-[88px] flex shrink-0 items-center justify-end gap-1 sm:gap-2 xl:w-auto">
+              <button
+                type="button"
+                onClick={() => setSearchOpen((value) => !value)}
+                className="icon-button"
+                aria-label={searchOpen ? "Close search" : "Open search"}
+                aria-expanded={searchOpen}
+              >
                 {searchOpen ? <X size={20} className="text-white" /> : <Search size={20} className="text-white" />}
               </button>
-              <Link to="/wishlist" className="icon-button relative hidden sm:inline-flex" aria-label={`Wishlist with ${wishlistCount} items`}>
+              <Link
+                to="/wishlist"
+                className="icon-button relative hidden sm:inline-flex"
+                aria-label={`Wishlist with ${wishlistCount} items`}
+              >
                 <Heart size={20} className="text-white" />
                 {wishlistCount > 0 && <Count value={wishlistCount} />}
               </Link>
-              <Link to={isLoggedIn ? "/profile" : "/login"} className="icon-button hidden sm:inline-flex" aria-label={isLoggedIn ? "My account" : "Log in"}>
+              <Link
+                to={isLoggedIn ? "/profile" : "/login"}
+                className="icon-button hidden sm:inline-flex"
+                aria-label={isLoggedIn ? "My account" : "Log in"}
+              >
                 <User size={20} className="text-white" />
               </Link>
-              <button type="button" onClick={openCart} className="icon-button relative" aria-label={`Open cart with ${cartCount} items`}>
+              <button
+                type="button"
+                onClick={openCart}
+                className="icon-button relative"
+                aria-label={`Open cart with ${cartCount} items`}
+              >
                 <ShoppingBag size={21} className="text-white" />
                 <Count value={cartCount} />
               </button>

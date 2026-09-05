@@ -30,7 +30,7 @@ export default function MobileBottomNav() {
 
   return (
     <nav
-      className="mobile-safe-bottom fixed inset-x-0 bottom-0 z-[70] border-t border-slate-200 bg-white/95 px-2 pt-1.5 shadow-[0_-8px_24px_rgba(41,45,38,0.10)] backdrop-blur-xl lg:hidden"
+      className="mobile-safe-bottom fixed inset-x-0 bottom-0 z-[70] border-t border-slate-800/80 bg-[#0A0A0C]/95 px-2 pt-1.5 shadow-[0_-8px_30px_rgba(0,0,0,0.8)] backdrop-blur-xl lg:hidden"
       aria-label="Mobile navigation"
     >
       <div className="mx-auto grid max-w-md grid-cols-5">
@@ -41,7 +41,7 @@ export default function MobileBottomNav() {
         <button
           type="button"
           onClick={openCart}
-          className="relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-[6px] px-1 text-[10px] font-semibold text-slate-600 transition active:bg-slate-100"
+          className="relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg px-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 transition active:bg-[#121216]"
           aria-label={`Open cart with ${cartCount} items`}
         >
           <span className="relative">
@@ -64,22 +64,22 @@ function MobileLink({ item, pathname }) {
   return (
     <Link
       to={item.path}
-      className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-[6px] px-1 text-[10px] font-semibold transition active:bg-slate-100 ${active ? "text-veda-leafDark" : "text-slate-600"}`}
+      className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg px-1 text-[10px] font-bold uppercase tracking-wider transition active:bg-[#121216] ${active ? "text-[#FFB800]" : "text-slate-400 hover:text-white"}`}
       aria-current={active ? "page" : undefined}
     >
       <span className="relative">
-        <Icon size={21} strokeWidth={active ? 2.4 : 2} />
+        <Icon size={21} strokeWidth={active ? 2.5 : 2} />
         {item.count > 0 && <Count value={item.count} />}
       </span>
       <span>{item.label}</span>
-      {active && <span className="absolute inset-x-4 top-0 h-0.5 bg-veda-copper" />}
+      {active && <span className="absolute inset-x-3 top-0 h-0.5 rounded-full bg-gradient-to-r from-[#FFB800] to-[#FF5500]" />}
     </Link>
   );
 }
 
 function Count({ value }) {
   return (
-    <span className="absolute -right-2.5 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-veda-copper px-1 text-[8px] font-bold leading-none text-white">
+    <span className="absolute -right-2.5 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FF5500] px-1 text-[8px] font-black leading-none text-black">
       {value > 99 ? "99+" : value}
     </span>
   );
