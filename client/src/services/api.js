@@ -324,3 +324,8 @@ export const promotionApi = {
 export const deliveryApi = {
   check: async (pincode, productId) => unwrapData(await request(`/delivery/check?pincode=${encodeURIComponent(pincode)}${productId ? `&productId=${encodeURIComponent(productId)}` : ""}`, { auth: "none" })),
 };
+
+export const architectureApi = {
+  getArchitectures: async () => extractArray(await request("/architectures", { auth: "none" })),
+  getArchitectureBySlug: async (slug) => unwrapData(await request(`/architectures/${encodeURIComponent(slug)}`, { auth: "none" })),
+};

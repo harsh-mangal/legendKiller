@@ -18,6 +18,7 @@ import Enquiries from "./pages/Enquiries";
 import Banners from "./pages/Banners";
 import Testimonials from "./pages/Testimonials";
 import Articles from "./pages/Articles";
+import Architectures from "./pages/Architectures";
 import CoinSettings from "./pages/CoinSettings";
 import Operations from "./pages/Operations";
 import NotFound from "./pages/NotFound";
@@ -45,6 +46,7 @@ export default function App() {
               <Route path="banners" element={<Banners />} />
               <Route path="testimonials" element={<Testimonials />} />
               <Route path="articles" element={<Articles />} />
+              <Route path="architectures" element={<Architectures />} />
               <Route path="blogs" element={<Navigate to="/articles" replace />} />
               <Route path="ameyka-coins" element={<CoinSettings />} />
               <Route path="amyeka-coin-settings" element={<Navigate to="/ameyka-coins" replace />} />

@@ -8,6 +8,7 @@ const columns = [
     links: [
       ["All Supplements", "/products"],
       ["Bestseller Whey", "/products?bestSeller=true"],
+      ["Viper Architectures", "/architectures"],
       ["Categories", "/categories"],
       ["Combo Stacks", "/products?type=combos"],
       ["Fitness Articles", "/articles"],

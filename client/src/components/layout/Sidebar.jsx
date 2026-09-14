@@ -1,12 +1,15 @@
-import { Headphones, LogOut, MapPin, X } from "lucide-react";
+import { ChevronDown, Headphones, LogOut, MapPin, X } from "lucide-react";
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { SITE } from "../../config/site";
 import { useAuth } from "../../context/AuthContext";
+import { ARCHITECTURES } from "../../data/architecturesData";
 import { useModalDialog } from "../../hooks/useModalDialog";
 
 export default function Sidebar({ open, onClose, links }) {
   const { isLoggedIn, logout, user } = useAuth();
   const navigate = useNavigate();
+  const [archOpen, setArchOpen] = useState(false);
   const { dialogRef, initialFocusRef } = useModalDialog(open, onClose);
 
   if (!open) return null;
@@ -32,7 +35,43 @@ export default function Sidebar({ open, onClose, links }) {
         </div>
 
         <nav className="mt-5 flex flex-col gap-1" aria-label="Mobile navigation">
-          {links.map((link) => <NavLink key={link.path} to={link.path} end={link.end} onClick={onClose} className={linkClass}>{link.label}</NavLink>)}
+          {links.map((link) => {
+            if (link.hasDropdown) {
+              return (
+                <div key={link.path} className="flex flex-col">
+                  <div className="flex items-center justify-between">
+                    <NavLink to={link.path} end={link.end} onClick={onClose} className={`flex-1 ${linkClass({ isActive: false })}`}>
+                      {link.label}
+                    </NavLink>
+                    <button
+                      type="button"
+                      onClick={() => setArchOpen((prev) => !prev)}
+                      className="p-3 text-slate-400 hover:text-[#FFB800]"
+                      aria-label="Toggle Architectures sub-menu"
+                    >
+                      <ChevronDown size={18} className={`transition-transform ${archOpen ? "rotate-180 text-[#FF5500]" : ""}`} />
+                    </button>
+                  </div>
+
+                  {archOpen && (
+                    <div className="ml-4 border-l border-slate-800 space-y-1 py-1">
+                      {ARCHITECTURES.map((arch) => (
+                        <NavLink
+                          key={arch.id}
+                          to={`/architectures/${arch.slug}`}
+                          onClick={onClose}
+                          className="block px-4 py-2 text-xs font-bold uppercase text-slate-400 hover:text-[#FFB800]"
+                        >
+                          {arch.title}
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+            return <NavLink key={link.path} to={link.path} end={link.end} onClick={onClose} className={linkClass}>{link.label}</NavLink>;
+          })}
           <NavLink to="/wishlist" onClick={onClose} className={linkClass}>WISHLIST</NavLink>
           <NavLink to="/track-order" onClick={onClose} className={linkClass}>TRACK ORDER</NavLink>
           {isLoggedIn && <NavLink to="/orders" onClick={onClose} className={linkClass}>MY ORDERS</NavLink>}

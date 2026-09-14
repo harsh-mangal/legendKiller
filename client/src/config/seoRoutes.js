@@ -42,6 +42,18 @@ export const STATIC_INDEXABLE_ROUTES = Object.freeze([
     keywords: "Fitness Blog, Whey Protein Guide, Creatine Loading Phase, Pre Workout Timing, Bodybuilding Nutrition Tips, Legend Born Articles",
   },
   {
+    path: "/architectures",
+    title: `Legend Slayer™ Performance Architectures | ${BRAND}`,
+    description: `Explore the 6 integrated performance architectures powering Legend Slayer: The Viper Protocol. Bioenergetics, neural drive, pumps, hydration & bioavailability.`,
+    keywords: "ATP Cellular Forge, Neuro AMP, Viper Protocol Architectures, Bioenergetics, Phosphocreatine Regeneration, Legend Slayer Science",
+  },
+  {
+    path: "/architectures/atp-cellular-forge",
+    title: `ATP Cellular Forge™ Architecture | ${BRAND}`,
+    description: `Read the 19 chapters of ATP Cellular Forge: Phosphocreatine Regeneration, Creatine Utilization, Intramuscular Buffering & Muscle Contractile Support.`,
+    keywords: "ATP Cellular Forge, Creatine Monohydrate, Biocreat, Beta Alanine, Betaine Anhydrous, Taurine, Phosphocreatine Regeneration",
+  },
+  {
     path: "/about",
     title: `About ${BRAND} | ${COMPANY} | The Viper Protocol`,
     description: `Learn how ${COMPANY} delivers 100% raw imported protein isolates with clinical dosages and NABL lab certification.`,

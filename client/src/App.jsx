@@ -30,6 +30,8 @@ const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const TrackOrderPage = lazy(() => import("./pages/TrackOrderPage"));
 const WishlistPage = lazy(() => import("./pages/WishlistPage"));
 const ProductVerifyPage = lazy(() => import("./pages/ProductVerifyPage"));
+const ArchitecturesPage = lazy(() => import("./pages/ArchitecturesPage"));
+const ArchitectureDetailPage = lazy(() => import("./pages/ArchitectureDetailPage"));
 
 function ProtectedRoute({ children }) {
   const { isLoggedIn, authLoading } = useAuth();
@@ -79,6 +81,8 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/track-order" element={<TrackOrderPage />} />
+        <Route path="/architectures" element={<ArchitecturesPage />} />
+        <Route path="/architectures/:slug" element={<ArchitectureDetailPage />} />
         <Route path="/verify/:code" element={<ProductVerifyPage />} />
         <Route path="/verify" element={<ProductVerifyPage />} />
         <Route path="/wishlist" element={<WishlistPage />} />

@@ -7,12 +7,14 @@ import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import Sidebar from "./Sidebar";
 
+import { ARCHITECTURES } from "../../data/architecturesData";
+
 const navLinks = [
   { label: "SHOP ALL", path: "/products" },
   { label: "BESTSELLERS", path: "/products?bestSeller=true" },
   { label: "CATEGORIES", path: "/categories" },
   { label: "ARTICLES", path: "/articles" },
-  { label: "TRACK ORDER", path: "/track-order" },
+  { label: "ARCHITECTURES", path: "/architectures", hasDropdown: true },
 ];
 
 export default function Navbar() {
@@ -86,6 +88,7 @@ export default function Navbar() {
               <span>THE VIPER PROTOCOL | UP TO 40% OFF ON PROTEIN & PRE-WORKOUT</span>
             </div>
             <div className="hidden items-center gap-5 sm:flex">
+              <Link to="/architectures" className="transition hover:underline">Architectures</Link>
               <Link to="/track-order" className="transition hover:underline">Track Order</Link>
               <a href={`tel:${SITE.supportPhoneHref}`} className="transition hover:underline">Support: {SITE.supportPhoneDisplay}</a>
             </div>
@@ -126,7 +129,47 @@ export default function Navbar() {
                 const isProductsRoot = path === "/products" && !hasTargetSearch;
                 const isActive = path === "/categories"
                   ? location.pathname.startsWith("/categories")
+                  : path === "/architectures"
+                  ? location.pathname.startsWith("/architectures")
                   : location.pathname === path && (hasTargetSearch ? searchMatches : isProductsRoot ? !currentSearch.get("bestSeller") && !currentSearch.get("type") : true);
+
+                if (link.hasDropdown) {
+                  return (
+                    <div key={link.path} className="relative group py-2">
+                      <Link
+                        to={link.path}
+                        className={`relative py-2 text-xs font-black uppercase tracking-widest transition after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:bg-gradient-to-r after:from-[#FFB800] after:to-[#FF5500] after:transition-transform ${isActive ? "text-[#FFB800] after:scale-x-100" : "text-slate-300 after:scale-x-0 group-hover:text-[#FFB800] group-hover:after:scale-x-100"}`}
+                      >
+                        {link.label}
+                      </Link>
+
+                      {/* Dropdown Menu */}
+                      <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 hidden group-hover:block w-80 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="border border-slate-800 bg-[#0A0A0C] p-3 shadow-2xl backdrop-blur-2xl">
+                          <p className="px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#FF5500] border-b border-slate-800 pb-2 mb-2">
+                            6 Viper Protocol™ Architectures
+                          </p>
+                          <div className="space-y-1">
+                            {ARCHITECTURES.map((arch) => (
+                              <Link
+                                key={arch.id}
+                                to={`/architectures/${arch.slug}`}
+                                className="block p-2.5 hover:bg-[#1A1A22] transition border-l-2 border-transparent hover:border-[#FF5500]"
+                              >
+                                <p className="text-xs font-black uppercase text-white hover:text-[#FFB800]">
+                                  {arch.title}
+                                </p>
+                                <p className="text-[10px] font-bold text-slate-400 truncate">
+                                  {arch.subtitle}
+                                </p>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
 
                 return (
                   <Link
