@@ -4,9 +4,12 @@ import app from "./app.js";
 import connectDB from "./config/db.js";
 import { env, validateEnvironment } from "./config/env.js";
 import { releaseExpiredReservations } from "./controllers/orderController.js";
+import { ensureStorefrontCategories } from "./services/storefrontCategoryService.js";
 
 validateEnvironment();
 await connectDB();
+const createdCategoryCount = await ensureStorefrontCategories();
+if (createdCategoryCount) console.log(`Created ${createdCategoryCount} required storefront categor${createdCategoryCount === 1 ? "y" : "ies"}`);
 
 const server = app.listen(env.port, () => console.log(`legendbornnutrition API listening on port ${env.port}`));
 const reservationTimer = setInterval(() => {

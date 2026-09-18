@@ -25,7 +25,7 @@ const featuredGoals = [
     label: "Hydration + recovery",
     title: "Coconut Water",
     description: "Electrolyte-rich hydration support for endurance, recovery, and sustained performance.",
-    to: "/categories/bcaa-intra-workout",
+    to: "/categories/coconut-water",
   },
 ];
 

@@ -10,7 +10,7 @@ export const categorySeedData = [
     "isActive": true
   },
   {
-    "name": "Pre-Workout & Energy",
+    "name": "Pre-Workout",
     "slug": "pre-workout-energy",
     "description": "High-octane pre-workout formulas, nitric oxide pump boosters, and stamina igniters for intense gym sessions.",
     "isActive": true
@@ -28,9 +28,9 @@ export const categorySeedData = [
     "isActive": true
   },
   {
-    "name": "BCAA & Intra-Workout",
-    "slug": "bcaa-intra-workout",
-    "description": "2:1:1 BCAA matrices, EAAs, and electrolyte hydration blends for anti-catabolic endurance and rapid muscle recovery.",
+    "name": "Coconut Water",
+    "slug": "coconut-water",
+    "description": "Electrolyte-rich hydration support for endurance, recovery, and sustained performance.",
     "isActive": true
   },
   {
@@ -363,7 +363,7 @@ export const productSeedData = [
     "name": "BCAA Intra-Workout 2:1:1 Matrix (Mango Viper Punch) – 400g",
     "slug": "bcaa-intra-workout-211-matrix-400g",
     "sku": "LK-BCAA-400G",
-    "categorySlug": "bcaa-intra-workout",
+    "categorySlug": "coconut-water",
     "shortDescription": "7g Instantized BCAAs in clinical 2:1:1 ratio with Coconut Water Electrolytes to prevent muscle catabolism during heavy training.",
     "description": "Protect your hard-earned muscle tissue during grueling gym sessions with Legend Killer BCAA Intra-Workout Matrix.",
     "longDescription": "BCAA Intra-Workout Matrix delivers 7g of instantized Branch Chain Amino Acids (3.5g L-Leucine, 1.75g L-Isoleucine, 1.75g L-Valine) paired with 1g L-Glutamine and natural Coconut Water Powder. Hydrates muscle cells, reduces intra-workout fatigue, and stops muscle breakdown dead in its tracks.",

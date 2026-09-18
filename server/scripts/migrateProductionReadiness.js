@@ -16,6 +16,7 @@ import Promotion from "../src/models/Promotion.js";
 import RateLimitBucket from "../src/models/RateLimitBucket.js";
 import Testimonial from "../src/models/Testimonial.js";
 import User from "../src/models/User.js";
+import { ensureStorefrontCategories } from "../src/services/storefrontCategoryService.js";
 
 const models = [
   AmyekaCoinSetting,
@@ -92,8 +93,10 @@ const run = async () => {
     await AmyekaCoinSetting.create({ key: "default" });
   }
 
+  const createdCategoryCount = await ensureStorefrontCategories();
+
   for (const model of models) await model.syncIndexes();
-  console.log(`Migration complete. Updated ${updatedOrders} order(s). Existing legacy guest accounts remain claimable during registration.`);
+  console.log(`Migration complete. Updated ${updatedOrders} order(s) and created ${createdCategoryCount} required storefront categor${createdCategoryCount === 1 ? "y" : "ies"}. Existing legacy guest accounts remain claimable during registration.`);
 };
 
 run()
