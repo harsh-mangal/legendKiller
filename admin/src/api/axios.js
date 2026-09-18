@@ -2,18 +2,11 @@ import axios from "axios";
 import { clearAdminSession, getAdminToken } from "../utils/storage";
 
 const configured = String(import.meta.env.VITE_API_BASE_URL || "").trim();
-const developmentDefault = "https://api.legendbornnutrition.com/api";
+const defaultApiBaseUrl = "https://api.legendbornnutrition.com/api";
 
-if (!configured && import.meta.env.PROD) {
-  throw new Error("VITE_API_BASE_URL is required for the production admin build.");
-}
-
-export const API_BASE_URL = (configured || developmentDefault).replace(/\/$/, "");
+export const API_BASE_URL = (configured || defaultApiBaseUrl).replace(/\/$/, "");
 export const BASE_URL = API_BASE_URL.replace(/\/api(?:\/v\d+)?$/i, "");
 const storefrontConfigured = String(import.meta.env.VITE_STOREFRONT_URL || "").trim();
-if (!storefrontConfigured && import.meta.env.PROD) {
-  throw new Error("VITE_STOREFRONT_URL is required for the production admin build.");
-}
 export const STOREFRONT_URL = (storefrontConfigured || "https://legendbornnutrition.com").replace(/\/$/, "");
 
 const API = axios.create({

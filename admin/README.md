@@ -32,7 +32,7 @@ VITE_STOREFRONT_URL=https://legendbornnutrition.com
 VITE_API_TIMEOUT_MS=20000
 ```
 
-`VITE_API_BASE_URL` must include `/api`. Both the API and storefront URLs are required for production builds, preventing accidental connections to localhost or an unrelated environment.
+`VITE_API_BASE_URL` must include `/api`. These values can be overridden for staging or local environments. If omitted, production builds use `https://api.legendbornnutrition.com/api` and `https://legendbornnutrition.com`.
 
 ## Validation and build
 

@@ -244,10 +244,14 @@ export const categoryApi = {
 };
 
 export const bannerApi = {
-  getBanners: async (page, options = {}) =>
-    extractArray(await request(`/banners?page=${encodeURIComponent(page)}`, { ...options, auth: "none" }))
+  getBanners: async (page, options = {}) => {
+    const { categorySlug, ...requestOptions } = options;
+    const query = new URLSearchParams({ page });
+    if (categorySlug) query.set("categorySlug", categorySlug);
+    return extractArray(await request(`/banners?${query}`, { ...requestOptions, auth: "none" }))
       .filter((banner) => banner?.isActive !== false)
-      .map((banner) => ({ ...banner, image: imageUrl(banner.image), mobileImage: imageUrl(banner.mobileImage) })),
+      .map((banner) => ({ ...banner, image: imageUrl(banner.image), mobileImage: imageUrl(banner.mobileImage) }));
+  },
 };
 
 export const testimonialApi = {

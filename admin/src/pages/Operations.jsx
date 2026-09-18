@@ -128,7 +128,7 @@ export default function Operations() {
           <div className="flex items-center gap-3"><ShieldCheck className="text-copper-700" /><h2 className="font-bold text-stone-950">Launch safeguards</h2></div>
           <div className="mt-5 space-y-3 text-sm leading-6 text-stone-700">
             {[
-              "Set VITE_API_BASE_URL explicitly in production; the admin build intentionally fails without it.",
+              "Set VITE_API_BASE_URL when deploying to a different backend. If omitted, the admin uses the Legend Born Nutrition production API.",
               "Use the same backend environment for storefront and admin when validating inventory and orders.",
               "Keep the admin domain out of search engines and protect administrator credentials with unique passwords.",
               "Run backend migrations, health checks and staging payment tests before first production use.",

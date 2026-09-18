@@ -1,7 +1,7 @@
 # Admin Deployment Checklist
 
-1. Set `VITE_API_BASE_URL` to the exact backend environment, including `/api`.
-2. Set `VITE_STOREFRONT_URL` to the matching customer storefront.
+1. Set `VITE_API_BASE_URL` to the exact backend environment, including `/api`, when overriding the production default.
+2. Set `VITE_STOREFRONT_URL` when the matching customer storefront differs from the production default.
 3. Run `npm run check` before deployment.
 4. Deploy the `dist/` directory behind HTTPS with SPA fallback enabled.
 5. Add `X-Robots-Tag: noindex, nofollow, noarchive` at the proxy/CDN.
@@ -17,4 +17,4 @@ Use `nginx.conf.example` as the starting point and replace `admin.example.com` a
 
 ## Environment safety
 
-No API or storefront URL is silently defaulted in a production build. If either production environment variable is absent, the build fails instead of connecting to localhost or an unintended environment.
+Production builds default to `https://api.legendbornnutrition.com/api` and `https://legendbornnutrition.com`. Set the Vite variables explicitly for staging, previews, or alternate deployments.

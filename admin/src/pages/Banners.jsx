@@ -49,13 +49,13 @@ const PAGE_PRESETS = {
   },
   home_protocol: {
     label: "Training Protocol Banner",
-    description: "Media banner for the 'Target Your Training Protocol' section left block.",
+    description: "Media banner shown on the right side of the storefront performance section.",
     desktop: { width: 1200, height: 1200 },
     mobile: { width: 1080, height: 1080 },
   },
   categories: {
     label: "Category Page Banner",
-    description: "Wide banners used above category and catalogue discovery.",
+    description: "Wide banners for category pages. Assign a category for a specific banner, or leave it generic as the fallback.",
     desktop: { width: 1920, height: 540 },
     mobile: { width: 1920, height: 960 },
   },
@@ -63,6 +63,7 @@ const PAGE_PRESETS = {
 
 const newForm = (page = "home") => ({
   page,
+  categorySlug: "",
   title: "",
   link: "",
   sortOrder: 0,
@@ -182,6 +183,7 @@ export default function Banners() {
   const mobileRef = useRef(null);
   const [activePage, setActivePage] = useState("home");
   const [items, setItems] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -220,6 +222,18 @@ export default function Banners() {
     load();
   }, [activePage]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    let active = true;
+    API.get("/categories/admin/all")
+      .then(({ data }) => {
+        if (active) setCategoryOptions(Array.isArray(data?.data) ? data.data : []);
+      })
+      .catch(() => {
+        if (active) setCategoryOptions([]);
+      });
+    return () => { active = false; };
+  }, []);
+
   useEffect(
     () => () => {
       if (desktopPreview.startsWith("blob:")) URL.revokeObjectURL(desktopPreview);
@@ -249,6 +263,7 @@ export default function Banners() {
     setEditing(item);
     setForm({
       page: item.page || activePage,
+      categorySlug: item.categorySlug || "",
       title: item.title || "",
       link: item.link || "",
       sortOrder: Number(item.sortOrder || 0),
@@ -313,6 +328,7 @@ export default function Banners() {
 
     const body = new FormData();
     body.append("page", form.page);
+    body.append("categorySlug", form.page === "categories" ? form.categorySlug : "");
     body.append("title", form.title.trim());
     body.append("link", form.link.trim());
     body.append("sortOrder", String(Number(form.sortOrder || 0)));
@@ -509,6 +525,9 @@ export default function Banners() {
                         <Badge tone="neutral">Image</Badge>
                       )}
                       <Badge>Order {Number(item.sortOrder || 0)}</Badge>
+                      {item.page === "categories" && (
+                        <Badge tone="info">{item.categorySlug || "All categories"}</Badge>
+                      )}
                     </div>
                   </div>
                   <div className="p-4">
@@ -631,6 +650,7 @@ export default function Banners() {
                   setForm((current) => ({
                     ...current,
                     page: event.target.value,
+                    categorySlug: event.target.value === "categories" ? current.categorySlug : "",
                   }))
                 }
               >
@@ -641,6 +661,24 @@ export default function Banners() {
                 ))}
               </Select>
             </Field>
+            {form.page === "categories" && (
+              <Field
+                label="Category assignment"
+                hint="Choose a category for a dedicated banner. Leave generic to use this banner when a category has no dedicated media."
+              >
+                <Select
+                  value={form.categorySlug}
+                  onChange={(event) => setForm((current) => ({ ...current, categorySlug: event.target.value }))}
+                >
+                  <option value="">Generic fallback — all categories</option>
+                  {categoryOptions.map((category) => (
+                    <option key={category._id || category.slug} value={category.slug}>
+                      {category.name} (/{category.slug})
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+            )}
             <Field
               label="Internal title"
               hint="Used in admin and as media alt/title context."

@@ -13,6 +13,27 @@ const toBoolean = (value, defaultValue = true) => {
 };
 
 const isVideoUrl = (url = "") => /\.(mp4|webm|mov|mkv|ogg)$/i.test(url);
+const categorySlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+const normalizeCategorySlug = (value = "") => String(value || "").trim().toLowerCase();
+
+const readCategorySlug = (page, value) => {
+  if (page !== "categories") return "";
+  const categorySlug = normalizeCategorySlug(value);
+  if (categorySlug && !categorySlugPattern.test(categorySlug)) {
+    const error = new Error("Category slug must contain only lowercase letters, numbers, and hyphens");
+    error.statusCode = 400;
+    throw error;
+  }
+  return categorySlug;
+};
+
+const genericCategoryFilter = {
+  $or: [{ categorySlug: "" }, { categorySlug: { $exists: false } }],
+};
+
+const findPublicBanners = (filter) =>
+  Banner.find(filter).sort({ sortOrder: 1, createdAt: -1 }).lean();
 
 const getFullUrl = (req, url = "") => {
   if (!url) return "";
@@ -51,6 +72,7 @@ const formatBanner = (req, banner) => {
 export const getPublicBanners = async (req, res) => {
   try {
     const { page } = req.query;
+    const categorySlug = readCategorySlug(page, req.query.categorySlug);
 
     const filter = { isActive: true };
 
@@ -58,9 +80,17 @@ export const getPublicBanners = async (req, res) => {
       filter.page = page;
     }
 
-    const banners = await Banner.find(filter)
-      .sort({ sortOrder: 1, createdAt: -1 })
-      .lean();
+    let banners;
+    if (page === "categories" && categorySlug) {
+      banners = await findPublicBanners({ ...filter, categorySlug });
+      if (!banners.length) {
+        banners = await findPublicBanners({ ...filter, ...genericCategoryFilter });
+      }
+    } else if (page === "categories") {
+      banners = await findPublicBanners({ ...filter, ...genericCategoryFilter });
+    } else {
+      banners = await findPublicBanners(filter);
+    }
 
     return res.status(200).json({
       success: true,
@@ -69,9 +99,9 @@ export const getPublicBanners = async (req, res) => {
   } catch (error) {
     console.error("Get public banners error:", error);
 
-    return res.status(500).json({
+    return res.status(error.statusCode || 500).json({
       success: false,
-      message: "Failed to fetch banners",
+      message: error.statusCode ? error.message : "Failed to fetch banners",
     });
   }
 };
@@ -141,6 +171,7 @@ export const createBanner = async (req, res) => {
       height,
       mobileWidth,
       mobileHeight,
+      categorySlug: requestedCategorySlug,
     } = req.body;
 
     if (!page || !["home", "home_benefits", "home_protocol", "categories"].includes(page)) {
@@ -151,6 +182,7 @@ export const createBanner = async (req, res) => {
     }
 
     const defaults = getBannerDefaultSize(page);
+    const categorySlug = readCategorySlug(page, requestedCategorySlug);
 
     const desktopFile = req.files?.image?.[0];
     const mobileFile = req.files?.mobileImage?.[0];
@@ -187,6 +219,7 @@ export const createBanner = async (req, res) => {
 
     const banner = await Banner.create({
       page,
+      categorySlug,
       title,
       mediaType: primaryMeta?.mediaType || "image",
       mobileMediaType: secondaryMeta?.mediaType || "image",
@@ -208,7 +241,7 @@ export const createBanner = async (req, res) => {
   } catch (error) {
     console.error("Create banner error:", error);
 
-    return res.status(500).json({
+    return res.status(error.statusCode || 500).json({
       success: false,
       message: error.message || "Failed to create banner",
     });
@@ -236,6 +269,7 @@ export const updateBanner = async (req, res) => {
       height,
       mobileWidth,
       mobileHeight,
+      categorySlug: requestedCategorySlug,
     } = req.body;
 
     const finalPage = page || banner.page;
@@ -248,6 +282,10 @@ export const updateBanner = async (req, res) => {
     }
 
     const defaults = getBannerDefaultSize(finalPage);
+    const categorySlug = readCategorySlug(
+      finalPage,
+      requestedCategorySlug !== undefined ? requestedCategorySlug : banner.categorySlug
+    );
 
     const desktopFile = req.files?.image?.[0];
     const mobileFile = req.files?.mobileImage?.[0];
@@ -292,6 +330,7 @@ export const updateBanner = async (req, res) => {
     }
 
     if (page !== undefined) banner.page = page;
+    banner.categorySlug = categorySlug;
     if (title !== undefined) banner.title = title;
     if (link !== undefined) banner.link = link;
     if (sortOrder !== undefined) banner.sortOrder = Number(sortOrder || 0);
@@ -309,7 +348,7 @@ export const updateBanner = async (req, res) => {
   } catch (error) {
     console.error("Update banner error:", error);
 
-    return res.status(500).json({
+    return res.status(error.statusCode || 500).json({
       success: false,
       message: error.message || "Failed to update banner",
     });

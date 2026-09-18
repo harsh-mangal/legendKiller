@@ -97,7 +97,7 @@ export default function Navbar() {
 
         {/* Main Navbar */}
         <div className="relative border-b border-slate-900/80 bg-[#0A0A0C]/95 backdrop-blur-xl">
-          <div className="container-page relative flex h-18 sm:h-22 lg:h-26 items-center justify-between gap-2">
+          <div className="container-page relative flex h-[72px] items-center justify-between gap-2 sm:h-[88px] lg:h-[104px]">
             <div className="w-[88px] flex shrink-0 items-center justify-start xl:w-auto xl:flex-none">
               <button
                 type="button"
@@ -109,12 +109,12 @@ export default function Navbar() {
               </button>
             </div>
 
-            <div className="flex-1 flex items-center justify-center overflow-hidden px-1 xl:overflow-visible">
-              <Link to="/" className="flex items-center justify-center shrink-0 max-w-full" aria-label="Legend Killer Home">
+            <div className="flex flex-1 items-center justify-center overflow-hidden px-1 xl:overflow-visible">
+              <Link to="/" className="flex w-full max-w-[220px] shrink-0 items-center justify-center sm:w-auto sm:max-w-full" aria-label="Legend Killer Home">
                 <img
                   src="/logo.png"
                   alt="Legend Killer"
-                  className="h-14 sm:h-18 md:h-20 lg:h-24 w-auto max-w-full object-contain transition-all duration-300 block"
+                  className="block h-auto w-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.12)] transition-all duration-300 sm:h-[72px] sm:w-auto md:h-20 lg:h-24"
                 />
               </Link>
             </div>

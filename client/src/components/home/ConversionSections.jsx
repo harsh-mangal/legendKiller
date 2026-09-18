@@ -2,12 +2,9 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Zap,
+  Droplets,
   Dumbbell,
-  Flame,
-  Activity,
   ShieldCheck,
-  Award,
-  Sparkles,
   Check,
   Search,
   ClipboardCheck,
@@ -15,48 +12,20 @@ import {
 import { Link } from "react-router-dom";
 import { bannerApi } from "../../services/api";
 
-const goals = [
-  {
-    icon: Dumbbell,
-    title: "Muscle Building & Isolates",
-    description: "Ultra-pure Whey Isolate & Hydrolysate for maximum protein synthesis.",
-    to: "/categories/whey-protein-isolates",
-    tone: "bg-amber-500/10 text-[#FFB800]",
-  },
+const featuredGoals = [
   {
     icon: Zap,
-    title: "Explosive Pre-Workout",
-    description: "High-caffeine, L-Citrulline, and Beta-Alanine pump matrix.",
+    label: "Energy + focus",
+    title: "Pre-Workout",
+    description: "Explosive energy, sharp focus, and a powerful pump for high-intensity training.",
     to: "/categories/pre-workout-energy",
-    tone: "bg-orange-500/10 text-[#FF5500]",
   },
   {
-    icon: Activity,
-    title: "Creatine & Strength",
-    description: "100% Micronized Creatine Monohydrate for ATP regeneration & power.",
-    to: "/categories/creatine-anabolic-builders",
-    tone: "bg-red-500/10 text-[#FF1F00]",
-  },
-  {
-    icon: Award,
-    title: "Heavyweight Mass Gainers",
-    description: "1250+ Calorie bulking formulas with 50g protein and complex carbs.",
-    to: "/categories/mass-gainers-heavyweight-carbs",
-    tone: "bg-amber-500/10 text-[#FFB800]",
-  },
-  {
-    icon: Sparkles,
-    title: "BCAA & Intra-Workout",
-    description: "2:1:1 BCAA ratio with Coconut Water electrolytes for muscle recovery.",
+    icon: Droplets,
+    label: "Hydration + recovery",
+    title: "Coconut Water",
+    description: "Electrolyte-rich hydration support for endurance, recovery, and sustained performance.",
     to: "/categories/bcaa-intra-workout",
-    tone: "bg-orange-500/10 text-[#FF5500]",
-  },
-  {
-    icon: Flame,
-    title: "Fat Burners & Essentials",
-    description: "Thermogenic fat incinerators, Triple Strength Omega-3 & Multivitamins.",
-    to: "/categories/fat-burners-essentials",
-    tone: "bg-red-500/10 text-[#FF1F00]",
   },
 ];
 
@@ -126,49 +95,50 @@ function FitnessGoals() {
   return (
     <section className="border-y border-slate-800 bg-[#0A0A0C] py-12 text-white sm:py-20">
       <div className="container-page">
-        <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
-          <div>
-            {protocolBanner ? (
-              <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-[#121216] shadow-card">
-                {protocolBanner.link ? (
-                  <Link to={protocolBanner.link} className="group block h-full w-full">
-                    {renderProtocolMedia(protocolBanner, isDesktopVideo, isMobileVideo)}
-                  </Link>
-                ) : (
-                  renderProtocolMedia(protocolBanner, isDesktopVideo, isMobileVideo)
-                )}
-              </div>
-            ) : (
-              <div>
-                <p className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.25em] text-[#FFB800]">
-                  <span className="h-0.5 w-8 bg-gradient-to-r from-[#FFB800] to-[#FF5500]" /> Fuel Your Greatness
-                </p>
-                <h2 className="mt-4 max-w-lg font-display text-3xl font-black uppercase leading-tight text-white sm:text-5xl">
-                  Target Your Training Protocol.
-                </h2>
-                <p className="mt-4 max-w-lg text-sm leading-7 text-slate-400 sm:text-base">
-                  Engineered with raw imported ingredients, clinical dosages, and zero filler. Select your fitness objective below.
-                </p>
-              </div>
-            )}
+        <div className={`grid gap-10 lg:items-center ${protocolBanner ? "lg:grid-cols-[0.9fr_1.1fr] lg:gap-16" : "max-w-3xl"}`}>
+          <div className="lg:py-8">
+            <p className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.25em] text-[#FFB800]">
+              <span className="h-0.5 w-8 bg-gradient-to-r from-[#FFB800] to-[#FF5500]" /> Fuel Your Greatness
+            </p>
+            <h2 className="mt-4 max-w-xl font-display text-3xl font-black uppercase leading-tight text-white sm:text-5xl">
+              Choose Your Performance Fuel.
+            </h2>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400 sm:text-base">
+              Two focused formulas for the moments that matter most: powerful training energy and complete workout hydration.
+            </p>
+
+            <nav className="mt-8 border-y border-slate-800" aria-label="Featured performance categories">
+              {featuredGoals.map(({ icon: Icon, label, title, description, to }) => (
+                <Link
+                  key={title}
+                  to={to}
+                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-slate-800 py-6 transition-colors last:border-b-0 hover:text-[#FFB800] sm:gap-5 sm:py-7"
+                >
+                  <span className="grid h-12 w-12 place-items-center border border-[#FF5500]/40 bg-[#FF5500]/10 text-[#FFB800] sm:h-14 sm:w-14">
+                    <Icon size={23} strokeWidth={2.2} />
+                  </span>
+                  <span>
+                    <span className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#FF5500]">{label}</span>
+                    <span className="mt-1 block font-display text-xl font-black uppercase text-white sm:text-2xl">{title}</span>
+                    <span className="mt-1 block text-sm leading-6 text-slate-400">{description}</span>
+                  </span>
+                  <ArrowRight className="text-[#FFB800] transition-transform group-hover:translate-x-1" size={21} />
+                </Link>
+              ))}
+            </nav>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4">
-            {goals.map(({ icon: Icon, title, description, to, tone }) => (
-              <Link
-                key={title}
-                to={to}
-                className="group relative min-h-48 overflow-hidden rounded-xl border border-slate-800 bg-[#121216] p-4 transition duration-300 hover:-translate-y-1 hover:border-[#FF5500] hover:bg-[#1A1A22] sm:min-h-52 sm:p-5"
-              >
-                <span className={`grid h-11 w-11 place-items-center rounded-xl ${tone}`}>
-                  <Icon size={20} strokeWidth={2.2} />
-                </span>
-                <h3 className="mt-5 text-base font-bold text-white sm:text-lg">{title}</h3>
-                <p className="mt-2 text-xs leading-5 text-slate-400 sm:text-sm sm:leading-6">{description}</p>
-                <ArrowRight className="absolute bottom-4 right-4 text-[#FFB800] transition group-hover:translate-x-1" size={18} />
-              </Link>
-            ))}
-          </div>
+          {protocolBanner && (
+            <div className="relative aspect-square w-full max-w-[640px] overflow-hidden border border-slate-800 bg-[#121216] shadow-card lg:justify-self-end">
+              {protocolBanner.link ? (
+                <Link to={protocolBanner.link} className="group block h-full w-full">
+                  {renderProtocolMedia(protocolBanner, isDesktopVideo, isMobileVideo)}
+                </Link>
+              ) : (
+                renderProtocolMedia(protocolBanner, isDesktopVideo, isMobileVideo)
+              )}
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -226,11 +196,6 @@ function renderProtocolMedia(banner, isDesktopVideo, isMobileVideo) {
           />
         )}
       </div>
-      {banner.title && (
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-4 text-white">
-          <p className="text-xs font-black uppercase tracking-wider text-[#FFB800]">{banner.title}</p>
-        </div>
-      )}
     </div>
   );
 }

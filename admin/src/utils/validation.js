@@ -45,7 +45,7 @@ export const validateImageFiles = (files = [], { maxFiles = 6, maxMb = 10, allow
 
 const DEFAULT_VIDEO_TYPES = new Set(["video/mp4", "video/webm", "video/quicktime", "video/ogg", "video/x-matroska"]);
 
-export const validateVideoFiles = (files = [], { maxFiles = 2, maxMb = 100, allowedTypes = DEFAULT_VIDEO_TYPES } = {}) => {
+export const validateVideoFiles = (files = [], { maxFiles = 2, maxMb = 10, allowedTypes = DEFAULT_VIDEO_TYPES } = {}) => {
   const list = Array.from(files || []);
   if (list.length > maxFiles) return `Select no more than ${maxFiles} videos.`;
   const invalidType = list.find((file) => !allowedTypes.has(file.type));
@@ -83,4 +83,3 @@ export const validateMediaFiles = (files = [], { maxFiles = 2, maxMb = 100, allo
   if (oversized) return `${oversized.name || "File"} must be smaller than ${maxMb} MB.`;
   return "";
 };
-

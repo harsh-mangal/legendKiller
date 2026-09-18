@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Volume2, VolumeX } from "lucide-react";
+import CategoryBanner from "../components/category/CategoryBanner";
 import Seo, { absoluteUrl } from "../components/seo/Seo";
 import ProductImage from "../components/ui/ProductImage";
 import Alert from "../components/ui/Alert";
@@ -11,11 +11,8 @@ import { SITE } from "../config/site";
 export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
   const [banners, setBanners] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [isMuted, setIsMuted] = useState(true);
-  const bannerContainerRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -35,47 +32,6 @@ export default function CategoriesPage() {
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; controller.abort(); };
   }, []);
-
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [banners.length]);
-
-  useEffect(() => {
-    if (banners.length <= 1) return undefined;
-    const timer = window.setInterval(() => setActiveIndex((value) => (value + 1) % banners.length), 5000);
-    return () => window.clearInterval(timer);
-  }, [banners.length]);
-
-  useEffect(() => {
-    if (!bannerContainerRef.current) return;
-    const slides = bannerContainerRef.current.querySelectorAll("[data-slide-index]");
-    slides.forEach((slide) => {
-      const idx = Number(slide.getAttribute("data-slide-index"));
-      const videos = slide.querySelectorAll("video");
-      videos.forEach((video) => {
-        video.muted = isMuted;
-        const isVisibleByCss =
-          video.offsetParent !== null &&
-          window.getComputedStyle(video).display !== "none" &&
-          window.getComputedStyle(video.parentElement).display !== "none";
-
-        if (idx === activeIndex && isVisibleByCss) {
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              if (!isMuted) {
-                video.muted = true;
-                setIsMuted(true);
-                video.play().catch(() => {});
-              }
-            });
-          }
-        } else {
-          video.pause();
-        }
-      });
-    });
-  }, [isMuted, activeIndex]);
 
   return (
     <section className="pb-10 sm:pb-16 bg-[#0A0A0C]">
@@ -102,131 +58,7 @@ export default function CategoriesPage() {
           }]}
         />
       )}
-      {banners.length > 0 && (
-        <div ref={bannerContainerRef} className="relative aspect-[1920/960] sm:aspect-[1920/540] overflow-hidden bg-[#0A0A0C] border-b border-slate-800">
-          {banners.map((banner, index) => {
-            const isVideo =
-              banner.mediaType === "video" ||
-              /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(banner.image || "");
-            const isMobileVideo =
-              banner.mobileMediaType === "video" ||
-              /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(banner.mobileImage || "");
-
-            return (
-              <div
-                key={banner._id || index}
-                data-slide-index={index}
-                className={`absolute inset-0 transition-opacity duration-700 ${
-                  index === activeIndex
-                    ? "opacity-100 z-10"
-                    : "pointer-events-none opacity-0 z-0"
-                }`}
-                aria-hidden={index !== activeIndex}
-              >
-                <div className="block sm:hidden h-full w-full">
-                  {isMobileVideo ? (
-                    <video
-                      autoPlay
-                      loop
-                      muted={isMuted}
-                      defaultMuted
-                      playsInline
-                      webkit-playsinline="true"
-                      disablePictureInPicture
-                      disableRemotePlayback
-                      controls={false}
-                      preload="auto"
-                      className="h-full w-full object-cover pointer-events-none select-none"
-                    >
-                      <source src={banner.mobileImage || banner.image} />
-                    </video>
-                  ) : (
-                    <ProductImage
-                      src={banner.mobileImage || banner.image}
-                      alt={banner.title || `Category promotion mobile ${index + 1}`}
-                      className="h-full w-full object-cover"
-                      fallbackClassName="h-full w-full bg-[#0A0A0C]"
-                    />
-                  )}
-                </div>
-                <div className="hidden sm:block h-full w-full">
-                  {isVideo ? (
-                    <video
-                      autoPlay
-                      loop
-                      muted={isMuted}
-                      defaultMuted
-                      playsInline
-                      webkit-playsinline="true"
-                      disablePictureInPicture
-                      disableRemotePlayback
-                      controls={false}
-                      preload="auto"
-                      className="h-full w-full object-cover pointer-events-none select-none"
-                    >
-                      <source src={banner.image} />
-                    </video>
-                  ) : (
-                    <ProductImage
-                      src={banner.image}
-                      alt={banner.title || `Category promotion ${index + 1}`}
-                      className="h-full w-full object-cover"
-                      fallbackClassName="h-full w-full bg-[#0A0A0C]"
-                    />
-                  )}
-                </div>
-              </div>
-            );
-          })}
-          {Boolean(
-            banners[activeIndex] &&
-              (banners[activeIndex].mediaType === "video" ||
-                banners[activeIndex].mobileMediaType === "video" ||
-                /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(banners[activeIndex].image || "") ||
-                /\.(mp4|webm|mov|ogg|mkv)($|\?)/i.test(banners[activeIndex].mobileImage || ""))
-          ) && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setIsMuted((prev) => !prev);
-              }}
-              aria-label={isMuted ? "Unmute video sound" : "Mute video sound"}
-              title={isMuted ? "Unmute sound" : "Mute sound"}
-              className="absolute top-3 right-3 z-30 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md border border-white/20 hover:bg-black/80 transition cursor-pointer shadow-lg active:scale-95"
-            >
-              {isMuted ? (
-                <>
-                  <VolumeX size={15} className="text-red-400" />
-                  <span>Unmute</span>
-                </>
-              ) : (
-                <>
-                  <Volume2 size={15} className="text-emerald-400" />
-                  <span>Mute</span>
-                </>
-              )}
-            </button>
-          )}
-          {banners.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
-              {banners.map((banner, index) => (
-                <button
-                  key={banner._id || index}
-                  type="button"
-                  onClick={() => setActiveIndex(index)}
-                  aria-label={`Show category promotion ${index + 1}`}
-                  aria-current={index === activeIndex}
-                  className={`h-1.5 transition-all duration-300 ${
-                    index === activeIndex ? "w-8 bg-[#FF5500]" : "w-2.5 bg-white/40 hover:bg-white/80"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      <CategoryBanner banners={banners} />
 
       <div className="container-page pt-8 sm:pt-14">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

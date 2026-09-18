@@ -22,6 +22,16 @@ const bannerSchema = new mongoose.Schema(
       index: true,
     },
 
+    categorySlug: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      maxlength: 160,
+      match: [/^$|^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Category slug must contain only lowercase letters, numbers, and hyphens"],
+      default: "",
+      index: true,
+    },
+
     title: {
       type: String,
       trim: true,
@@ -87,6 +97,8 @@ const bannerSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+bannerSchema.index({ page: 1, categorySlug: 1, isActive: 1, sortOrder: 1 });
 
 const Banner = mongoose.model("Banner", bannerSchema);
 
