@@ -59,7 +59,7 @@ export default function Navbar() {
       <header className={`fixed inset-x-0 top-0 z-50 transition duration-300 ${scrolled ? "shadow-[0_10px_30px_rgba(0,0,0,0.8)] border-b border-[#FF5500]/30" : ""}`}>
         {/* Top Ticker Bar */}
         <div className="bg-gradient-to-r from-[#FFB800] via-[#FF5500] to-[#FF1F00] text-black overflow-hidden">
-          <div className="container-page flex h-7 items-center justify-between text-[10px] font-black uppercase tracking-wider sm:h-8 sm:text-[11px]">
+          <div className="flex h-7 w-full items-center justify-between gap-6 px-3 text-[10px] font-black uppercase tracking-wider sm:h-8 sm:px-5 sm:text-[11px] xl:px-8 2xl:px-12">
             {/* Mobile Ticker - Smooth Continuous Scrolling Marquee */}
             <div className="flex overflow-hidden w-full sm:hidden">
               <div className="marquee-track flex whitespace-nowrap gap-8 items-center shrink-0">
@@ -87,7 +87,7 @@ export default function Navbar() {
               <Zap size={14} className="animate-bounce" />
               <span>THE VIPER PROTOCOL | UP TO 40% OFF ON PROTEIN & PRE-WORKOUT</span>
             </div>
-            <div className="hidden items-center gap-5 sm:flex">
+            <div className="hidden shrink-0 items-center gap-5 xl:flex">
               <Link to="/architectures" className="transition hover:underline">Architectures</Link>
               <Link to="/track-order" className="transition hover:underline">Track Order</Link>
               <a href={`tel:${SITE.supportPhoneHref}`} className="transition hover:underline">Support: {SITE.supportPhoneDisplay}</a>
@@ -97,29 +97,25 @@ export default function Navbar() {
 
         {/* Main Navbar */}
         <div className="relative border-b border-slate-900/80 bg-[#0A0A0C]/95 backdrop-blur-xl">
-          <div className="container-page relative flex h-[72px] items-center justify-between gap-2 sm:h-[88px] lg:h-[104px]">
-            <div className="w-[88px] flex shrink-0 items-center justify-start xl:w-auto xl:flex-none">
-              <button
-                type="button"
-                onClick={() => setSidebarOpen(true)}
-                className="icon-button xl:hidden"
-                aria-label="Open navigation menu"
-              >
-                <Menu size={22} className="text-white" />
-              </button>
-            </div>
+          <div className="relative flex h-[68px] w-full items-center gap-2 px-3 sm:h-[76px] sm:gap-3 sm:px-5 xl:h-[84px] xl:px-8 2xl:px-12">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(true)}
+              className="icon-button h-11 w-11 shrink-0 xl:hidden"
+              aria-label="Open navigation menu"
+            >
+              <Menu size={22} className="text-white" />
+            </button>
 
-            <div className="flex flex-1 items-center justify-center overflow-hidden px-1 xl:overflow-visible">
-              <Link to="/" className="flex w-full max-w-[220px] shrink-0 items-center justify-center sm:w-auto sm:max-w-full" aria-label="Legend Killer Home">
-                <img
-                  src="/logo.png"
-                  alt="Legend Killer"
-                  className="block h-auto w-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.12)] transition-all duration-300 sm:h-[72px] sm:w-auto md:h-20 lg:h-24"
-                />
-              </Link>
-            </div>
+            <Link to="/" className="flex h-full min-w-0 flex-1 items-center justify-center overflow-hidden xl:flex-none" aria-label="Legend Killer Home">
+              <img
+                src="/logo.png"
+                alt="Legend Killer"
+                className="block h-auto w-full max-w-[190px] object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.12)] sm:max-w-[240px] xl:w-[270px] xl:max-w-none"
+              />
+            </Link>
 
-            <nav className="hidden items-center gap-8 xl:flex" aria-label="Primary navigation">
+            <nav className="hidden min-w-0 flex-1 items-center justify-center gap-4 xl:flex 2xl:gap-7" aria-label="Primary navigation">
               {navLinks.map((link) => {
                 const [path, search = ""] = link.path.split("?");
                 const currentSearch = new URLSearchParams(location.search);
@@ -183,7 +179,7 @@ export default function Navbar() {
               })}
             </nav>
 
-            <div className="w-[88px] flex shrink-0 items-center justify-end gap-1 sm:gap-2 xl:w-auto">
+            <div className="flex shrink-0 items-center justify-end gap-1 sm:gap-2">
               <button
                 type="button"
                 onClick={() => setSearchOpen((value) => !value)}

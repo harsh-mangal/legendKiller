@@ -1,23 +1,26 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { comboApi, productApi } from "../../services/api";
+import { comboApi, productApi, storefrontSettingsApi } from "../../services/api";
 import ProductCard from "../product/ProductCard";
 
 export default function ComboShelf() {
   const [combos, setCombos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isActive, setIsActive] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
     let active = true;
     Promise.allSettled([
+      storefrontSettingsApi.getHomepage({ signal: controller.signal }),
       comboApi.getCombos({}, { signal: controller.signal }),
       productApi.getProducts({ category: "value-combos", featured: "true" }, { signal: controller.signal }),
     ])
       .then((results) => {
         if (!active) return;
-        const items = results.flatMap((result) => result.status === "fulfilled" ? result.value : []);
+        setIsActive(results[0].status !== "fulfilled" || results[0].value?.shopMoreTogetherActive !== false);
+        const items = results.slice(1).flatMap((result) => result.status === "fulfilled" ? result.value : []);
         const unique = [...new Map(items.map((item) => [`${item.itemType}-${item._id}`, item])).values()];
         setCombos(unique.slice(0, 4));
       })
@@ -33,7 +36,7 @@ export default function ComboShelf() {
     };
   }, []);
 
-  if (!loading && !combos.length) return null;
+  if (isActive !== true || (!loading && !combos.length)) return null;
 
   return (
     <section className="border-y border-slate-200 bg-veda-leafDark py-10 text-white sm:py-16">

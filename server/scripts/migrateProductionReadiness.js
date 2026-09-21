@@ -16,6 +16,7 @@ import Promotion from "../src/models/Promotion.js";
 import RateLimitBucket from "../src/models/RateLimitBucket.js";
 import Testimonial from "../src/models/Testimonial.js";
 import User from "../src/models/User.js";
+import StorefrontSetting from "../src/models/StorefrontSetting.js";
 import { ensureStorefrontCategories } from "../src/services/storefrontCategoryService.js";
 
 const models = [
@@ -34,6 +35,7 @@ const models = [
   RateLimitBucket,
   Testimonial,
   User,
+  StorefrontSetting,
 ];
 
 const run = async () => {

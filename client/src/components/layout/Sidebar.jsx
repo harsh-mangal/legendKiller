@@ -24,7 +24,7 @@ export default function Sidebar({ open, onClose, links }) {
     `flex min-h-12 items-center border-l-4 px-4 py-3 text-sm font-black uppercase tracking-wider transition ${isActive ? "border-[#FF5500] bg-[#1A1A22] text-[#FFB800]" : "border-transparent text-slate-300 hover:border-[#FF5500] hover:bg-[#121216] hover:text-white"}`;
 
   return (
-    <div className="fixed inset-0 z-[110] lg:hidden" role="presentation">
+    <div className="fixed inset-0 z-[110] xl:hidden" role="presentation">
       <button type="button" onClick={onClose} className="absolute inset-0 bg-black/80 backdrop-blur-sm" aria-label="Close menu" />
       <aside ref={dialogRef} className="mobile-safe-bottom absolute left-0 top-0 flex h-full w-[88vw] max-w-[360px] flex-col overflow-y-auto bg-[#0A0A0C] border-r border-slate-800 px-5 pt-[calc(1rem+env(safe-area-inset-top))] shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
         <div className="flex items-center justify-between gap-4 border-b border-slate-800 pb-4">

@@ -430,7 +430,7 @@ export default function ProductViewPage() {
   }
 
   return (
-    <section className="page-section pb-28 lg:pb-24">
+    <section className="product-page page-section overflow-x-clip bg-[#F4F5F7] pb-28 text-slate-900 lg:pb-24">
       <Seo
         title={product.seoTitle || `${product.name} | ${SITE.name}`}
         description={seoDescription}
@@ -449,21 +449,21 @@ export default function ProductViewPage() {
           ]),
         ]}
       />
-      <div className="container-page grid gap-8 sm:gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+      <div className="container-page grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start">
         <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 overflow-hidden text-xs text-slate-500 lg:col-span-2">
           <Link to="/" className="shrink-0 hover:text-slate-950">Home</Link><span aria-hidden="true">/</span>
           <Link to="/products" className="shrink-0 hover:text-slate-950">Products</Link><span aria-hidden="true">/</span>
           {product.category?.slug && <><Link to={`/categories/${product.category.slug}`} className="shrink-0 hover:text-slate-950">{product.category.name}</Link><span aria-hidden="true">/</span></>}
           <span className="truncate text-slate-700" aria-current="page">{product.name}</span>
         </nav>
-        <div className="lg:sticky lg:top-28">
-          <div className="overflow-hidden border border-slate-200 bg-slate-100 shadow-sm sm:rounded-[8px]">
+        <div className="min-w-0 lg:sticky lg:top-28">
+          <div className="aspect-square w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
             <ProductImage
               key={selectedImage || images[0]}
               src={selectedImage || images[0]}
               alt={product.name}
-              className="aspect-square h-auto w-full object-contain sm:h-[580px] sm:aspect-auto"
-              fallbackClassName="aspect-square h-auto w-full sm:h-[580px] sm:aspect-auto"
+              className="h-full w-full object-contain"
+              fallbackClassName="h-full w-full"
               loading="eager"
             />
           </div>
@@ -475,7 +475,7 @@ export default function ProductViewPage() {
                   key={`${image}-${index}`}
                   type="button"
                   onClick={() => setSelectedImage(image)}
-                  className={`w-20 shrink-0 overflow-hidden rounded-[4px] border bg-slate-100 sm:w-auto sm:rounded-[6px] ${
+                  className={`aspect-square w-20 shrink-0 overflow-hidden rounded-[4px] border bg-slate-100 sm:w-auto sm:rounded-[6px] ${
                     selectedImage === image
                       ? "border-slate-950 ring-2 ring-slate-200"
                       : "border-slate-200 hover:border-slate-400"
@@ -485,8 +485,8 @@ export default function ProductViewPage() {
                   <ProductImage
                     src={image}
                     alt=""
-                    className="h-20 w-20 object-contain sm:h-24 sm:w-full"
-                    fallbackClassName="h-20 w-20 sm:h-24 sm:w-full"
+                    className="h-full w-full object-contain"
+                    fallbackClassName="h-full w-full"
                   />
                 </button>
               ))}
@@ -494,21 +494,11 @@ export default function ProductViewPage() {
           )}
         </div>
 
-        <div>
+        <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-7">
           <div className="flex items-start justify-between gap-4">
             <p className="section-eyebrow">
               {product.category?.name || "Legend Killer"}
             </p>
-
-            <button
-              type="button"
-              onClick={handleShareProduct}
-              className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
-              aria-label="Share this product"
-            >
-              <Share2 size={17} />
-              Share
-            </button>
           </div>
 
           <h1 className="mt-3 break-words !font-sans text-[1.4rem] font-semibold leading-[1.25] tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">{product.name}</h1>
@@ -564,20 +554,14 @@ export default function ProductViewPage() {
 
           <div className="mt-5 border-y border-slate-200 py-5 sm:mt-6 sm:py-6">
             <div className="flex flex-wrap items-end gap-3">
-              <span className="text-3xl font-semibold text-slate-950 sm:text-4xl">
-                {money(product.price)}
+              <span className="inline-flex items-baseline gap-x-3 whitespace-nowrap">
+                {hasDiscount && <span className="text-lg text-slate-500 line-through">{money(product.mrp)}</span>}
+                <span className="text-3xl font-semibold text-slate-950 sm:text-4xl">{money(product.price)}</span>
               </span>
-
               {hasDiscount && (
-                <>
-                  <span className="pb-1 text-lg text-slate-500 line-through">
-                    {money(product.mrp)}
-                  </span>
-
-                  <span className="mb-1 rounded-full bg-red-50 px-3 py-1 text-sm font-semibold text-red-700">
-                    {discountPercent(product.mrp, product.price)}% off
-                  </span>
-                </>
+                <span className="mb-1 rounded-full bg-red-50 px-3 py-1 text-sm font-semibold text-red-700">
+                  {discountPercent(product.mrp, product.price)}% off
+                </span>
               )}
             </div>
 
@@ -599,7 +583,7 @@ export default function ProductViewPage() {
             )}
           </div>
 
-          <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-3 sm:mt-7 sm:flex sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-7 sm:flex sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
             <div className="inline-flex h-12 w-fit items-center rounded-[4px] border border-slate-300 bg-white">
               <button
                 type="button"
@@ -618,7 +602,7 @@ export default function ProductViewPage() {
                 disabled={outOfStock}
                 value={quantity}
                 onChange={(event) => updateQuantity(event.target.value)}
-                className="h-12 w-16 rounded-none border-y-0 text-center font-semibold shadow-none focus:ring-0"
+                className="h-12 w-16 rounded-none border-y-0 bg-white text-center font-semibold text-slate-900 shadow-none focus:ring-0"
                 aria-label="Quantity"
               />
 
@@ -659,7 +643,7 @@ export default function ProductViewPage() {
             <button
               type="button"
               onClick={handleShareProduct}
-              className="btn-outline h-12 w-full min-w-0 px-4 sm:w-auto sm:px-5"
+              className="btn-outline hidden h-12 min-w-0 px-4 sm:inline-flex sm:w-auto sm:px-5"
               aria-label="Share this product"
             >
               <Share2 size={18} />
@@ -667,7 +651,7 @@ export default function ProductViewPage() {
             </button>
           </div>
 
-          <div className="mt-7 hidden gap-2.5 sm:mt-8 sm:grid-cols-3 sm:gap-3 lg:grid">
+          <div className="mt-7 hidden gap-2.5 sm:mt-8 sm:gap-3 lg:grid lg:grid-cols-1 xl:grid-cols-3">
             <TrustBox
               icon={ShieldCheck}
               title="Product information"
@@ -704,22 +688,22 @@ export default function ProductViewPage() {
               About this product
             </h2>
 
-            <div className="mt-5 hidden space-y-4 text-base leading-8 text-slate-600 lg:block">
+            <div className="mt-5 hidden space-y-4 text-base leading-8 lg:block">
               {product.longDescription && (
-                <p className="whitespace-pre-line">{product.longDescription}</p>
+                <p className="whitespace-pre-line text-slate-950">{product.longDescription}</p>
               )}
 
               {product.description &&
                 product.description !== product.longDescription && (
-                  <p className="whitespace-pre-line">{product.description}</p>
+                  <p className="whitespace-pre-line text-slate-950">{product.description}</p>
               )}
             </div>
 
             <div className="lg:hidden">
               <MobileAccordion title="About this product">
-                <div className="space-y-4 text-[15px] leading-7 text-slate-600">
-                  {product.longDescription && <p className="whitespace-pre-line">{product.longDescription}</p>}
-                  {product.description && product.description !== product.longDescription && <p className="whitespace-pre-line">{product.description}</p>}
+                <div className="space-y-4 text-[15px] leading-7">
+                  {product.longDescription && <p className="whitespace-pre-line text-slate-950">{product.longDescription}</p>}
+                  {product.description && product.description !== product.longDescription && <p className="whitespace-pre-line text-slate-950">{product.description}</p>}
                 </div>
               </MobileAccordion>
             </div>
@@ -858,7 +842,7 @@ export default function ProductViewPage() {
         </div>
       )}
 
-      <div className="mobile-safe-bottom fixed inset-x-0 bottom-[calc(4.45rem+env(safe-area-inset-bottom))] z-40 border-t border-slate-200 bg-white/95 px-4 pt-3 shadow-[0_-8px_24px_rgba(41,45,38,0.12)] backdrop-blur-xl lg:hidden">
+      <div className="fixed inset-x-0 bottom-[calc(4.625rem+env(safe-area-inset-bottom))] z-40 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_rgba(41,45,38,0.12)] backdrop-blur-xl lg:hidden">
         <div className="mx-auto flex max-w-md items-center gap-2">
           <div className="min-w-0 flex-1">
             <p className="truncate text-[11px] text-slate-500">

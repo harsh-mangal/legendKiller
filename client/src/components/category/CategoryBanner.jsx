@@ -66,7 +66,9 @@ export default function CategoryBanner({ banners = [] }) {
   const renderMedia = (banner, index, mobile) => {
     const source = mobile ? banner.mobileImage || banner.image : banner.image;
     const video = mobile
-      ? banner.mobileMediaType === "video" || isVideoMedia(banner.mobileImage)
+      ? banner.mobileImage
+        ? banner.mobileMediaType === "video" || isVideoMedia(banner.mobileImage)
+        : banner.mediaType === "video" || isVideoMedia(banner.image)
       : banner.mediaType === "video" || isVideoMedia(banner.image);
 
     if (video) {
@@ -82,7 +84,7 @@ export default function CategoryBanner({ banners = [] }) {
           disableRemotePlayback
           controls={false}
           preload="auto"
-          className="pointer-events-none h-full w-full select-none object-cover"
+          className={`pointer-events-none h-full w-full select-none ${mobile ? "object-contain" : "object-cover"}`}
         >
           <source src={source} />
         </video>
@@ -93,7 +95,7 @@ export default function CategoryBanner({ banners = [] }) {
       <ProductImage
         src={source}
         alt={banner.title || `Category promotion${mobile ? " mobile" : ""} ${index + 1}`}
-        className="h-full w-full object-cover"
+        className={`h-full w-full ${mobile ? "object-contain" : "object-cover"}`}
         fallbackClassName="h-full w-full bg-[#0A0A0C]"
       />
     );

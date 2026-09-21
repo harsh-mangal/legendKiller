@@ -184,6 +184,9 @@ export default function Banners() {
   const [activePage, setActivePage] = useState("home");
   const [items, setItems] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
+  const [shopMoreTogetherActive, setShopMoreTogetherActive] = useState(true);
+  const [shopMoreTogetherLoading, setShopMoreTogetherLoading] = useState(true);
+  const [shopMoreTogetherSaving, setShopMoreTogetherSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -233,6 +236,34 @@ export default function Banners() {
       });
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    API.get("/storefront-settings/homepage")
+      .then(({ data }) => {
+        if (active) setShopMoreTogetherActive(data?.data?.shopMoreTogetherActive !== false);
+      })
+      .catch((error) => {
+        if (active) toast.error(getErrorMessage(error, "Unable to load homepage section settings."));
+      })
+      .finally(() => {
+        if (active) setShopMoreTogetherLoading(false);
+      });
+    return () => { active = false; };
+  }, [toast]);
+
+  const updateShopMoreTogether = async (value) => {
+    try {
+      setShopMoreTogetherSaving(true);
+      const { data } = await API.put("/storefront-settings/homepage", { shopMoreTogetherActive: value });
+      setShopMoreTogetherActive(data?.data?.shopMoreTogetherActive !== false);
+      toast.success(`Shop more together is now ${value ? "active" : "inactive"}.`);
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Unable to update homepage section."));
+    } finally {
+      setShopMoreTogetherSaving(false);
+    }
+  };
 
   useEffect(
     () => () => {
@@ -425,6 +456,20 @@ export default function Banners() {
           </>
         }
       />
+
+      <Card className="p-5">
+        <h2 className="text-base font-bold text-stone-950">Homepage sections</h2>
+        <p className="mt-1 text-sm text-stone-600">Control whether the combo shelf appears on the storefront homepage.</p>
+        <div className="mt-4 max-w-xl">
+          <Toggle
+            checked={shopMoreTogetherActive}
+            onChange={updateShopMoreTogether}
+            disabled={shopMoreTogetherLoading || shopMoreTogetherSaving}
+            label="Shop more together"
+            description="Show or hide the combo products section on the homepage. Combos remain available elsewhere."
+          />
+        </div>
+      </Card>
 
       <div className="grid gap-3 sm:grid-cols-2">
         {Object.entries(PAGE_PRESETS).map(([key, value]) => (
@@ -741,13 +786,13 @@ export default function Banners() {
               </p>
               <p className="mt-1">
                 <strong>Desktop:</strong> {preset.desktop.width} ×{" "}
-                {preset.desktop.height} px (Mandatory · Ratio: 3.55:1)
+                {preset.desktop.height} px (Mandatory)
                 <br />
                 <strong>Mobile:</strong> {preset.mobile.width} ×{" "}
-                {preset.mobile.height} px (Mandatory · Ratio: 2:1)
+                {preset.mobile.height} px (Mandatory)
                 <br />
                 <strong>Supported formats:</strong> MP4, WEBM, MOV (Video) ·
-                WebP, PNG, JPG (Image). Up to 100 MB.
+                WebP, PNG, JPG (Image). Up to 200 MB per file.
               </p>
             </div>
           </div>
@@ -763,7 +808,7 @@ export default function Banners() {
             <Field
               label="Desktop media (1920 × 540 Image or Video)"
               required
-              hint="Mandatory 1920×540 media for desktop viewports. Maximum 100 MB."
+              hint="Mandatory 1920×540 media for desktop viewports. Maximum 200 MB per file."
             >
               <label className="btn btn-secondary btn-md w-full cursor-pointer">
                 <Upload size={17} />{" "}

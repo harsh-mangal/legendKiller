@@ -157,6 +157,10 @@
   .touch-scroll::-webkit-scrollbar {
     display: none;
   }
+
+  .product-page .section-eyebrow {
+    color: #9a3412;
+  }
 }
 
 .marquee-track {

@@ -254,6 +254,11 @@ export const bannerApi = {
   },
 };
 
+export const storefrontSettingsApi = {
+  getHomepage: async (options = {}) =>
+    unwrapData(await request("/storefront-settings/homepage", { ...options, auth: "none" })),
+};
+
 export const testimonialApi = {
   getTestimonials: async (options = {}) =>
     extractArray(await request("/testimonials", { ...options, auth: "none" })).map((item) => ({

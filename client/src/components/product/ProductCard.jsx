@@ -30,7 +30,7 @@ export default function ProductCard({ product }) {
 
   return (
     <article className="group relative flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-slate-800 bg-[#121216] transition duration-300 before:absolute before:inset-x-0 before:top-0 before:z-20 before:h-[3px] before:origin-left before:scale-x-0 before:bg-gradient-to-r before:from-[#FFB800] before:via-[#FF5500] before:to-[#FF1F00] before:transition-transform hover:border-[#FF5500]/60 hover:shadow-2xl hover:shadow-[#FF5500]/10 hover:before:scale-x-100">
-      <div className="relative aspect-square overflow-hidden border-b border-slate-800 bg-[#0A0A0C] sm:aspect-[4/3]">
+      <div className="relative aspect-square overflow-hidden border-b border-slate-800 bg-[#0A0A0C]">
         <Link to={href} className="block h-full w-full" aria-label={`View ${product.name}`}>
           <ProductImage src={product.images?.[0]} alt={product.name} className="h-full w-full object-contain p-2.5 transition duration-500 group-hover:scale-[1.06] sm:p-3" fallbackClassName="h-full w-full" />
         </Link>
@@ -85,8 +85,10 @@ export default function ProductCard({ product }) {
         </p>
 
         <div className="mt-3 flex flex-wrap items-baseline gap-1.5 border-t border-slate-800 pt-3 sm:mt-4 sm:gap-2 sm:pt-4">
-          <span className="text-lg font-black text-white sm:text-xl">{money(product.price)}</span>
-          {hasDiscount && <span className="text-[11px] text-slate-500 line-through sm:text-xs">{money(product.mrp)}</span>}
+          <span className="inline-flex items-baseline gap-x-2 whitespace-nowrap">
+            {hasDiscount && <span className="text-[11px] text-slate-400 line-through sm:text-xs">{money(product.mrp)}</span>}
+            <span className="text-lg font-black text-white sm:text-xl">{money(product.price)}</span>
+          </span>
           <div className="ml-auto flex items-center gap-1 text-xs text-[#FFB800]">
             <Star size={13} className={rating > 0 ? "fill-current text-[#FFB800]" : "text-slate-600"} />
             <span className="font-bold">{rating ? rating.toFixed(1) : "NEW"}</span>

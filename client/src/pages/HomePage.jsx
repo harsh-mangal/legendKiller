@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  ArrowRight,
   BadgeCheck,
   CreditCard,
   Headphones,
@@ -15,10 +14,9 @@ import ConversionSections from "../components/home/ConversionSections";
 import Hero from "../components/home/Hero";
 import ProductShelf from "../components/home/ProductShelf";
 import RecentlyViewed from "../components/home/RecentlyViewed";
-import ProductImage from "../components/ui/ProductImage";
 import { COMMERCE } from "../config/commerce";
 import { useAuth } from "../context/AuthContext";
-import { bannerApi, categoryApi } from "../services/api";
+import { bannerApi } from "../services/api";
 import { money } from "../utils/format";
 
 export default function HomePage() {
@@ -28,19 +26,6 @@ export default function HomePage() {
       <Hero />
 
       <ShoppingBenefits />
-
-      <QuickCategories />
-
-      <ProductShelf
-        eyebrow="Individual products"
-        title="Best-selling single products"
-        description="Start with individual products customers return to most often, then explore value combos below."
-        params={{
-          bestSeller: "true",
-          sort: "featured",
-        }}
-        viewAllUrl="/products?bestSeller=true"
-      />
 
       <ProductShelf
         eyebrow="More individual choices"
@@ -206,142 +191,6 @@ function ShoppingBenefits() {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function QuickCategories() {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    let active = true;
-
-    categoryApi
-      .getCategories({
-        signal: controller.signal,
-      })
-      .then((items) => {
-        if (active) {
-          setCategories(Array.isArray(items) ? items : []);
-        }
-      })
-      .catch(() => {
-        if (active) {
-          setCategories([]);
-        }
-      })
-      .finally(() => {
-        if (active) {
-          setLoading(false);
-        }
-      });
-
-    return () => {
-      active = false;
-      controller.abort();
-    };
-  }, []);
-
-  if (!loading && categories.length === 0) {
-    return null;
-  }
-
-  return (
-    <section className="border-b border-slate-100 bg-white py-7 sm:py-10">
-      <div className="container-page">
-        <div className="mb-5 flex items-end justify-between gap-3 sm:mb-7">
-          <div className="min-w-0">
-            <p className="section-eyebrow">Quick shop</p>
-
-            <h2 className="mt-1 font-display text-[24px] font-semibold leading-tight text-slate-950 sm:text-3xl">
-              Shop by category
-            </h2>
-          </div>
-
-          <Link
-            to="/categories"
-            className="
-              inline-flex shrink-0 items-center gap-1
-              whitespace-nowrap text-[11px] font-extrabold
-              uppercase tracking-[0.1em] text-veda-leaf
-              transition hover:text-veda-copper
-              sm:gap-1.5 sm:text-xs sm:tracking-[0.12em]
-            "
-          >
-            View all
-            <ArrowRight size={14} />
-          </Link>
-        </div>
-
-        <div
-          className="
-            touch-scroll -mx-4 flex snap-x snap-mandatory
-            gap-3 overflow-x-auto px-4 pb-2
-            sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0
-            lg:justify-start
-          "
-        >
-          {loading
-            ? Array.from({ length: 6 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="
-                    h-[142px] w-[112px] shrink-0
-                    animate-pulse snap-start rounded-2xl
-                    border border-slate-200 bg-slate-100
-                    sm:h-[154px] sm:w-[128px]
-                  "
-                />
-              ))
-            : categories.slice(0, 6).map((category) => (
-                <Link
-                  key={category._id}
-                  to={`/categories/${category.slug}`}
-                  aria-label={`Shop ${category.name}`}
-                  className="
-                    group flex w-[112px] shrink-0 snap-start
-                    flex-col rounded-2xl border border-slate-200
-                    bg-white p-2 shadow-sm transition duration-200
-                    hover:-translate-y-1 hover:border-veda-gold
-                    hover:shadow-md
-                    sm:w-[128px] sm:p-2.5
-                  "
-                >
-                  <div
-                    className="
-                      flex h-[92px] items-center justify-center
-                      overflow-hidden rounded-xl bg-slate-50
-                      sm:h-[104px]
-                    "
-                  >
-                    <ProductImage
-                      src={category.image}
-                      alt={category.name}
-                      className="
-                        h-full w-full object-contain p-1
-                        transition duration-300
-                        group-hover:scale-[1.05]
-                      "
-                      fallbackClassName="h-full w-full"
-                    />
-                  </div>
-
-                  <span
-                    className="
-                      mt-2 flex min-h-8 items-center justify-center
-                      overflow-hidden text-center text-[11px]
-                      font-bold leading-4 text-slate-800
-                      sm:text-xs
-                    "
-                  >
-                    {category.name}
-                  </span>
-                </Link>
-              ))}
         </div>
       </div>
     </section>

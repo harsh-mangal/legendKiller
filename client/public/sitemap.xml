@@ -19,6 +19,14 @@
     <loc>https://legendbornnutrition.com/categories</loc>
   </url>
   <url>
+    <loc>https://legendbornnutrition.com/categories/coconut-water</loc>
+    <lastmod>2026-09-20T08:19:29.586Z</lastmod>
+  </url>
+  <url>
+    <loc>https://legendbornnutrition.com/categories/pre-workout-energy</loc>
+    <lastmod>2026-09-20T08:19:29.585Z</lastmod>
+  </url>
+  <url>
     <loc>https://legendbornnutrition.com/contact</loc>
   </url>
   <url>
@@ -44,5 +52,10 @@
   </url>
   <url>
     <loc>https://legendbornnutrition.com/products</loc>
+  </url>
+  <url>
+    <loc>https://legendbornnutrition.com/products/legend-slayer-the-viper-protocol</loc>
+    <lastmod>2026-09-19T15:09:27.969Z</lastmod>
+    <image:image><image:loc>https://api.legendbornnutrition.com/uploads/products/1789830564643-d218f701-866e-4b4a-9525-d68fcd4b3a33.webp</image:loc></image:image>
   </url>
 </urlset>
