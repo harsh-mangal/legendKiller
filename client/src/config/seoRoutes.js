@@ -44,13 +44,25 @@ export const STATIC_INDEXABLE_ROUTES = Object.freeze([
   {
     path: "/architectures",
     title: `Legend Slayer™ Performance Architectures | ${BRAND}`,
-    description: `Explore the 6 integrated performance architectures powering Legend Slayer: The Viper Protocol. Bioenergetics, neural drive, pumps, hydration & bioavailability.`,
+    description: `Explore the 6 performance architectures powering Legend Slayer: The Viper Protocol. Bioenergetics, neural drive, thermogenesis, nitric oxide, and hydration.`,
     keywords: "ATP Cellular Forge, Neuro AMP, Viper Protocol Architectures, Bioenergetics, Phosphocreatine Regeneration, Legend Slayer Science",
+  },
+  {
+    path: "/patents",
+    title: `Patents | ${COMPANY}`,
+    description: `Explore published patent documents from ${COMPANY}.`,
+    keywords: "Legend Born Nutrition patents, supplement research, nutrition innovation",
+  },
+  {
+    path: "/become-a-partner",
+    title: `Become a Partner | ${COMPANY}`,
+    description: `Send a wholesale or distribution inquiry to ${COMPANY}.`,
+    keywords: "Legend Born Nutrition distributor, wholesale supplements, become a partner",
   },
   {
     path: "/architectures/atp-cellular-forge",
     title: `ATP Cellular Forge™ Architecture | ${BRAND}`,
-    description: `Read the 19 chapters of ATP Cellular Forge: Phosphocreatine Regeneration, Creatine Utilization, Intramuscular Buffering & Muscle Contractile Support.`,
+    description: `Read ATP Cellular Forge: Phosphocreatine Regeneration, Creatine Utilization, Intramuscular Buffering & Muscle Contractile Support.`,
     keywords: "ATP Cellular Forge, Creatine Monohydrate, Biocreat, Beta Alanine, Betaine Anhydrous, Taurine, Phosphocreatine Regeneration",
   },
   {

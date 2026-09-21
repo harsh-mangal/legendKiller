@@ -17,7 +17,7 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import API from "../api/axios";
+import API, { STOREFRONT_URL } from "../api/axios";
 import {
   Badge,
   Button,
@@ -62,6 +62,7 @@ const blankArchitecture = {
   category: "Viper Protocol",
   badge: "5 Pillars",
   icon: "Zap",
+  logoUrl: "",
   shortDescription: "",
   overview: "",
   pillars: [
@@ -99,7 +100,7 @@ export default function Architectures() {
   const fetchArchitectures = useCallback(async () => {
     try {
       setLoading(true);
-      const { data } = await API.get("/architectures?admin=true");
+      const { data } = await API.get("/architectures/admin");
       setItems(data.data || []);
     } catch (err) {
       toast.error(getErrorMessage(err, "Failed to load architectures"));
@@ -128,6 +129,7 @@ export default function Architectures() {
       category: item.category || "Viper Protocol",
       badge: item.badge || "5 Pillars",
       icon: item.icon || "Zap",
+      logoUrl: item.logoUrl || "",
       shortDescription: item.shortDescription || "",
       overview: item.overview || "",
       pillars: item.pillars?.length ? item.pillars : [{ name: "", ingredient: "", role: "" }],
@@ -338,7 +340,7 @@ export default function Architectures() {
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <Input
               value={query}
-              onChange={(e) => setQuery(event.target.value)}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="Search architectures by name, category, or badge..."
               className="pl-9"
             />
@@ -372,8 +374,8 @@ export default function Architectures() {
                 <div>
                   <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
                     <div className="flex items-center gap-2">
-                      <div className="flex h-9 w-9 items-center justify-center bg-slate-900 text-[#FFB800]">
-                        <IconComponent size={20} />
+                      <div className="flex h-9 w-9 items-center justify-center overflow-hidden bg-slate-900 text-[#FFB800]">
+                        {item.logoUrl ? <img src={item.logoUrl.startsWith("/") ? `${STOREFRONT_URL}${item.logoUrl}` : item.logoUrl} alt="" className="h-full w-full object-cover" /> : <IconComponent size={20} />}
                       </div>
                       <div>
                         <Badge variant="outline" className="text-[10px] font-black uppercase text-[#FF5500]">
@@ -524,6 +526,9 @@ export default function Architectures() {
                     onChange={(e) => setForm({ ...form, icon: e.target.value })}
                     options={ICON_OPTIONS}
                   />
+                </Field>
+                <Field label="Logo URL">
+                  <Input value={form.logoUrl} onChange={(e) => setForm({ ...form, logoUrl: e.target.value })} placeholder="/architectures/logo.png" />
                 </Field>
                 <Field label="Sort Order">
                   <Input

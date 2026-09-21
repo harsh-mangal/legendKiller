@@ -19,6 +19,8 @@ import testimonialRoutes from "./routes/testimonialRoutes.js";
 import amyekaCoinRoutes from "./routes/amyekaCoinRoutes.js";
 import sitemapRoutes from "./routes/sitemapRoutes.js";
 import architectureRoutes from "./routes/architectureRoutes.js";
+import partnerRoutes from "./routes/partnerRoutes.js";
+import patentRoutes from "./routes/patentRoutes.js";
 import storefrontSettingRoutes from "./routes/storefrontSettingRoutes.js";
 import { getDashboardSummary, getUsers, updateUserBlockStatus } from "./controllers/adminController.js";
 import { razorpayWebhook } from "./controllers/orderController.js";
@@ -76,6 +78,8 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/promotions", promotionRoutes);
 app.use("/api/delivery", deliveryRoutes);
 app.use("/api/architectures", architectureRoutes);
+app.use("/api/partners", partnerRoutes);
+app.use("/api/patents", patentRoutes);
 app.use("/api/storefront-settings", storefrontSettingRoutes);
 
 app.get("/api/admin/dashboard", protect, adminOnly, getDashboardSummary);

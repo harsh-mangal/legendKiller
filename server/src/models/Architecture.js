@@ -20,6 +20,8 @@ const architectureSchema = new mongoose.Schema(
     category: { type: String, default: "Viper Protocol" },
     badge: { type: String, default: "5 Pillars" },
     icon: { type: String, default: "Zap" },
+    logoUrl: { type: String, default: "" },
+    contentVersion: { type: Number, default: 0 },
     shortDescription: { type: String, default: "" },
     overview: { type: String, default: "" },
     pillars: [pillarSchema],

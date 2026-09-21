@@ -31,7 +31,7 @@ export default function ArchitecturesPage() {
     <div className="min-h-screen bg-[#0A0A0C] text-slate-100 pb-20">
       <RouteMeta
         title="Legend Slayer™ Performance Architectures | Legend Born"
-        description="Explore the 6 integrated performance architectures powering Legend Slayer™: The Viper Protocol™. Bioenergetics, neural drive, thermogenesis, hyper-pumps, osmotic hydration & bioavailability."
+        description="Explore the 6 performance architectures powering Legend Slayer™: The Viper Protocol™. Bioenergetics, neural drive, thermogenesis, nitric oxide, and hydration."
       />
 
       {/* Hero Banner */}
@@ -49,7 +49,7 @@ export default function ArchitecturesPage() {
           </h1>
 
           <p className="mx-auto mt-4 max-w-3xl text-sm font-bold text-slate-300 leading-relaxed sm:text-base">
-            Moving beyond isolated ingredient mechanisms toward integrated performance physiology. Explore the 6 scientific pillars engineering human performance, strength, power, focus & endurance.
+            Explore six architecture documents covering energy, focus, thermogenesis, nitric oxide, pump, and hydration.
           </p>
         </div>
       </section>
@@ -66,8 +66,8 @@ export default function ArchitecturesPage() {
               >
                 <div>
                   <div className="flex items-center justify-between gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center border border-slate-800 bg-[#0A0A0C] text-[#FFB800] transition duration-300 group-hover:border-[#FF5500] group-hover:bg-[#FF5500] group-hover:text-black">
-                      <Icon size={24} />
+                    <div className="flex h-16 w-16 items-center justify-center overflow-hidden border border-slate-800 bg-[#0A0A0C] text-[#FFB800] transition duration-300 group-hover:border-[#FF5500]">
+                      {arch.logoUrl ? <img src={arch.logoUrl} alt="" className="h-full w-full scale-[2.2] object-cover" /> : <Icon size={24} />}
                     </div>
                     <span className="text-[10px] font-black uppercase tracking-widest text-[#FF5500] bg-[#FF5500]/10 px-3 py-1 border border-[#FF5500]/30">
                       {arch.badge}
@@ -132,7 +132,7 @@ export default function ArchitecturesPage() {
             System Engineering vs Isolated Ingredients
           </h3>
           <p className="mt-4 max-w-4xl text-sm leading-relaxed text-slate-300 font-medium">
-            Most sports nutrition formulations evaluate ingredients as isolated mechanisms. Legend Slayer™: The Viper Protocol™ organizes 6 complementary architectures spanning energy regeneration, neural motor drive, thermogenic expenditure, hyper-vasodilation, osmotic rehydration, and bioavailability enhancers to create cascading physiological performance outcomes.
+            Legend Slayer™: The Viper Protocol™ brings together architectures for energy regeneration, neural drive, thermogenic activity, nitric oxide pathways, and hydration.
           </p>
         </div>
       </section>

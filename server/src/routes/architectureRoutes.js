@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getArchitectures,
+  getAdminArchitectures,
   getArchitectureBySlug,
   createArchitecture,
   updateArchitecture,
@@ -12,6 +13,7 @@ import { adminOnly, protect } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.get("/", getArchitectures);
+router.get("/admin", protect, adminOnly, getAdminArchitectures);
 router.get("/:slug", getArchitectureBySlug);
 router.post("/", protect, adminOnly, createArchitecture);
 router.put("/:id", protect, adminOnly, updateArchitecture);

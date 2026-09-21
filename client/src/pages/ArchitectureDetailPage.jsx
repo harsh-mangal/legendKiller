@@ -21,6 +21,8 @@ export default function ArchitectureDetailPage() {
   const [fetchedArch, setFetchedArch] = useState(null);
 
   useEffect(() => {
+    setFetchedArch(null);
+    setActiveChapterIndex(0);
     architectureApi
       .getArchitectureBySlug(slug)
       .then((data) => {
@@ -32,7 +34,7 @@ export default function ArchitectureDetailPage() {
   }, [slug]);
 
   const arch = useMemo(() => {
-    if (fetchedArch) return fetchedArch;
+    if (fetchedArch?.slug === slug) return fetchedArch;
     return ARCHITECTURES.find((a) => a.slug === slug || a.id === slug);
   }, [slug, fetchedArch]);
 
@@ -71,9 +73,10 @@ export default function ArchitectureDetailPage() {
             </span>
           </div>
 
-          <h1 className="mt-4 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl lg:text-6xl">
-            {arch.title}
-          </h1>
+          <div className="mt-4 flex items-center gap-4">
+            {arch.logoUrl && <img src={arch.logoUrl} alt="" className="h-20 w-20 shrink-0 object-cover sm:h-28 sm:w-28" />}
+            <h1 className="text-3xl font-black uppercase tracking-tight text-white sm:text-5xl lg:text-6xl">{arch.title}</h1>
+          </div>
           <p className="mt-2 text-base font-bold uppercase tracking-wider text-[#FFB800] sm:text-xl">
             {arch.subtitle}
           </p>

@@ -32,6 +32,8 @@ const WishlistPage = lazy(() => import("./pages/WishlistPage"));
 const ProductVerifyPage = lazy(() => import("./pages/ProductVerifyPage"));
 const ArchitecturesPage = lazy(() => import("./pages/ArchitecturesPage"));
 const ArchitectureDetailPage = lazy(() => import("./pages/ArchitectureDetailPage"));
+const PartnerPage = lazy(() => import("./pages/PartnerPage"));
+const PatentsPage = lazy(() => import("./pages/PatentsPage"));
 
 function ProtectedRoute({ children }) {
   const { isLoggedIn, authLoading } = useAuth();
@@ -83,6 +85,8 @@ export default function App() {
         <Route path="/track-order" element={<TrackOrderPage />} />
         <Route path="/architectures" element={<ArchitecturesPage />} />
         <Route path="/architectures/:slug" element={<ArchitectureDetailPage />} />
+        <Route path="/become-a-partner" element={<PartnerPage />} />
+        <Route path="/patents" element={<PatentsPage />} />
         <Route path="/verify/:code" element={<ProductVerifyPage />} />
         <Route path="/verify" element={<ProductVerifyPage />} />
         <Route path="/wishlist" element={<WishlistPage />} />

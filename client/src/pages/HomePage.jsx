@@ -9,10 +9,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import ComboShelf from "../components/home/ComboShelf";
 import ConversionSections from "../components/home/ConversionSections";
 import Hero from "../components/home/Hero";
-import ProductShelf from "../components/home/ProductShelf";
 import RecentlyViewed from "../components/home/RecentlyViewed";
 import { COMMERCE } from "../config/commerce";
 import { useAuth } from "../context/AuthContext";
@@ -26,20 +24,6 @@ export default function HomePage() {
       <Hero />
 
       <ShoppingBenefits />
-
-      <ProductShelf
-        eyebrow="More individual choices"
-        title="Featured single products"
-        description="Popular individual products selected from the active catalogue."
-        params={{
-          featured: "true",
-          sort: "featured",
-        }}
-        viewAllUrl="/products?featured=true"
-        tone="soft"
-      />
-
-      <ComboShelf />
 
       <ConversionSections />
 

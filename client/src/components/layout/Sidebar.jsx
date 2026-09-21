@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { SITE } from "../../config/site";
 import { useAuth } from "../../context/AuthContext";
-import { ARCHITECTURES } from "../../data/architecturesData";
+import { ARCHITECTURE_SUMMARIES } from "../../data/architectureSummaries";
 import { useModalDialog } from "../../hooks/useModalDialog";
 
 export default function Sidebar({ open, onClose, links }) {
@@ -55,13 +55,14 @@ export default function Sidebar({ open, onClose, links }) {
 
                   {archOpen && (
                     <div className="ml-4 border-l border-slate-800 space-y-1 py-1">
-                      {ARCHITECTURES.map((arch) => (
+                      {ARCHITECTURE_SUMMARIES.map((arch) => (
                         <NavLink
                           key={arch.id}
                           to={`/architectures/${arch.slug}`}
                           onClick={onClose}
-                          className="block px-4 py-2 text-xs font-bold uppercase text-slate-400 hover:text-[#FFB800]"
+                          className="flex items-center gap-3 px-4 py-2 text-xs font-bold uppercase text-slate-400 hover:text-[#FFB800]"
                         >
+                          {arch.logoUrl && <span className="h-9 w-9 shrink-0 overflow-hidden"><img src={arch.logoUrl} alt="" className="h-full w-full scale-[2.2] object-cover" /></span>}
                           {arch.title}
                         </NavLink>
                       ))}

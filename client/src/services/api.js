@@ -338,3 +338,11 @@ export const architectureApi = {
   getArchitectures: async () => extractArray(await request("/architectures", { auth: "none" })),
   getArchitectureBySlug: async (slug) => unwrapData(await request(`/architectures/${encodeURIComponent(slug)}`, { auth: "none" })),
 };
+
+export const partnerApi = {
+  submit: (payload) => request("/partners", { method: "POST", auth: "none", body: jsonBody(payload) }),
+};
+
+export const patentApi = {
+  list: async () => extractArray(await request("/patents", { auth: "none" })),
+};

@@ -5,6 +5,7 @@ import MobileBottomNav from "./MobileBottomNav";
 import Navbar from "./Navbar";
 import RouteMeta from "./RouteMeta";
 import ScrollToTop from "./ScrollToTop";
+import WhatsAppButton from "./WhatsAppButton";
 
 const bottomNavHiddenPrefixes = [
   "/checkout",
@@ -28,6 +29,7 @@ export default function Layout() {
       <Footer />
       <ScrollToTop />
       <MobileBottomNav />
+      <WhatsAppButton />
       <CartDrawer />
     </div>
   );

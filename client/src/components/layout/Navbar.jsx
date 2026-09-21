@@ -7,14 +7,15 @@ import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import Sidebar from "./Sidebar";
 
-import { ARCHITECTURES } from "../../data/architecturesData";
+import { ARCHITECTURE_SUMMARIES } from "../../data/architectureSummaries";
 
 const navLinks = [
   { label: "SHOP ALL", path: "/products" },
-  { label: "BESTSELLERS", path: "/products?bestSeller=true" },
+  { label: "PATENTS", path: "/patents" },
   { label: "CATEGORIES", path: "/categories" },
   { label: "ARTICLES", path: "/articles" },
   { label: "ARCHITECTURES", path: "/architectures", hasDropdown: true },
+  { label: "BECOME A PARTNER", path: "/become-a-partner" },
 ];
 
 export default function Navbar() {
@@ -59,7 +60,7 @@ export default function Navbar() {
       <header className={`fixed inset-x-0 top-0 z-50 transition duration-300 ${scrolled ? "shadow-[0_10px_30px_rgba(0,0,0,0.8)] border-b border-[#FF5500]/30" : ""}`}>
         {/* Top Ticker Bar */}
         <div className="bg-gradient-to-r from-[#FFB800] via-[#FF5500] to-[#FF1F00] text-black overflow-hidden">
-          <div className="flex h-7 w-full items-center justify-between gap-6 px-3 text-[10px] font-black uppercase tracking-wider sm:h-8 sm:px-5 sm:text-[11px] xl:px-8 2xl:px-12">
+          <div className="flex h-7 w-full items-center justify-between gap-6 px-5 text-[10px] font-black uppercase tracking-wider sm:h-8 sm:px-8 sm:text-[11px] xl:px-12 2xl:px-16">
             {/* Mobile Ticker - Smooth Continuous Scrolling Marquee */}
             <div className="flex overflow-hidden w-full sm:hidden">
               <div className="marquee-track flex whitespace-nowrap gap-8 items-center shrink-0">
@@ -88,8 +89,6 @@ export default function Navbar() {
               <span>THE VIPER PROTOCOL | UP TO 40% OFF ON PROTEIN & PRE-WORKOUT</span>
             </div>
             <div className="hidden shrink-0 items-center gap-5 xl:flex">
-              <Link to="/architectures" className="transition hover:underline">Architectures</Link>
-              <Link to="/track-order" className="transition hover:underline">Track Order</Link>
               <a href={`tel:${SITE.supportPhoneHref}`} className="transition hover:underline">Support: {SITE.supportPhoneDisplay}</a>
             </div>
           </div>
@@ -97,7 +96,7 @@ export default function Navbar() {
 
         {/* Main Navbar */}
         <div className="relative border-b border-slate-900/80 bg-[#0A0A0C]/95 backdrop-blur-xl">
-          <div className="relative flex h-[68px] w-full items-center gap-2 px-3 sm:h-[76px] sm:gap-3 sm:px-5 xl:h-[84px] xl:px-8 2xl:px-12">
+          <div className="relative flex h-[68px] w-full items-center gap-2 px-5 sm:h-[76px] sm:gap-3 sm:px-8 xl:h-[84px] xl:px-12 2xl:px-16">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
@@ -115,7 +114,7 @@ export default function Navbar() {
               />
             </Link>
 
-            <nav className="hidden min-w-0 flex-1 items-center justify-center gap-4 xl:flex 2xl:gap-7" aria-label="Primary navigation">
+            <nav className="hidden min-w-0 flex-1 items-center justify-center gap-3 xl:flex 2xl:gap-5" aria-label="Primary navigation">
               {navLinks.map((link) => {
                 const [path, search = ""] = link.path.split("?");
                 const currentSearch = new URLSearchParams(location.search);
@@ -146,18 +145,14 @@ export default function Navbar() {
                             6 Viper Protocol™ Architectures
                           </p>
                           <div className="space-y-1">
-                            {ARCHITECTURES.map((arch) => (
+                            {ARCHITECTURE_SUMMARIES.map((arch) => (
                               <Link
                                 key={arch.id}
                                 to={`/architectures/${arch.slug}`}
-                                className="block p-2.5 hover:bg-[#1A1A22] transition border-l-2 border-transparent hover:border-[#FF5500]"
+                                className="flex items-center gap-3 p-2.5 hover:bg-[#1A1A22] transition border-l-2 border-transparent hover:border-[#FF5500]"
                               >
-                                <p className="text-xs font-black uppercase text-white hover:text-[#FFB800]">
-                                  {arch.title}
-                                </p>
-                                <p className="text-[10px] font-bold text-slate-400 truncate">
-                                  {arch.subtitle}
-                                </p>
+                                {arch.logoUrl && <span className="h-11 w-11 shrink-0 overflow-hidden"><img src={arch.logoUrl} alt="" className="h-full w-full scale-[2.2] object-cover" /></span>}
+                                <span className="min-w-0"><span className="block text-xs font-black uppercase text-white hover:text-[#FFB800]">{arch.title}</span><span className="block truncate text-[10px] font-bold text-slate-400">{arch.subtitle}</span></span>
                               </Link>
                             ))}
                           </div>

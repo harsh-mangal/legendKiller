@@ -7,6 +7,7 @@ import {
   FolderTree,
   Image,
   Inbox,
+  Handshake,
   Layers,
   MapPin,
   Package,
@@ -40,6 +41,7 @@ export const navigationGroups = [
       { label: "Customers", path: "/customers", icon: Users },
       { label: "Reviews", path: "/reviews", icon: Star },
       { label: "Enquiries", path: "/enquiries", icon: Inbox },
+      { label: "Partner inquiries", path: "/partner-inquiries", icon: Handshake },
     ],
   },
   {
@@ -49,6 +51,7 @@ export const navigationGroups = [
       { label: "Testimonials", path: "/testimonials", icon: Quote },
       { label: "Articles", path: "/articles", icon: FileText },
       { label: "Architectures", path: "/architectures", icon: Layers },
+      { label: "Patents", path: "/patents", icon: FileText },
     ],
   },
   {
