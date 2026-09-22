@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
-  Zap,
   Droplets,
   Dumbbell,
   ShieldCheck,
@@ -15,11 +14,8 @@ import { Crosshair, FlaskConical, Crown } from "lucide-react";
 
 const featuredGoals = [
   {
-    icon: Zap,
-    label: "Energy + focus",
+    image: "/viper-protocol-pre-workout.webp",
     title: "Pre-Workout",
-    description:
-      "Explosive energy, sharp focus, and a powerful pump for high-intensity training.",
     to: "/products/legend-slayer-the-viper-protocol",
   },
   {
@@ -126,25 +122,39 @@ function FitnessGoals() {
               aria-label="Featured performance categories"
             >
               {featuredGoals.map(
-                ({ icon: Icon, label, title, description, to }) => (
+                ({ icon: Icon, image, label, title, description, to }) => (
                   <Link
                     key={title}
                     to={to}
                     className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-slate-800 py-4 transition-colors last:border-b-0 hover:text-[#FFB800] sm:gap-5 sm:py-5"
                   >
-                    <span className="grid h-12 w-12 place-items-center border border-[#FF5500]/40 bg-[#FF5500]/10 text-[#FFB800] sm:h-14 sm:w-14">
-                      <Icon size={23} strokeWidth={2.2} />
-                    </span>
-                    <span>
-                      <span className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#FF5500]">
-                        {label}
+                    {image ? (
+                      <span className="h-20 w-20 shrink-0 overflow-hidden border border-[#FF5500]/50 bg-black sm:h-24 sm:w-24">
+                        <img
+                          src={image}
+                          alt="Legend Slayer The Viper Protocol pre-workout"
+                          className="h-full w-full object-cover"
+                        />
                       </span>
-                      <span className="mt-1 block font-display text-xl font-black uppercase text-white sm:text-2xl">
+                    ) : (
+                      <span className="grid h-12 w-12 place-items-center border border-[#FF5500]/40 bg-[#FF5500]/10 text-[#FFB800] sm:h-14 sm:w-14">
+                        <Icon size={23} strokeWidth={2.2} />
+                      </span>
+                    )}
+                    <span>
+                      {label && (
+                        <span className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#FF5500]">
+                          {label}
+                        </span>
+                      )}
+                      <span className={`${label ? "mt-1" : ""} block font-display text-xl font-black uppercase text-white sm:text-2xl`}>
                         {title}
                       </span>
-                      <span className="mt-1 block text-sm leading-6 text-slate-300">
-                        {description}
-                      </span>
+                      {description && (
+                        <span className="mt-1 block text-sm leading-6 text-slate-300">
+                          {description}
+                        </span>
+                      )}
                     </span>
                     <ArrowRight
                       className="text-[#FFB800] transition-transform group-hover:translate-x-1"

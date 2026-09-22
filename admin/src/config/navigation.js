@@ -41,7 +41,7 @@ export const navigationGroups = [
       { label: "Customers", path: "/customers", icon: Users },
       { label: "Reviews", path: "/reviews", icon: Star },
       { label: "Enquiries", path: "/enquiries", icon: Inbox },
-      { label: "Partner inquiries", path: "/partner-inquiries", icon: Handshake },
+      { label: "Dealer inquiries", path: "/partner-inquiries", icon: Handshake },
     ],
   },
   {

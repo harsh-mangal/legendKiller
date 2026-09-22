@@ -15,7 +15,7 @@ const navLinks = [
   { label: "CATEGORIES", path: "/categories" },
   { label: "ARTICLES", path: "/articles" },
   { label: "ARCHITECTURES", path: "/architectures", hasDropdown: true },
-  { label: "BECOME A PARTNER", path: "/become-a-partner" },
+  { label: "BECOME A DEALER", path: "/become-a-partner" },
 ];
 
 export default function Navbar() {

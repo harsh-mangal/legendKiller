@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 
 import ConversionSections from "../components/home/ConversionSections";
 import Hero from "../components/home/Hero";
-import RecentlyViewed from "../components/home/RecentlyViewed";
 import { COMMERCE } from "../config/commerce";
 import { useAuth } from "../context/AuthContext";
 import { bannerApi } from "../services/api";
@@ -26,8 +25,6 @@ export default function HomePage() {
       <ShoppingBenefits />
 
       <ConversionSections />
-
-      <RecentlyViewed />
 
       <AccountStrip />
     </main>

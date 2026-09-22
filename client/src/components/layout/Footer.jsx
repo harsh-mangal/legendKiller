@@ -21,7 +21,7 @@ const columns = [
       ["My Account", "/profile"],
       ["Saved Addresses", "/addresses"],
       ["24/7 Support", "/contact"],
-      ["Become a Dealer", "/dealer"],
+      ["Become a Dealer", "/become-a-partner"],
     ],
   },
   {
@@ -172,10 +172,10 @@ export default function Footer() {
               </a>
 
               <a
-                href="mailto:[REDACTED EMAIL ADDRESS]"
+                href={`mailto:${SITE.wholesaleEmail}`}
                 className="block break-all transition hover:text-[#FFB800]"
               >
-                [REDACTED EMAIL ADDRESS]
+                {SITE.wholesaleEmail}
               </a>
             </div>
           </div>

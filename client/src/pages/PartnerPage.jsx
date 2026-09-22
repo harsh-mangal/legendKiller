@@ -23,12 +23,12 @@ export default function PartnerPage() {
   const field = (name, label, required = false, type = "text") => <label className="block text-sm font-bold text-slate-200">{label}{required ? " *" : ""}<input type={type} required={required} maxLength={name === "gstNumber" ? 15 : undefined} value={form[name]} onChange={(event) => update(name, event.target.value)} className="mt-2 w-full" autoComplete={name === "email" ? "email" : name === "firstName" ? "given-name" : name === "lastName" ? "family-name" : name === "contactNumber" ? "tel" : undefined} /></label>;
   const choice = (name, label, options) => <label className="block text-sm font-bold text-slate-200">{label} *<select required value={form[name]} onChange={(event) => update(name, event.target.value)} className="mt-2 w-full"><option value="">Select {label.toLowerCase()}</option>{options.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>;
   return <div className="container-page py-12 sm:py-20">
-    <RouteMeta title="Become a Partner | Legend Born Nutrition" description="Send a wholesale or distribution inquiry to Legend Born Nutrition." />
+    <RouteMeta title="Become a Dealer | Legend Born Nutrition" description="Send a wholesale or distribution inquiry to Legend Born Nutrition." />
     <div className="mx-auto max-w-3xl border border-slate-700 bg-[#121216] p-5 sm:p-10">
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-[#FFB800]">Become a Partner</p>
+      <p className="text-xs font-black uppercase tracking-[0.2em] text-[#FFB800]">Become a Dealer</p>
       <h1 className="mt-3 text-3xl font-black uppercase text-white sm:text-4xl">Wholesale/Distribution Inquiry</h1>
       <p className="mt-5 border-l-2 border-[#FF5500] pl-4 text-sm leading-6 text-slate-300">By submitting your contact information, you consent to be contacted by telephone or email about purchasing a product, obtaining a dealership, or related products and services.</p>
-      {success && <div role="status" className="mt-6 border border-emerald-500 bg-emerald-500/10 p-4 text-emerald-300">Thank you. Your partnership inquiry has been received.</div>}
+      {success && <div role="status" className="mt-6 border border-emerald-500 bg-emerald-500/10 p-4 text-emerald-300">Thank you. Your dealer inquiry has been received.</div>}
       {error && <div role="alert" className="mt-6 border border-red-500 bg-red-500/10 p-4 text-red-300">{error}</div>}
       <form onSubmit={submit} className="mt-8 grid gap-5">
         <div className="grid gap-5 sm:grid-cols-2">{field("firstName", "First Name", true)}{field("lastName", "Last Name")}</div>

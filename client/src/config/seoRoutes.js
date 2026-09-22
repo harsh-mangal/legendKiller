@@ -55,9 +55,9 @@ export const STATIC_INDEXABLE_ROUTES = Object.freeze([
   },
   {
     path: "/become-a-partner",
-    title: `Become a Partner | ${COMPANY}`,
+    title: `Become a Dealer | ${COMPANY}`,
     description: `Send a wholesale or distribution inquiry to ${COMPANY}.`,
-    keywords: "Legend Born Nutrition distributor, wholesale supplements, become a partner",
+    keywords: "Legend Born Nutrition dealer, distributor, wholesale supplements, become a dealer",
   },
   {
     path: "/architectures/atp-cellular-forge",

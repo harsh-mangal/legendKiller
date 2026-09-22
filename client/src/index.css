@@ -162,6 +162,10 @@
   .product-page .section-eyebrow {
     color: #9a3412;
   }
+
+  .product-page p {
+    color: inherit;
+  }
 }
 
 .marquee-track {

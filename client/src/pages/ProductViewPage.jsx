@@ -3,6 +3,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Heart,
   Minus,
   PackageCheck,
@@ -107,6 +109,9 @@ export default function ProductViewPage() {
       setProduct(null);
       setRelatedProducts([]);
       setShareStatus(null);
+      setIsSlideshowPlaying(true);
+      setIsImageOpen(false);
+      setActiveProductTab("about");
 
       try {
         const response = await productApi.getProductBySlug(slug, {
@@ -171,7 +176,12 @@ export default function ProductViewPage() {
   );
 
   useEffect(() => {
-    if (!isSlideshowPlaying || galleryImages.length < 2) return undefined;
+    if (
+      !isSlideshowPlaying ||
+      isImageOpen ||
+      galleryImages.length < 2
+    )
+      return undefined;
 
     const slideshow = window.setInterval(() => {
       setSelectedImage((currentImage) => {
@@ -184,7 +194,45 @@ export default function ProductViewPage() {
     }, 3500);
 
     return () => window.clearInterval(slideshow);
-  }, [galleryImages, isSlideshowPlaying]);
+  }, [galleryImages, isImageOpen, isSlideshowPlaying]);
+
+  useEffect(() => {
+    if (!isImageOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsImageOpen(false);
+        return;
+      }
+
+      if (galleryImages.length < 2) return;
+
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        const direction = event.key === "ArrowLeft" ? -1 : 1;
+        setSelectedImage((currentImage) => {
+          const currentIndex = Math.max(
+            0,
+            galleryImages.indexOf(currentImage),
+          );
+          const nextIndex =
+            (currentIndex + direction + galleryImages.length) %
+            galleryImages.length;
+          return galleryImages[nextIndex];
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [galleryImages, isImageOpen]);
 
   const visibleReviews = useMemo(() => {
     return (product?.reviews || [])
@@ -234,6 +282,17 @@ export default function ProductViewPage() {
   }
 
   const images = galleryImages;
+  const selectedImageIndex = Math.max(
+    0,
+    images.indexOf(selectedImage || images[0]),
+  );
+
+  const showAdjacentImage = (direction) => {
+    if (images.length < 2) return;
+    const nextIndex =
+      (selectedImageIndex + direction + images.length) % images.length;
+    setSelectedImage(images[nextIndex]);
+  };
 
   const hasDiscount = Number(product.mrp || 0) > Number(product.price || 0);
 
@@ -511,35 +570,67 @@ export default function ProductViewPage() {
           </span>
         </nav>
         <div className="min-w-0 lg:sticky lg:top-28">
-          <div className="group relative flex min-h-[420px] w-full items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm sm:min-h-[520px] lg:h-[600px]">
+          <div className="group relative aspect-square w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
             <button
               type="button"
               onClick={() => setIsImageOpen(true)}
-              className="flex h-full w-full cursor-zoom-in items-center justify-center"
+              className="absolute inset-0 flex cursor-zoom-in items-center justify-center"
               aria-label={`Open ${product.name} image`}
             >
               <ProductImage
                 key={selectedImage || images[0]}
                 src={selectedImage || images[0]}
                 alt={product.name}
-                className="h-full w-full object-contain p-5 sm:p-8 lg:p-10"
+                className="h-full w-full object-contain p-3 sm:p-6 lg:p-8"
                 fallbackClassName="h-full w-full"
                 loading="eager"
               />
             </button>
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    showAdjacentImage(-1);
+                    setIsSlideshowPlaying(false);
+                  }}
+                  className="absolute left-2 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-md backdrop-blur transition hover:bg-slate-950 hover:text-white sm:left-4"
+                  aria-label="Show previous product image"
+                >
+                  <ChevronLeft size={21} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    showAdjacentImage(1);
+                    setIsSlideshowPlaying(false);
+                  }}
+                  className="absolute right-2 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-md backdrop-blur transition hover:bg-slate-950 hover:text-white sm:right-4"
+                  aria-label="Show next product image"
+                >
+                  <ChevronRight size={21} />
+                </button>
+              </>
+            )}
             <button
               type="button"
               onClick={() => setIsImageOpen(true)}
-              className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-md backdrop-blur transition hover:bg-slate-950 hover:text-white"
+              className="absolute right-3 top-3 grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-md backdrop-blur transition hover:bg-slate-950 hover:text-white sm:right-4 sm:top-4"
               aria-label="View full image"
             >
               <ZoomIn size={18} />
             </button>
-            {images.length > 1 && (
+          </div>
+          {images.length > 1 && (
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+              <span className="text-xs font-semibold text-slate-500" aria-live="polite">
+                Image {selectedImageIndex + 1} of {images.length}
+              </span>
               <button
                 type="button"
                 onClick={() => setIsSlideshowPlaying((current) => !current)}
-                className="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-800 shadow-md backdrop-blur transition hover:bg-slate-950 hover:text-white"
+                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-800 transition hover:border-slate-950 hover:bg-slate-950 hover:text-white"
+                aria-pressed={!isSlideshowPlaying}
               >
                 {isSlideshowPlaying ? (
                   <>
@@ -551,10 +642,10 @@ export default function ProductViewPage() {
                   </>
                 )}
               </button>
-            )}
-          </div>
+            </div>
+          )}
           {images.length > 1 && (
-            <div className="touch-scroll -mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-5 sm:px-0">
+            <div className="touch-scroll -mx-5 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0">
               {images.map((image, index) => (
                 <button
                   key={`${image}-${index}`}
@@ -563,7 +654,7 @@ export default function ProductViewPage() {
                     setSelectedImage(image);
                     setIsSlideshowPlaying(false);
                   }}
-                  className={`aspect-square w-20 shrink-0 overflow-hidden rounded-lg border bg-white transition sm:w-auto ${selectedImage === image ? "border-slate-950 ring-2 ring-slate-200" : "border-slate-200 hover:border-slate-500"}`}
+                  className={`aspect-square w-20 shrink-0 snap-start overflow-hidden rounded-lg border bg-white transition sm:w-24 ${selectedImage === image ? "border-slate-950 ring-2 ring-slate-200" : "border-slate-200 hover:border-slate-500"}`}
                   aria-label={`View ${product.name} image ${index + 1}`}
                 >
                   <ProductImage
@@ -771,8 +862,8 @@ export default function ProductViewPage() {
 
       <div className="container-page mt-10 sm:mt-16">
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div className="overflow-x-auto border-b border-slate-200">
-            <div className="flex min-w-max">
+          <div className="border-b border-slate-200">
+            <div className="grid w-full grid-cols-3" role="tablist" aria-label="Product information">
               {[
                 { key: "about", label: "About this Product" },
                 { key: "nutrition", label: "Nutritional Facts" },
@@ -782,7 +873,11 @@ export default function ProductViewPage() {
                   key={tab.key}
                   type="button"
                   onClick={() => setActiveProductTab(tab.key)}
-                  className={`relative min-w-[180px] px-6 py-5 text-sm font-bold uppercase tracking-[0.08em] transition sm:min-w-[220px] ${activeProductTab === tab.key ? "text-slate-950" : "text-slate-400 hover:text-slate-700"}`}
+                  role="tab"
+                  id={`product-tab-${tab.key}`}
+                  aria-selected={activeProductTab === tab.key}
+                  aria-controls={`product-panel-${tab.key}`}
+                  className={`relative px-2 py-4 text-[10px] font-bold uppercase leading-4 tracking-[0.04em] transition sm:px-6 sm:py-5 sm:text-sm sm:tracking-[0.08em] ${activeProductTab === tab.key ? "text-slate-950" : "text-slate-400 hover:text-slate-700"}`}
                 >
                   {tab.label}
                   {activeProductTab === tab.key && (
@@ -792,7 +887,12 @@ export default function ProductViewPage() {
               ))}
             </div>
           </div>
-          <div className="p-5 sm:p-8 lg:p-10">
+          <div
+            className="p-5 sm:p-8 lg:p-10"
+            role="tabpanel"
+            id={`product-panel-${activeProductTab}`}
+            aria-labelledby={`product-tab-${activeProductTab}`}
+          >
             {activeProductTab === "about" && (
               <div>
                 <p className="section-eyebrow">Product Information</p>
@@ -849,11 +949,12 @@ export default function ProductViewPage() {
                       ))}
                     </div>
                   </div>
-                ) : (
+                ) : !Array.isArray(product.ingredients) ||
+                  product.ingredients.length === 0 ? (
                   <div className="mt-6 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
                     Nutritional information is not available for this product.
                   </div>
-                )}
+                ) : null}
                 {Array.isArray(product.ingredients) &&
                   product.ingredients.length > 0 && (
                     <div className="mt-8">
@@ -1008,7 +1109,7 @@ export default function ProductViewPage() {
 
       {isImageOpen && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[150] flex items-center justify-center bg-black/95 p-2 backdrop-blur-sm sm:p-6"
           role="dialog"
           aria-modal="true"
           aria-label={`${product.name} enlarged image`}
@@ -1017,21 +1118,55 @@ export default function ProductViewPage() {
           <button
             type="button"
             onClick={() => setIsImageOpen(false)}
-            className="absolute right-5 top-5 z-20 grid h-12 w-12 place-items-center rounded-full border border-white/20 bg-black/40 text-white transition hover:bg-white hover:text-black"
+            autoFocus
+            className="absolute right-3 top-3 z-20 grid h-12 w-12 place-items-center rounded-full border border-white/20 bg-black/60 text-white transition hover:bg-white hover:text-black sm:right-5 sm:top-5"
             aria-label="Close image"
           >
             <X size={22} />
           </button>
           <div
-            className="flex h-full max-h-[90vh] w-full max-w-6xl items-center justify-center"
+            className="relative flex h-full max-h-[calc(100dvh-1rem)] w-full max-w-6xl items-center justify-center sm:max-h-[calc(100dvh-3rem)]"
             onClick={(event) => event.stopPropagation()}
           >
             <ProductImage
               src={selectedImage || images[0]}
               alt={product.name}
-              className="max-h-[90vh] max-w-full object-contain"
-              fallbackClassName="max-h-[90vh] max-w-full"
+              className="max-h-[calc(100dvh-7rem)] max-w-full object-contain sm:max-h-[calc(100dvh-9rem)]"
+              fallbackClassName="max-h-[calc(100dvh-7rem)] max-w-full sm:max-h-[calc(100dvh-9rem)]"
             />
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => showAdjacentImage(-1)}
+                  className="absolute left-0 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/60 text-white transition hover:bg-white hover:text-black sm:left-3"
+                  aria-label="Show previous product image"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => showAdjacentImage(1)}
+                  className="absolute right-0 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/60 text-white transition hover:bg-white hover:text-black sm:right-3"
+                  aria-label="Show next product image"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              </>
+            )}
+            <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center justify-center gap-3 text-xs font-bold uppercase tracking-wide text-white">
+              <span>
+                Image {selectedImageIndex + 1} of {images.length}
+              </span>
+              <a
+                href={selectedImage || images[0]}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-white/30 bg-black/60 px-4 py-2 transition hover:bg-white hover:text-black"
+              >
+                Open original image
+              </a>
+            </div>
           </div>
         </div>
       )}
