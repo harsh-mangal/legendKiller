@@ -6,6 +6,8 @@ import {
   Heart,
   Minus,
   PackageCheck,
+  Pause,
+  Play,
   Plus,
   Share2,
   ShieldCheck,
@@ -14,6 +16,8 @@ import {
   Truck,
   Volume2,
   VolumeX,
+  X,
+  ZoomIn,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
@@ -83,6 +87,9 @@ export default function ProductViewPage() {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [isSlideshowPlaying, setIsSlideshowPlaying] = useState(true);
+  const [isImageOpen, setIsImageOpen] = useState(false);
+  const [activeProductTab, setActiveProductTab] = useState("about");
   const [ratingFilter, setRatingFilter] = useState("all");
   const [mediaFilter, setMediaFilter] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -159,28 +166,25 @@ export default function ProductViewPage() {
 
   const galleryImages = useMemo(
     () =>
-      Array.isArray(product?.images)
-        ? product.images.filter(Boolean)
-        : [],
+      Array.isArray(product?.images) ? product.images.filter(Boolean) : [],
     [product?.images],
   );
 
   useEffect(() => {
-    if (galleryImages.length < 2) return undefined;
+    if (!isSlideshowPlaying || galleryImages.length < 2) return undefined;
 
     const slideshow = window.setInterval(() => {
       setSelectedImage((currentImage) => {
         const currentIndex = galleryImages.indexOf(currentImage);
-        const nextIndex = currentIndex < 0
-          ? 0
-          : (currentIndex + 1) % galleryImages.length;
+        const nextIndex =
+          currentIndex < 0 ? 0 : (currentIndex + 1) % galleryImages.length;
 
         return galleryImages[nextIndex];
       });
     }, 3500);
 
     return () => window.clearInterval(slideshow);
-  }, [galleryImages]);
+  }, [galleryImages, isSlideshowPlaying]);
 
   const visibleReviews = useMemo(() => {
     return (product?.reviews || [])
@@ -211,7 +215,13 @@ export default function ProductViewPage() {
   if (error || !product) {
     return (
       <section className="page-section">
-        <Seo title={`Product Not Found | ${SITE.name}`} description="The requested product is not currently available." canonicalPath={`/products/${slug}`} indexable={false} structuredData={[]} />
+        <Seo
+          title={`Product Not Found | ${SITE.name}`}
+          description="The requested product is not currently available."
+          canonicalPath={`/products/${slug}`}
+          indexable={false}
+          structuredData={[]}
+        />
         <div className="container-page max-w-2xl">
           <Alert type="error">{error || "Product not found."}</Alert>
 
@@ -283,7 +293,8 @@ export default function ProductViewPage() {
     const shareData = {
       title: product.seoTitle || product.name,
       text:
-        product.shortDescription || `Check out ${product.name} on Legend Killer.`,
+        product.shortDescription ||
+        `Check out ${product.name} on Legend Killer.`,
       url: shareUrl,
     };
 
@@ -384,9 +395,14 @@ export default function ProductViewPage() {
 
   const canonicalPath = `/products/${product.slug}`;
   const seoDescription = String(
-    product.seoDescription || product.shortDescription || product.description ||
+    product.seoDescription ||
+      product.shortDescription ||
+      product.description ||
       `View ${product.name}, pack information, price and responsible-use details.`,
-  ).replace(/\s+/g, " ").trim().slice(0, 180);
+  )
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 180);
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -407,12 +423,17 @@ export default function ProductViewPage() {
       url: absoluteUrl(canonicalPath),
       priceCurrency: SITE.currency,
       price: Number(product.price || 0),
-      availability: outOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+      availability: outOfStock
+        ? "https://schema.org/OutOfStock"
+        : "https://schema.org/InStock",
       itemCondition: "https://schema.org/NewCondition",
       seller: { "@id": `${SITE.url}/#organization` },
     },
   };
-  if (Number(product.numReviews || visibleReviews.length) > 0 && Number(product.rating || 0) > 0) {
+  if (
+    Number(product.numReviews || visibleReviews.length) > 0 &&
+    Number(product.rating || 0) > 0
+  ) {
     productSchema.aggregateRating = {
       "@type": "AggregateRating",
       ratingValue: Number(product.rating),
@@ -425,7 +446,12 @@ export default function ProductViewPage() {
       author: { "@type": "Person", name: review.name },
       datePublished: review.createdAt,
       reviewBody: review.comment,
-      reviewRating: { "@type": "Rating", ratingValue: Number(review.rating), bestRating: 5, worstRating: 1 },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: Number(review.rating),
+        bestRating: 5,
+        worstRating: 1,
+      },
     }));
   }
 
@@ -444,48 +470,106 @@ export default function ProductViewPage() {
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Products", path: "/products" },
-            ...(product.category?.slug ? [{ name: product.category.name, path: `/categories/${product.category.slug}` }] : []),
+            ...(product.category?.slug
+              ? [
+                  {
+                    name: product.category.name,
+                    path: `/categories/${product.category.slug}`,
+                  },
+                ]
+              : []),
             { name: product.name, path: canonicalPath },
           ]),
         ]}
       />
       <div className="container-page grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start">
-        <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 overflow-hidden text-xs text-slate-500 lg:col-span-2">
-          <Link to="/" className="shrink-0 hover:text-slate-950">Home</Link><span aria-hidden="true">/</span>
-          <Link to="/products" className="shrink-0 hover:text-slate-950">Products</Link><span aria-hidden="true">/</span>
-          {product.category?.slug && <><Link to={`/categories/${product.category.slug}`} className="shrink-0 hover:text-slate-950">{product.category.name}</Link><span aria-hidden="true">/</span></>}
-          <span className="truncate text-slate-700" aria-current="page">{product.name}</span>
+        <nav
+          aria-label="Breadcrumb"
+          className="flex min-w-0 items-center gap-2 overflow-hidden text-xs text-slate-500 lg:col-span-2"
+        >
+          <Link to="/" className="shrink-0 hover:text-slate-950">
+            Home
+          </Link>
+          <span aria-hidden="true">/</span>
+          <Link to="/products" className="shrink-0 hover:text-slate-950">
+            Products
+          </Link>
+          <span aria-hidden="true">/</span>
+          {product.category?.slug && (
+            <>
+              <Link
+                to={`/categories/${product.category.slug}`}
+                className="shrink-0 hover:text-slate-950"
+              >
+                {product.category.name}
+              </Link>
+              <span aria-hidden="true">/</span>
+            </>
+          )}
+          <span className="truncate text-slate-700" aria-current="page">
+            {product.name}
+          </span>
         </nav>
         <div className="min-w-0 lg:sticky lg:top-28">
-          <div className="aspect-square w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-            <ProductImage
-              key={selectedImage || images[0]}
-              src={selectedImage || images[0]}
-              alt={product.name}
-              className="h-full w-full object-contain"
-              fallbackClassName="h-full w-full"
-              loading="eager"
-            />
+          <div className="group relative flex min-h-[420px] w-full items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm sm:min-h-[520px] lg:h-[600px]">
+            <button
+              type="button"
+              onClick={() => setIsImageOpen(true)}
+              className="flex h-full w-full cursor-zoom-in items-center justify-center"
+              aria-label={`Open ${product.name} image`}
+            >
+              <ProductImage
+                key={selectedImage || images[0]}
+                src={selectedImage || images[0]}
+                alt={product.name}
+                className="h-full w-full object-contain p-5 sm:p-8 lg:p-10"
+                fallbackClassName="h-full w-full"
+                loading="eager"
+              />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsImageOpen(true)}
+              className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-md backdrop-blur transition hover:bg-slate-950 hover:text-white"
+              aria-label="View full image"
+            >
+              <ZoomIn size={18} />
+            </button>
+            {images.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setIsSlideshowPlaying((current) => !current)}
+                className="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-800 shadow-md backdrop-blur transition hover:bg-slate-950 hover:text-white"
+              >
+                {isSlideshowPlaying ? (
+                  <>
+                    <Pause size={15} /> Stop Slideshow
+                  </>
+                ) : (
+                  <>
+                    <Play size={15} /> Start Slideshow
+                  </>
+                )}
+              </button>
+            )}
           </div>
-
           {images.length > 1 && (
-            <div className="touch-scroll -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:mt-4 sm:grid sm:grid-cols-5 sm:gap-3 sm:px-0">
+            <div className="touch-scroll -mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-5 sm:px-0">
               {images.map((image, index) => (
                 <button
                   key={`${image}-${index}`}
                   type="button"
-                  onClick={() => setSelectedImage(image)}
-                  className={`aspect-square w-20 shrink-0 overflow-hidden rounded-[4px] border bg-slate-100 sm:w-auto sm:rounded-[6px] ${
-                    selectedImage === image
-                      ? "border-slate-950 ring-2 ring-slate-200"
-                      : "border-slate-200 hover:border-slate-400"
-                  }`}
+                  onClick={() => {
+                    setSelectedImage(image);
+                    setIsSlideshowPlaying(false);
+                  }}
+                  className={`aspect-square w-20 shrink-0 overflow-hidden rounded-lg border bg-white transition sm:w-auto ${selectedImage === image ? "border-slate-950 ring-2 ring-slate-200" : "border-slate-200 hover:border-slate-500"}`}
                   aria-label={`View ${product.name} image ${index + 1}`}
                 >
                   <ProductImage
                     src={image}
                     alt=""
-                    className="h-full w-full object-contain"
+                    className="h-full w-full object-contain p-1"
                     fallbackClassName="h-full w-full"
                   />
                 </button>
@@ -501,7 +585,9 @@ export default function ProductViewPage() {
             </p>
           </div>
 
-          <h1 className="mt-3 break-words !font-sans text-[1.4rem] font-semibold leading-[1.25] tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">{product.name}</h1>
+          <h1 className="mt-3 break-words !font-sans text-[1.4rem] font-semibold leading-[1.25] tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+            {product.name}
+          </h1>
 
           {shareStatus && (
             <p
@@ -555,8 +641,14 @@ export default function ProductViewPage() {
           <div className="mt-5 border-y border-slate-200 py-5 sm:mt-6 sm:py-6">
             <div className="flex flex-wrap items-end gap-3">
               <span className="inline-flex items-baseline gap-x-3 whitespace-nowrap">
-                {hasDiscount && <span className="text-lg text-slate-500 line-through">{money(product.mrp)}</span>}
-                <span className="text-3xl font-semibold text-slate-950 sm:text-4xl">{money(product.price)}</span>
+                {hasDiscount && (
+                  <span className="text-lg text-slate-500 line-through">
+                    {money(product.mrp)}
+                  </span>
+                )}
+                <span className="text-3xl font-semibold text-slate-950 sm:text-4xl">
+                  {money(product.price)}
+                </span>
               </span>
               {hasDiscount && (
                 <span className="mb-1 rounded-full bg-red-50 px-3 py-1 text-sm font-semibold text-red-700">
@@ -678,79 +770,151 @@ export default function ProductViewPage() {
       </div>
 
       <div className="container-page mt-10 sm:mt-16">
-        <div className="border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[8px] sm:p-8">
-          <p className="section-eyebrow">Product details</p>
-
-          <ProductDescriptionMedia product={product} />
-
-          <section className="mt-6 border-t border-slate-200 pt-6 lg:mt-10 lg:pt-8">
-            <h2 className="hidden text-[1.75rem] font-semibold text-slate-950 lg:block lg:text-3xl">
-              About this product
-            </h2>
-
-            <div className="mt-5 hidden space-y-4 text-base leading-8 lg:block">
-              {product.longDescription && (
-                <p className="whitespace-pre-line text-slate-950">{product.longDescription}</p>
-              )}
-
-              {product.description &&
-                product.description !== product.longDescription && (
-                  <p className="whitespace-pre-line text-slate-950">{product.description}</p>
-              )}
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-x-auto border-b border-slate-200">
+            <div className="flex min-w-max">
+              {[
+                { key: "about", label: "About this Product" },
+                { key: "nutrition", label: "Nutritional Facts" },
+                { key: "usage", label: "How to Use" },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setActiveProductTab(tab.key)}
+                  className={`relative min-w-[180px] px-6 py-5 text-sm font-bold uppercase tracking-[0.08em] transition sm:min-w-[220px] ${activeProductTab === tab.key ? "text-slate-950" : "text-slate-400 hover:text-slate-700"}`}
+                >
+                  {tab.label}
+                  {activeProductTab === tab.key && (
+                    <span className="absolute inset-x-0 bottom-0 h-[3px] bg-[#FF5500]" />
+                  )}
+                </button>
+              ))}
             </div>
-
-            <div className="lg:hidden">
-              <MobileAccordion title="About this product">
-                <div className="space-y-4 text-[15px] leading-7">
-                  {product.longDescription && <p className="whitespace-pre-line text-slate-950">{product.longDescription}</p>}
-                  {product.description && product.description !== product.longDescription && <p className="whitespace-pre-line text-slate-950">{product.description}</p>}
-                </div>
-              </MobileAccordion>
-            </div>
-          </section>
-
-          <ProductSpecifications items={productSpecifications} />
-
-          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            <Info title="Ingredients" items={product.ingredients} />
-
-            <Info title="How to use" text={product.howToUse} />
-
-            <Info title="Suitable for" items={product.suitableFor} />
-
-            <Info
-              title="Storage instructions"
-              text={product.storageInstructions}
-            />
-
-            <Info title="Warnings" items={product.warnings} warning />
-
-            <Info
-              title="Legal disclaimer"
-              text={product.legalDisclaimer}
-              warning
-            />
           </div>
-
-          <div className="mt-8 space-y-6 border-t border-slate-200 pt-8 lg:hidden">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <TrustBox
-                icon={ShieldCheck}
-                title="Product information"
-                description="Ingredients and usage details provided"
-              />
-              <TrustBox
-                icon={Truck}
-                title="Delivery support"
-                description="Track shipping from your account"
-              />
-              <TrustBox
-                icon={PackageCheck}
-                title="Secure ordering"
-                description="Stock and totals verified at checkout"
-              />
-            </div>
-            <KeyBenefits benefits={product.benefits} compact />
+          <div className="p-5 sm:p-8 lg:p-10">
+            {activeProductTab === "about" && (
+              <div>
+                <p className="section-eyebrow">Product Information</p>
+                <h2 className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">
+                  About this Product
+                </h2>
+                <div className="mt-6 max-w-4xl space-y-5 text-[15px] leading-8 text-slate-700 sm:text-base">
+                  {product.longDescription && (
+                    <p className="whitespace-pre-line">
+                      {product.longDescription}
+                    </p>
+                  )}
+                  {product.description &&
+                    product.description !== product.longDescription && (
+                      <p className="whitespace-pre-line">
+                        {product.description}
+                      </p>
+                    )}
+                </div>
+                <ProductSpecifications items={productSpecifications} />
+                {Array.isArray(product.benefits) &&
+                  product.benefits.length > 0 && (
+                    <KeyBenefits benefits={product.benefits} />
+                  )}
+              </div>
+            )}
+            {activeProductTab === "nutrition" && (
+              <div>
+                <p className="section-eyebrow">Formula Breakdown</p>
+                <h2 className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">
+                  Nutritional Facts
+                </h2>
+                {Array.isArray(product.nutritionalFacts) &&
+                product.nutritionalFacts.length > 0 ? (
+                  <div className="mt-6 overflow-hidden rounded-lg border border-slate-200">
+                    <div className="divide-y divide-slate-200">
+                      {product.nutritionalFacts.map((item, index) => (
+                        <div
+                          key={
+                            item._id || `${item.name || item.nutrient}-${index}`
+                          }
+                          className="grid grid-cols-[1fr_auto] gap-6 px-5 py-4 sm:grid-cols-[1fr_160px_120px]"
+                        >
+                          <span className="font-medium text-slate-900">
+                            {item.name || item.nutrient}
+                          </span>
+                          <span className="text-right text-slate-600">
+                            {item.amount || item.value}
+                          </span>
+                          <span className="hidden text-right font-semibold text-slate-800 sm:block">
+                            {item.dailyValue || "—"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-6 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
+                    Nutritional information is not available for this product.
+                  </div>
+                )}
+                {Array.isArray(product.ingredients) &&
+                  product.ingredients.length > 0 && (
+                    <div className="mt-8">
+                      <h3 className="text-lg font-semibold text-slate-950">
+                        Ingredients
+                      </h3>
+                      <ul className="mt-4 space-y-3">
+                        {product.ingredients.map((ingredient) => (
+                          <li
+                            key={ingredient}
+                            className="flex gap-3 text-sm leading-6 text-slate-700"
+                          >
+                            <span className="font-bold text-[#FF5500]">•</span>
+                            {ingredient}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+              </div>
+            )}
+            {activeProductTab === "usage" && (
+              <div>
+                <p className="section-eyebrow">Recommended Usage</p>
+                <h2 className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">
+                  How to Use
+                </h2>
+                {product.howToUse ? (
+                  <div className="mt-6 max-w-4xl rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
+                    <p className="whitespace-pre-line text-[15px] leading-8 text-slate-700">
+                      {product.howToUse}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="mt-6 text-sm text-slate-500">
+                    Usage instructions are not available for this product.
+                  </p>
+                )}
+                {Array.isArray(product.warnings) &&
+                  product.warnings.length > 0 && (
+                    <div className="mt-8 rounded-lg border border-amber-200 bg-amber-50 p-5">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle size={18} className="text-amber-700" />
+                        <h3 className="font-semibold text-slate-950">
+                          Important
+                        </h3>
+                      </div>
+                      <ul className="mt-4 space-y-2">
+                        {product.warnings.map((warning) => (
+                          <li
+                            key={warning}
+                            className="text-sm leading-6 text-slate-700"
+                          >
+                            • {warning}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -842,6 +1006,36 @@ export default function ProductViewPage() {
         </div>
       )}
 
+      {isImageOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${product.name} enlarged image`}
+          onClick={() => setIsImageOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setIsImageOpen(false)}
+            className="absolute right-5 top-5 z-20 grid h-12 w-12 place-items-center rounded-full border border-white/20 bg-black/40 text-white transition hover:bg-white hover:text-black"
+            aria-label="Close image"
+          >
+            <X size={22} />
+          </button>
+          <div
+            className="flex h-full max-h-[90vh] w-full max-w-6xl items-center justify-center"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <ProductImage
+              src={selectedImage || images[0]}
+              alt={product.name}
+              className="max-h-[90vh] max-w-full object-contain"
+              fallbackClassName="max-h-[90vh] max-w-full"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="fixed inset-x-0 bottom-[calc(4.625rem+env(safe-area-inset-bottom))] z-40 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_rgba(41,45,38,0.12)] backdrop-blur-xl lg:hidden">
         <div className="mx-auto flex max-w-md items-center gap-2">
           <div className="min-w-0 flex-1">
@@ -890,17 +1084,32 @@ function TrustBox({ icon: Icon, title, description }) {
   );
 }
 
-function MobileAccordion({ title, children, warning = false, defaultOpen = false }) {
+function MobileAccordion({
+  title,
+  children,
+  warning = false,
+  defaultOpen = false,
+}) {
   return (
-    <details open={defaultOpen} className={`group overflow-hidden border ${warning ? "border-amber-200 bg-amber-50/60" : "border-slate-200 bg-white"}`}>
+    <details
+      open={defaultOpen}
+      className={`group overflow-hidden border ${warning ? "border-amber-200 bg-amber-50/60" : "border-slate-200 bg-white"}`}
+    >
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-left [&::-webkit-details-marker]:hidden">
         <span className="flex items-center gap-2 font-semibold text-slate-950">
-          {warning && <AlertTriangle size={17} className="shrink-0 text-amber-700" />}
+          {warning && (
+            <AlertTriangle size={17} className="shrink-0 text-amber-700" />
+          )}
           {title}
         </span>
-        <ChevronDown size={18} className={`shrink-0 transition-transform group-open:rotate-180 ${warning ? "text-amber-700" : "text-slate-500"}`} />
+        <ChevronDown
+          size={18}
+          className={`shrink-0 transition-transform group-open:rotate-180 ${warning ? "text-amber-700" : "text-slate-500"}`}
+        />
       </summary>
-      <div className={`border-t px-4 py-4 ${warning ? "border-amber-200" : "border-slate-200"}`}>
+      <div
+        className={`border-t px-4 py-4 ${warning ? "border-amber-200" : "border-slate-200"}`}
+      >
         {children}
       </div>
     </details>
@@ -913,7 +1122,10 @@ function ProductSpecifications({ items }) {
   const content = (
     <dl className="divide-y divide-slate-200">
       {items.map(({ label, value }) => (
-        <div key={label} className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-6 sm:px-5">
+        <div
+          key={label}
+          className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-6 sm:px-5"
+        >
           <dt className="font-medium text-slate-500">{label}</dt>
           <dd className="font-semibold text-slate-900">{value}</dd>
         </div>
@@ -929,8 +1141,12 @@ function ProductSpecifications({ items }) {
         </MobileAccordion>
       </div>
       <div className="mt-8 hidden lg:block">
-        <h3 className="text-lg font-semibold text-slate-950">Product specifications</h3>
-        <div className="mt-4 overflow-hidden rounded-[8px] border border-slate-200">{content}</div>
+        <h3 className="text-lg font-semibold text-slate-950">
+          Product specifications
+        </h3>
+        <div className="mt-4 overflow-hidden rounded-[8px] border border-slate-200">
+          {content}
+        </div>
       </div>
     </>
   );
@@ -941,18 +1157,23 @@ function KeyBenefits({ benefits, compact = false }) {
 
   const list = (
     <ul className="grid gap-3 sm:grid-cols-2">
-        {benefits.map((item, index) => (
-          <li
-            key={item}
-            className="group relative flex min-h-28 gap-3 overflow-hidden border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-700 transition hover:border-veda-gold hover:shadow-card"
+      {benefits.map((item, index) => (
+        <li
+          key={item}
+          className="group relative flex min-h-28 gap-3 overflow-hidden border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-700 transition hover:border-veda-gold hover:shadow-card"
+        >
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-700">
+            <CheckCircle2 size={17} />
+          </span>
+          <span className="pt-1 font-medium">{item}</span>
+          <span
+            className="absolute bottom-1 right-3 font-display text-4xl text-slate-100 transition group-hover:text-amber-100"
+            aria-hidden="true"
           >
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-700">
-              <CheckCircle2 size={17} />
-            </span>
-            <span className="pt-1 font-medium">{item}</span>
-            <span className="absolute bottom-1 right-3 font-display text-4xl text-slate-100 transition group-hover:text-amber-100" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-          </li>
-        ))}
+            {String(index + 1).padStart(2, "0")}
+          </span>
+        </li>
+      ))}
     </ul>
   );
 
@@ -969,29 +1190,57 @@ function KeyBenefits({ benefits, compact = false }) {
 }
 
 function ProductDescriptionMedia({ product }) {
-  const infographics = Array.isArray(product.infographics) ? product.infographics.filter((item) => item?.url) : [];
-  const videos = Array.isArray(product.videos) ? product.videos.filter((item) => item?.url) : [];
+  const infographics = Array.isArray(product.infographics)
+    ? product.infographics.filter((item) => item?.url)
+    : [];
+  const videos = Array.isArray(product.videos)
+    ? product.videos.filter((item) => item?.url)
+    : [];
 
   if (!infographics.length && !videos.length) return null;
 
   return (
-    <section className="mt-6 border-t border-slate-200 pt-6 lg:mt-10 lg:pt-8" aria-labelledby="product-visual-guide">
+    <section
+      className="mt-6 border-t border-slate-200 pt-6 lg:mt-10 lg:pt-8"
+      aria-labelledby="product-visual-guide"
+    >
       <p className="section-eyebrow">Visual product guide</p>
-      <h3 id="product-visual-guide" className="mt-3 text-xl font-semibold text-slate-950 sm:text-2xl lg:text-3xl">Videos & infographics</h3>
-      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Review the visual information supplied for this pack. Always follow the final label and professional advice where applicable.</p>
+      <h3
+        id="product-visual-guide"
+        className="mt-3 text-xl font-semibold text-slate-950 sm:text-2xl lg:text-3xl"
+      >
+        Videos & infographics
+      </h3>
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+        Review the visual information supplied for this pack. Always follow the
+        final label and professional advice where applicable.
+      </p>
 
       {videos.length > 0 && (
         <div className="mt-5 grid gap-5 lg:mt-6 lg:grid-cols-2">
           {videos.map((item, index) => (
-            <figure key={`${item.url}-${index}`} className="overflow-hidden border border-slate-200 bg-slate-950">
+            <figure
+              key={`${item.url}-${index}`}
+              className="overflow-hidden border border-slate-200 bg-slate-950"
+            >
               <ProductVideo
                 item={item}
-                title={item.title || `${product.name} product video ${index + 1}`}
+                title={
+                  item.title || `${product.name} product video ${index + 1}`
+                }
               />
               {(item.title || item.caption) && (
                 <figcaption className="border-t border-white/10 bg-slate-950 px-4 py-4 text-white">
-                  {item.title && <span className="block text-sm font-semibold">{item.title}</span>}
-                  {item.caption && <span className="mt-1 block text-xs leading-5 text-slate-300">{item.caption}</span>}
+                  {item.title && (
+                    <span className="block text-sm font-semibold">
+                      {item.title}
+                    </span>
+                  )}
+                  {item.caption && (
+                    <span className="mt-1 block text-xs leading-5 text-slate-300">
+                      {item.caption}
+                    </span>
+                  )}
                 </figcaption>
               )}
             </figure>
@@ -1000,16 +1249,25 @@ function ProductDescriptionMedia({ product }) {
       )}
 
       {infographics.length > 0 && (
-        <div className={`${videos.length ? "mt-5 lg:mt-8" : "mt-5 lg:mt-6"} grid gap-5 lg:grid-cols-2`}>
+        <div
+          className={`${videos.length ? "mt-5 lg:mt-8" : "mt-5 lg:mt-6"} grid gap-5 lg:grid-cols-2`}
+        >
           {infographics.map((item, index) => (
-            <figure key={`${item.url}-${index}`} className="overflow-hidden border border-slate-200 bg-slate-50">
+            <figure
+              key={`${item.url}-${index}`}
+              className="overflow-hidden border border-slate-200 bg-slate-50"
+            >
               <ProductImage
                 src={item.url}
                 alt={item.altText || `${product.name} infographic ${index + 1}`}
                 className="h-auto w-full object-contain"
                 fallbackClassName="min-h-72 w-full"
               />
-              {item.caption && <figcaption className="border-t border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-600">{item.caption}</figcaption>}
+              {item.caption && (
+                <figcaption className="border-t border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-600">
+                  {item.caption}
+                </figcaption>
+              )}
             </figure>
           ))}
         </div>
@@ -1088,11 +1346,17 @@ function Info({ title, items, text, warning = false }) {
   return (
     <>
       <div className="lg:hidden">
-        <MobileAccordion title={title} warning={warning}>{content}</MobileAccordion>
+        <MobileAccordion title={title} warning={warning}>
+          {content}
+        </MobileAccordion>
       </div>
-      <div className={`hidden rounded-[6px] border p-5 lg:block ${warning ? "border-amber-200 bg-amber-50/60" : "border-slate-200 bg-slate-50"}`}>
+      <div
+        className={`hidden rounded-[6px] border p-5 lg:block ${warning ? "border-amber-200 bg-amber-50/60" : "border-slate-200 bg-slate-50"}`}
+      >
         <div className="flex items-center gap-2">
-          {warning && <AlertTriangle size={17} className="shrink-0 text-amber-700" />}
+          {warning && (
+            <AlertTriangle size={17} className="shrink-0 text-amber-700" />
+          )}
           <h3 className="font-semibold text-slate-950">{title}</h3>
         </div>
         <div className="mt-3">{content}</div>
