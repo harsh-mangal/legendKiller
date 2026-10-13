@@ -54,3 +54,21 @@ export const uploadMultipleImages = async (files, folderName) => {
 
   return images;
 };
+
+export const deleteUploadedImages = async (fileUrls = []) => {
+  const uploadsRoot = path.resolve(process.cwd(), "uploads");
+
+  await Promise.all((fileUrls || []).map(async (fileUrl) => {
+    const value = String(fileUrl || "").trim();
+    if (!value || /^https?:/i.test(value) || !value.startsWith("/uploads/")) return;
+
+    const filePath = path.resolve(process.cwd(), value.replace(/^\/+/, ""));
+    if (filePath !== uploadsRoot && !filePath.startsWith(`${uploadsRoot}${path.sep}`)) return;
+
+    try {
+      await fs.promises.unlink(filePath);
+    } catch (error) {
+      if (error.code !== "ENOENT") console.warn(`Product image cleanup failed for ${value}:`, error.message);
+    }
+  }));
+};

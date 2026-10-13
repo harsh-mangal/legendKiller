@@ -3,6 +3,7 @@ import test from "node:test";
 import mongoose from "mongoose";
 
 import Product from "../src/models/Product.js";
+import { planProductImageUpdate } from "../src/utils/productImages.js";
 
 const baseProduct = () => ({
   name: "Media-ready product",
@@ -29,4 +30,40 @@ test("products accept structured infographic and video records", async () => {
   await product.validate();
   assert.equal(product.infographics[0].altText, "Usage guide");
   assert.equal(product.videos[0].title, "Product demonstration");
+});
+
+test("product image updates retain and remove the exact requested images", () => {
+  const plan = planProductImageUpdate({
+    currentImages: ["/uploads/products/one.webp", "/uploads/products/two.webp"],
+    retainedImagesValue: JSON.stringify(["/uploads/products/two.webp"]),
+    newImageCount: 1,
+  });
+
+  assert.equal(plan.shouldUpdate, true);
+  assert.deepEqual(plan.retainedImages, ["/uploads/products/two.webp"]);
+  assert.deepEqual(plan.removedImages, ["/uploads/products/one.webp"]);
+});
+
+test("legacy product updates append images without deleting the current gallery", () => {
+  const plan = planProductImageUpdate({
+    currentImages: ["/uploads/products/one.webp"],
+    newImageCount: 1,
+  });
+
+  assert.deepEqual(plan.retainedImages, ["/uploads/products/one.webp"]);
+  assert.deepEqual(plan.removedImages, []);
+});
+
+test("product image updates reject foreign retained image URLs", () => {
+  assert.throws(() => planProductImageUpdate({
+    currentImages: ["/uploads/products/one.webp"],
+    retainedImagesValue: JSON.stringify(["/uploads/products/another.webp"]),
+  }), /do not belong to this product/);
+});
+
+test("product image updates enforce the six-image gallery limit", () => {
+  assert.throws(() => planProductImageUpdate({
+    currentImages: Array.from({ length: 6 }, (_, index) => `/uploads/products/${index}.webp`),
+    newImageCount: 1,
+  }), /no more than 6 images/);
 });

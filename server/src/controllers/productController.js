@@ -1,8 +1,9 @@
 import Category from "../models/Category.js";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
-import { uploadMultipleImages } from "../utils/imageUpload.js";
+import { deleteUploadedImages, uploadMultipleImages } from "../utils/imageUpload.js";
 import { saveReviewMediaFiles, saveVideoFiles } from "../utils/mediaUpload.js";
+import { planProductImageUpdate } from "../utils/productImages.js";
 import { reviewThanksTemplate, sendMail } from "../utils/mailer.js";
 import { ApiError } from "../utils/apiError.js";
 import { escapeRegex, makeSlug, normalizeEmail, parseArray, parseBoolean, parseNumber } from "../utils/validation.js";
@@ -223,10 +224,19 @@ export const updateProduct = async (req, res, next) => {
       }
     });
 
-    const newImages = await uploadMultipleImages(uploadedFiles(req, "images"), "products");
-    if (newImages.length) product.images = [...product.images, ...newImages];
+    const imageFiles = uploadedFiles(req, "images");
+    const imagePlan = planProductImageUpdate({
+      currentImages: product.images,
+      retainedImagesValue: req.body.retainedImages,
+      newImageCount: imageFiles.length,
+    });
+    if (imagePlan.shouldUpdate) {
+      const newImages = await uploadMultipleImages(imageFiles, "products");
+      product.images = [...imagePlan.retainedImages, ...newImages];
+    }
 
     await product.save();
+    if (imagePlan.shouldUpdate) await deleteUploadedImages(imagePlan.removedImages);
     res.json({ success: true, data: product });
   } catch (error) {
     next(error);
