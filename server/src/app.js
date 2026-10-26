@@ -50,8 +50,9 @@ app.use(cors({
 
 // Razorpay requires the unmodified request body for signature verification.
 app.post("/api/orders/razorpay/webhook", express.raw({ type: "application/json", limit: "1mb" }), razorpayWebhook);
-app.use(express.json({ limit: "100mb" }));
-app.use(express.urlencoded({ extended: true, limit: "100mb" }));
+const structuredBodyLimit = process.env.API_BODY_LIMIT || "2mb";
+app.use(express.json({ limit: structuredBodyLimit }));
+app.use(express.urlencoded({ extended: true, limit: structuredBodyLimit }));
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads"), { maxAge: "7d", immutable: false, dotfiles: "deny" }));
 
 app.get("/", (req, res) => res.json({ success: true, message: "Legend Killer Ecommerce API running", version: "2.0.0" }));

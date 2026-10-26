@@ -60,7 +60,13 @@ const productSchema = new mongoose.Schema(
     expiryTrackingEnabled: { type: Boolean, default: false },
     seoTitle: { type: String, trim: true, maxlength: 70 },
     seoDescription: { type: String, trim: true, maxlength: 180 },
-    images: [String],
+    images: {
+      type: [String],
+      validate: {
+        validator: (images) => images.length <= 10,
+        message: "A product can have no more than 10 images",
+      },
+    },
     aboutGraphic: { type: String, trim: true, default: "" },
     infographics: [infographicSchema],
     videos: [productVideoSchema],

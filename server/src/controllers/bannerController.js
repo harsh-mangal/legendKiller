@@ -187,10 +187,10 @@ export const createBanner = async (req, res) => {
     const desktopFile = req.files?.image?.[0];
     const mobileFile = req.files?.mobileImage?.[0];
 
-    if (!desktopFile && !mobileFile) {
+    if (!desktopFile || !mobileFile) {
       return res.status(400).json({
         success: false,
-        message: "At least one banner media file (Desktop or Mobile) is required",
+        message: "Both Desktop and Mobile banner media files are required",
       });
     }
 
@@ -214,19 +214,16 @@ export const createBanner = async (req, res) => {
         })
       : null;
 
-    const primaryMeta = desktopMeta || mobileMeta;
-    const secondaryMeta = mobileMeta || desktopMeta;
-
     const banner = await Banner.create({
       page,
       categorySlug,
       title,
-      mediaType: primaryMeta?.mediaType || "image",
-      mobileMediaType: secondaryMeta?.mediaType || "image",
-      image: primaryMeta?.url || "",
-      mobileImage: secondaryMeta?.url || primaryMeta?.url || "",
-      imageMeta: primaryMeta || {},
-      mobileImageMeta: secondaryMeta || primaryMeta || {},
+      mediaType: desktopMeta.mediaType || "image",
+      mobileMediaType: mobileMeta.mediaType || "image",
+      image: desktopMeta.url,
+      mobileImage: mobileMeta.url,
+      imageMeta: desktopMeta,
+      mobileImageMeta: mobileMeta,
       recommendedSize: defaults.recommendedSize,
       link,
       sortOrder: Number(sortOrder || 0),

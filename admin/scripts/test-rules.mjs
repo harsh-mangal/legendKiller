@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import {
   couponCodeIsValid,
   endOfInputDateIso,
@@ -27,5 +28,10 @@ assert.match(validateImageFiles([{ name: "a.svg", type: "image/svg+xml", size: 1
 assert.equal(validateVideoFiles([{ name: "demo.mp4", type: "video/mp4", size: 1024 }]), "");
 assert.match(validateVideoFiles([{ name: "demo.avi", type: "video/x-msvideo", size: 1024 }]), /MP4, WEBM or MOV/);
 assert.match(validateVideoFiles([{ name: "large.mp4", type: "video/mp4", size: 11 * 1024 * 1024 }]), /smaller than 10 MB/);
+
+const sharedUiSource = fs.readFileSync(new URL("../src/components/ui/index.jsx", import.meta.url), "utf8");
+assert.match(sharedUiSource, /const onCloseRef = useRef\(onClose\)/);
+assert.match(sharedUiSource, /\}, \[open\]\);/);
+assert.doesNotMatch(sharedUiSource, /\[open, onClose\]/);
 
 console.log("Admin business-rule tests passed.");

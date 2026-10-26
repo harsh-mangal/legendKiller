@@ -64,9 +64,30 @@ test("product image updates reject foreign retained image URLs", () => {
   }), /do not belong to this product/);
 });
 
-test("product image updates enforce the six-image gallery limit", () => {
-  assert.throws(() => planProductImageUpdate({
+test("product image updates allow seven images and enforce the ten-image gallery limit", () => {
+  const allowed = planProductImageUpdate({
     currentImages: Array.from({ length: 6 }, (_, index) => `/uploads/products/${index}.webp`),
     newImageCount: 1,
-  }), /no more than 6 images/);
+  });
+  assert.equal(allowed.retainedImages.length + 1, 7);
+
+  assert.throws(() => planProductImageUpdate({
+    currentImages: Array.from({ length: 10 }, (_, index) => `/uploads/products/${index}.webp`),
+    newImageCount: 1,
+  }), /no more than 10 images/);
+});
+
+test("product records enforce the ten-image gallery limit", async () => {
+  const allowed = new Product({
+    ...baseProduct(),
+    images: Array.from({ length: 10 }, (_, index) => `/uploads/products/${index}.webp`),
+  });
+  await allowed.validate();
+
+  const oversized = new Product({
+    ...baseProduct(),
+    slug: "oversized-product-gallery",
+    images: Array.from({ length: 11 }, (_, index) => `/uploads/products/${index}.webp`),
+  });
+  await assert.rejects(() => oversized.validate(), /no more than 10 images/);
 });

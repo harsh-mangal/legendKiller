@@ -1,5 +1,7 @@
 import { ApiError } from "./apiError.js";
 
+export const PRODUCT_IMAGE_LIMIT = 10;
+
 const parseRetainedImages = (value) => {
   if (value === undefined) return null;
   if (Array.isArray(value)) return value;
@@ -16,7 +18,7 @@ export const planProductImageUpdate = ({
   currentImages = [],
   retainedImagesValue,
   newImageCount = 0,
-  maxImages = 6,
+  maxImages = PRODUCT_IMAGE_LIMIT,
 } = {}) => {
   const current = [...new Set((currentImages || []).map(String).filter(Boolean))];
   const requested = parseRetainedImages(retainedImagesValue);

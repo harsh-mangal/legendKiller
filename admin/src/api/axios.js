@@ -2,12 +2,12 @@ import axios from "axios";
 import { clearAdminSession, getAdminToken } from "../utils/storage";
 
 const configured = String(import.meta.env.VITE_API_BASE_URL || "").trim();
-const defaultApiBaseUrl = "https://api.legendbornnutrition.com/api";
+const defaultApiBaseUrl = "/api";
 
 export const API_BASE_URL = (configured || defaultApiBaseUrl).replace(/\/$/, "");
 export const BASE_URL = API_BASE_URL.replace(/\/api(?:\/v\d+)?$/i, "");
 const storefrontConfigured = String(import.meta.env.VITE_STOREFRONT_URL || "").trim();
-export const STOREFRONT_URL = (storefrontConfigured || "https://legendbornnutrition.com").replace(/\/$/, "");
+export const STOREFRONT_URL = (storefrontConfigured || (import.meta.env.DEV ? "http://localhost:5173" : "https://legendbornnutrition.com")).replace(/\/$/, "");
 
 const API = axios.create({
   baseURL: API_BASE_URL,

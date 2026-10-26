@@ -1,4 +1,5 @@
 import multer from "multer";
+import { PRODUCT_IMAGE_LIMIT } from "../utils/productImages.js";
 
 const storage = multer.memoryStorage();
 const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -22,14 +23,14 @@ export const upload = multer({
   fileFilter,
   limits: {
     fileSize: Math.max(1, Number(process.env.MAX_UPLOAD_MB || 10)) * 1024 * 1024,
-    files: 17,
+    files: 21,
     fields: 80,
     fieldSize: 1 * 1024 * 1024,
   },
 });
 
 export const uploadProductMedia = upload.fields([
-  { name: "images", maxCount: 6 },
+  { name: "images", maxCount: PRODUCT_IMAGE_LIMIT },
   { name: "aboutGraphic", maxCount: 1 },
   { name: "infographics", maxCount: 8 },
   { name: "videos", maxCount: 2 },

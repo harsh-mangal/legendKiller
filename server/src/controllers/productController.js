@@ -58,26 +58,26 @@ const videoRecords = (urls, productName) =>
 export const getProducts = async (req, res, next) => {
   try {
     const { category, search, page = 1, limit = 12, sort = "-createdAt" } = req.query;
-    const query = { isActive: true };
+    const adminView = req.adminView === true && req.user?.role === "ADMIN";
+    const query = adminView ? {} : { isActive: true };
     if (category) {
       const categoryDoc = await Category.findOne({ slug: category });
       if (categoryDoc) query.category = categoryDoc._id;
     }
     if (search) query.$text = { $search: search };
 
-    const pageNum = Math.max(1, parseInt(page, 10));
-    const limitNum = Math.max(1, parseInt(limit, 10));
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const allResults = adminView && String(limit).toLowerCase() === "all";
+    const limitNum = allResults ? 0 : Math.min(100, Math.max(1, parseInt(limit, 10) || 12));
     const total = await Product.countDocuments(query);
-    const products = await Product.find(query)
-      .populate("category", "name slug")
-      .sort(sort)
-      .skip((pageNum - 1) * limitNum)
-      .limit(limitNum);
+    const productQuery = Product.find(query).populate("category", "name slug").sort(sort);
+    if (!allResults) productQuery.skip((pageNum - 1) * limitNum).limit(limitNum);
+    const products = await productQuery;
 
     res.json({
       success: true,
-      data: products.map(publicProduct),
-      pagination: { total, page: pageNum, pages: Math.ceil(total / limitNum) },
+      data: adminView ? products : products.map(publicProduct),
+      pagination: { total, page: pageNum, pages: allResults ? 1 : Math.ceil(total / limitNum) },
     });
   } catch (error) {
     next(error);
@@ -177,6 +177,7 @@ export const createProduct = async (req, res, next) => {
     });
 
     const product = await Product.create(payload);
+    await product.populate("category", "name slug");
     res.status(201).json({ success: true, data: product });
   } catch (error) {
     next(error);
@@ -258,6 +259,7 @@ export const updateProduct = async (req, res, next) => {
     }
 
     await product.save();
+    await product.populate("category", "name slug");
     if (imagePlan.shouldUpdate) await deleteUploadedImages(imagePlan.removedImages);
     if (aboutGraphicChanged && previousAboutGraphic && previousAboutGraphic !== product.aboutGraphic) {
       await deleteUploadedImages([previousAboutGraphic]);
@@ -270,9 +272,10 @@ export const updateProduct = async (req, res, next) => {
 
 export const deleteProduct = async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true })
+      .populate("category", "name slug");
     if (!product) throw new ApiError(404, "Product not found");
-    res.json({ success: true, message: "Product deleted successfully" });
+    res.json({ success: true, message: "Product archived", data: product });
   } catch (error) {
     next(error);
   }

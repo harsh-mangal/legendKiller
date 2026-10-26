@@ -10,7 +10,7 @@ import { env } from "../config/env.js";
 import { ApiError } from "../utils/apiError.js";
 import { buildInvoiceData, generateInvoiceHtml } from "../utils/invoice.js";
 import { orderPlacedTemplate, orderStatusTemplate, sendMail } from "../utils/mailer.js";
-import { escapeRegex, normalizeEmail, normalizePhone, sanitizeShippingAddress, sha256 } from "../utils/validation.js";
+import { escapeRegex, isObjectId, normalizeEmail, normalizePhone, sanitizeShippingAddress, sha256 } from "../utils/validation.js";
 import { toRazorpayAmount, verifyRazorpayPaymentSignature } from "../utils/razorpay.js";
 import { withTransaction, saveWithSession, useSession } from "../utils/transaction.js";
 import {
@@ -577,6 +577,10 @@ export const getAllOrders = async (req, res, next) => {
     const query = {};
     if (req.query.orderStatus) query.orderStatus = req.query.orderStatus;
     if (req.query.paymentStatus) query.paymentStatus = req.query.paymentStatus;
+    if (req.query.userId) {
+      if (!isObjectId(req.query.userId)) throw new ApiError(400, "Invalid customer identifier");
+      query.user = req.query.userId;
+    }
     if (req.query.search) {
       const search = escapeRegex(String(req.query.search).trim());
       query.$or = [

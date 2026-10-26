@@ -323,12 +323,10 @@ export default function Banners() {
 
   const submit = async (event) => {
     event.preventDefault();
-    const hasAnyMedia =
-      form.image ||
-      form.mobileImage ||
-      (editing && (desktopPreview || mobilePreview));
-    if (!hasAnyMedia) {
-      toast.error("Please choose at least one media file (Desktop or Mobile).");
+    const hasDesktopMedia = Boolean(form.image || (editing && desktopPreview));
+    const hasMobileMedia = Boolean(form.mobileImage || (editing && mobilePreview));
+    if (!hasDesktopMedia || !hasMobileMedia) {
+      toast.error("Please provide both Desktop and Mobile media files.");
       return;
     }
     if (form.title.trim().length > 160) {
@@ -637,7 +635,7 @@ export default function Banners() {
         open={editorOpen}
         onClose={() => !saving && setEditorOpen(false)}
         title={editing ? "Edit banner" : "Create banner"}
-        description="Upload images (JPG, PNG, WEBP) or looping videos (MP4, WEBM, MOV) up to 100MB. Both Desktop (1920 × 540 px) and Mobile (1920 × 960 px) banner media are mandatory."
+        description="Upload images (JPG, PNG, WEBP) or looping videos (MP4, WEBM, MOV) up to 200MB. Both Desktop (1920 × 540 px) and Mobile (1920 × 960 px) banner media are mandatory."
         size="xl"
         footer={
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

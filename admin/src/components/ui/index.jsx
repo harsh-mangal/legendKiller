@@ -3,8 +3,8 @@ import { AlertTriangle, ChevronLeft, ChevronRight, Loader2, PackageOpen, X } fro
 
 const join = (...values) => values.filter(Boolean).join(" ");
 
-export function Button({ variant = "primary", size = "md", className = "", type = "button", children, ...props }) {
-  return <button type={type} className={join("btn", `btn-${variant}`, `btn-${size}`, className)} {...props}>{children}</button>;
+export function Button({ variant = "primary", size = "md", className = "", type = "button", children, loading = false, disabled = false, ...props }) {
+  return <button type={type} className={join("btn", `btn-${variant}`, `btn-${size}`, className)} disabled={disabled || loading} aria-busy={loading || undefined} {...props}>{loading && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}{children}</button>;
 }
 
 export function IconButton({ label, className = "", children, ...props }) {
@@ -85,15 +85,17 @@ export function EmptyState({ title = "Nothing here yet", description, icon: Icon
 
 export function Modal({ open, onClose, title, description, children, size = "lg", footer }) {
   const panelRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   useEffect(() => {
     if (!open) return undefined;
     const previous = document.body.style.overflow;
     const previousFocus = document.activeElement;
     document.body.style.overflow = "hidden";
     const focusableSelector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-    window.setTimeout(() => panelRef.current?.querySelector(focusableSelector)?.focus() || panelRef.current?.focus(), 0);
+    const focusTimer = window.setTimeout(() => panelRef.current?.querySelector(focusableSelector)?.focus() || panelRef.current?.focus(), 0);
     const onKey = (event) => {
-      if (event.key === "Escape") onClose?.();
+      if (event.key === "Escape") onCloseRef.current?.();
       if (event.key !== "Tab" || !panelRef.current) return;
       const focusable = Array.from(panelRef.current.querySelectorAll(focusableSelector));
       if (!focusable.length) { event.preventDefault(); panelRef.current.focus(); return; }
@@ -102,8 +104,8 @@ export function Modal({ open, onClose, title, description, children, size = "lg"
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     };
     window.addEventListener("keydown", onKey);
-    return () => { document.body.style.overflow = previous; window.removeEventListener("keydown", onKey); previousFocus?.focus?.(); };
-  }, [open, onClose]);
+    return () => { window.clearTimeout(focusTimer); document.body.style.overflow = previous; window.removeEventListener("keydown", onKey); previousFocus?.focus?.(); };
+  }, [open]);
   if (!open) return null;
   const width = size === "xl" ? "max-w-6xl" : size === "md" ? "max-w-2xl" : "max-w-4xl";
   return (

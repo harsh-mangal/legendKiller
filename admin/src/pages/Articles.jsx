@@ -500,6 +500,7 @@ export default function Articles() {
             <Input
               className="pl-9"
               placeholder="Search by article title, keyword, or slug…"
+              aria-label="Search articles"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -508,6 +509,7 @@ export default function Articles() {
           <div className="flex flex-wrap items-center gap-2">
             <Select
               className="w-auto"
+              aria-label="Filter articles by category"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
             >
@@ -521,6 +523,7 @@ export default function Articles() {
 
             <Select
               className="w-auto"
+              aria-label="Filter articles by status"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
