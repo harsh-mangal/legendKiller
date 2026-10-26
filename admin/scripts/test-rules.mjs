@@ -34,4 +34,12 @@ assert.match(sharedUiSource, /const onCloseRef = useRef\(onClose\)/);
 assert.match(sharedUiSource, /\}, \[open\]\);/);
 assert.doesNotMatch(sharedUiSource, /\[open, onClose\]/);
 
+const apiClientSource = fs.readFileSync(new URL("../src/api/axios.js", import.meta.url), "utf8");
+assert.match(apiClientSource, /https:\/\/api\.legendbornnutrition\.com\/api/);
+
+const ordersSource = fs.readFileSync(new URL("../src/pages/Orders.jsx", import.meta.url), "utf8");
+assert.match(ordersSource, /const closingOrderRef = useRef\(false\)/);
+assert.match(ordersSource, /detailRequestRef\.current \+= 1/);
+assert.match(ordersSource, /next\.delete\("open"\)/);
+
 console.log("Admin business-rule tests passed.");

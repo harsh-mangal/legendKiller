@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Download, Eye, PackageCheck, RefreshCw, Search, Truck, Undo2 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import API from "../api/axios";
@@ -26,6 +26,8 @@ export default function Orders() {
   const [search, setSearch] = useState(params.get("search") || ""); const [orderStatus, setOrderStatus] = useState(params.get("orderStatus") || ""); const [paymentStatus, setPaymentStatus] = useState(params.get("paymentStatus") || "");
   const [selected, setSelected] = useState(null); const [detailLoading, setDetailLoading] = useState(false); const [nextStatus, setNextStatus] = useState(""); const [note, setNote] = useState(""); const [tracking, setTracking] = useState({ courierName: "", trackingNumber: "", trackingUrl: "" }); const [saving, setSaving] = useState(false);
   const [returnAction, setReturnAction] = useState(null); const [returnNote, setReturnNote] = useState("");
+  const closingOrderRef = useRef(false);
+  const detailRequestRef = useRef(0);
   const toast = useToast();
 
   const page = Number(params.get("page") || 1);
@@ -37,14 +39,15 @@ export default function Orders() {
   useEffect(() => { load(); }, [load]);
 
   const openOrder = useCallback(async (id) => {
-    try { setDetailLoading(true); const { data } = await API.get(`/orders/${id}`); setSelected(data.data); setNextStatus(""); setNote(""); setTracking({ courierName: data.data?.tracking?.courierName || "", trackingNumber: data.data?.tracking?.trackingNumber || "", trackingUrl: data.data?.tracking?.trackingUrl || "" }); const next = new URLSearchParams(params); next.set("open", id); setParams(next, { replace: true }); }
-    catch (error) { toast.error(getErrorMessage(error, "Order details could not be loaded.")); }
-    finally { setDetailLoading(false); }
+    const requestId = ++detailRequestRef.current;
+    try { setDetailLoading(true); const { data } = await API.get(`/orders/${id}`); if (requestId !== detailRequestRef.current) return; setSelected(data.data); setNextStatus(""); setNote(""); setTracking({ courierName: data.data?.tracking?.courierName || "", trackingNumber: data.data?.tracking?.trackingNumber || "", trackingUrl: data.data?.tracking?.trackingUrl || "" }); const next = new URLSearchParams(params); next.set("open", id); setParams(next, { replace: true }); }
+    catch (error) { if (requestId === detailRequestRef.current) toast.error(getErrorMessage(error, "Order details could not be loaded.")); }
+    finally { if (requestId === detailRequestRef.current) setDetailLoading(false); }
   }, [params, setParams, toast]);
 
-  useEffect(() => { const id = params.get("open"); if (id && selected?._id !== id && !detailLoading) openOrder(id); }, [params, selected, detailLoading, openOrder]);
+  useEffect(() => { const id = params.get("open"); if (!id) { closingOrderRef.current = false; return; } if (!closingOrderRef.current && selected?._id !== id && !detailLoading) openOrder(id); }, [params, selected, detailLoading, openOrder]);
 
-  const closeOrder = () => { setSelected(null); const next = new URLSearchParams(params); next.delete("open"); setParams(next, { replace: true }); };
+  const closeOrder = () => { closingOrderRef.current = true; detailRequestRef.current += 1; setDetailLoading(false); setSelected(null); const next = new URLSearchParams(params); next.delete("open"); setParams(next, { replace: true }); };
   const applyFilters = (event) => { event.preventDefault(); const next = new URLSearchParams(); if (search.trim()) next.set("search", search.trim()); if (params.get("userId")) next.set("userId", params.get("userId")); if (orderStatus) next.set("orderStatus", orderStatus); if (paymentStatus) next.set("paymentStatus", paymentStatus); next.set("page", "1"); setParams(next); };
   const clearFilters = () => { setSearch(""); setOrderStatus(""); setPaymentStatus(""); setParams({ page: "1" }); };
 

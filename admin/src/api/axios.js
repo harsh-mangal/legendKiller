@@ -2,7 +2,7 @@ import axios from "axios";
 import { clearAdminSession, getAdminToken } from "../utils/storage";
 
 const configured = String(import.meta.env.VITE_API_BASE_URL || "").trim();
-const defaultApiBaseUrl = "/api";
+const defaultApiBaseUrl = import.meta.env.DEV ? "/api" : "https://api.legendbornnutrition.com/api";
 
 export const API_BASE_URL = (configured || defaultApiBaseUrl).replace(/\/$/, "");
 export const BASE_URL = API_BASE_URL.replace(/\/api(?:\/v\d+)?$/i, "");
