@@ -528,6 +528,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="email"
                   label="Order updates email"
+                  tone="light"
                   type="email"
                   value={form.email}
                   onChange={update}
@@ -566,6 +567,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="fullName"
                   label="Full name"
+                  tone="light"
                   value={form.fullName}
                   onChange={update}
                   autoComplete="name"
@@ -575,6 +577,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="email"
                   label="Email address"
+                  tone="light"
                   type="email"
                   value={form.email}
                   onChange={update}
@@ -585,6 +588,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="phone"
                   label="Mobile number"
+                  tone="light"
                   type="tel"
                   inputMode="numeric"
                   value={form.phone}
@@ -596,6 +600,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="pincode"
                   label="Pincode"
+                  tone="light"
                   inputMode="numeric"
                   maxLength={6}
                   value={form.pincode}
@@ -607,6 +612,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="addressLine1"
                   label="House / flat, building and street"
+                  tone="light"
                   value={form.addressLine1}
                   onChange={update}
                   autoComplete="address-line1"
@@ -617,6 +623,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="addressLine2"
                   label="Landmark or area (optional)"
+                  tone="light"
                   value={form.addressLine2}
                   onChange={update}
                   autoComplete="address-line2"
@@ -626,6 +633,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="city"
                   label="City"
+                  tone="light"
                   value={form.city}
                   onChange={update}
                   autoComplete="address-level2"
@@ -635,6 +643,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="state"
                   label="State"
+                  tone="light"
                   value={form.state}
                   onChange={update}
                   autoComplete="address-level1"
@@ -644,6 +653,7 @@ export default function CheckoutPage() {
                 <FormField
                   name="country"
                   label="Country"
+                  tone="light"
                   value={form.country || "India"}
                   readOnly
                   className="sm:col-span-2"
@@ -698,7 +708,7 @@ export default function CheckoutPage() {
                   }
                 }}
                 placeholder="Enter coupon"
-                className="min-w-0 flex-1 px-4 py-3 text-sm uppercase"
+                className="min-w-0 flex-1 border border-slate-300 bg-white px-4 py-3 text-sm uppercase text-slate-950 placeholder:text-slate-400 focus:border-[#FF5500] focus:ring-[#FF5500] focus:ring-offset-white"
               />
 
               <button

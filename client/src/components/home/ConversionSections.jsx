@@ -447,7 +447,7 @@ function ReadyToShop() {
           </span>
           <div>
             <h2 className="text-2xl font-black uppercase text-black sm:text-3xl">
-              Ready to Annnounce your arrival?
+              Ready to Announce your arrival?
             </h2>
             <p className="mt-1 text-sm font-semibold text-black/80">
               The future has been formulated. The standards have been set. The

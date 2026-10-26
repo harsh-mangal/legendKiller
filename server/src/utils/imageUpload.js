@@ -9,18 +9,22 @@ const ensureFolder = (folderPath) => {
   }
 };
 
-export const convertToWebpUnder200KB = async (file, folderName) => {
+export const convertToWebpUnder200KB = async (file, folderName, options = {}) => {
   const uploadDir = path.join(process.cwd(), "uploads", folderName);
   ensureFolder(uploadDir);
 
   const fileName = `${Date.now()}-${crypto.randomUUID()}.webp`;
   const filePath = path.join(uploadDir, fileName);
 
-  let quality = 80;
-  let width = 1200;
+  const maxBytes = Number(options.maxBytes || 200 * 1024);
+  const minQuality = Number(options.minQuality || 35);
+  const qualityStep = Number(options.qualityStep || 10);
+  const widthStep = Number(options.widthStep || 150);
+  let quality = Number(options.quality || 80);
+  let width = Number(options.width || 1200);
   let outputBuffer;
 
-  while (quality >= 35) {
+  while (quality >= minQuality) {
     outputBuffer = await sharp(file.buffer)
       .resize({
         width,
@@ -31,10 +35,10 @@ export const convertToWebpUnder200KB = async (file, folderName) => {
       })
       .toBuffer();
 
-    if (outputBuffer.length <= 200 * 1024) break;
+    if (outputBuffer.length <= maxBytes) break;
 
-    quality -= 10;
-    width -= 150;
+    quality -= qualityStep;
+    width = Math.max(640, width - widthStep);
   }
 
   await fs.promises.writeFile(filePath, outputBuffer);
@@ -42,13 +46,13 @@ export const convertToWebpUnder200KB = async (file, folderName) => {
   return `/uploads/${folderName}/${fileName}`;
 };
 
-export const uploadMultipleImages = async (files, folderName) => {
+export const uploadMultipleImages = async (files, folderName, options = {}) => {
   if (!files || files.length === 0) return [];
 
   const images = [];
 
   for (const file of files) {
-    const imageUrl = await convertToWebpUnder200KB(file, folderName);
+    const imageUrl = await convertToWebpUnder200KB(file, folderName, options);
     images.push(imageUrl);
   }
 

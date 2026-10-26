@@ -888,36 +888,54 @@ export default function ProductViewPage() {
             </div>
           </div>
           <div
-            className="p-5 sm:p-8 lg:p-10"
+            className={activeProductTab === "about" && product.aboutGraphic ? "p-0" : "p-5 sm:p-8 lg:p-10"}
             role="tabpanel"
             id={`product-panel-${activeProductTab}`}
             aria-labelledby={`product-tab-${activeProductTab}`}
           >
             {activeProductTab === "about" && (
-              <div>
-                <p className="section-eyebrow">Product Information</p>
-                <h2 className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">
-                  About this Product
-                </h2>
-                <div className="mt-6 max-w-4xl space-y-5 text-[15px] leading-8 text-slate-700 sm:text-base">
-                  {product.longDescription && (
-                    <p className="whitespace-pre-line">
-                      {product.longDescription}
-                    </p>
-                  )}
-                  {product.description &&
-                    product.description !== product.longDescription && (
+              product.aboutGraphic ? (
+                <div>
+                  <img
+                    src={product.aboutGraphic}
+                    alt=""
+                    aria-hidden="true"
+                    className="block h-auto w-full"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="sr-only">
+                    <h2>About this Product</h2>
+                    {product.longDescription && <p>{product.longDescription}</p>}
+                    {product.description && product.description !== product.longDescription && <p>{product.description}</p>}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <p className="section-eyebrow">Product Information</p>
+                  <h2 className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">
+                    About this Product
+                  </h2>
+                  <div className="mt-6 max-w-4xl space-y-5 text-[15px] leading-8 text-slate-700 sm:text-base">
+                    {product.longDescription && (
                       <p className="whitespace-pre-line">
-                        {product.description}
+                        {product.longDescription}
                       </p>
                     )}
+                    {product.description &&
+                      product.description !== product.longDescription && (
+                        <p className="whitespace-pre-line">
+                          {product.description}
+                        </p>
+                      )}
+                  </div>
+                  <ProductSpecifications items={productSpecifications} />
+                  {Array.isArray(product.benefits) &&
+                    product.benefits.length > 0 && (
+                      <KeyBenefits benefits={product.benefits} />
+                    )}
                 </div>
-                <ProductSpecifications items={productSpecifications} />
-                {Array.isArray(product.benefits) &&
-                  product.benefits.length > 0 && (
-                    <KeyBenefits benefits={product.benefits} />
-                  )}
-              </div>
+              )
             )}
             {activeProductTab === "nutrition" && (
               <div>

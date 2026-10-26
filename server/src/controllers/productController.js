@@ -134,6 +134,11 @@ export const createProduct = async (req, res, next) => {
     if (existing) throw new ApiError(409, "A product with a similar name already exists");
 
     const uploadedImageUrls = await uploadMultipleImages(uploadedFiles(req, "images"), "products");
+    const uploadedAboutGraphicUrls = await uploadMultipleImages(
+      uploadedFiles(req, "aboutGraphic"),
+      "product-about",
+      { width: 1600, quality: 88, minQuality: 55, maxBytes: 900 * 1024 },
+    );
     const uploadedInfographicUrls = await uploadMultipleImages(uploadedFiles(req, "infographics"), "infographics");
     const uploadedVideoUrls = await saveVideoFiles(uploadedFiles(req, "videos"), "videos");
 
@@ -149,6 +154,7 @@ export const createProduct = async (req, res, next) => {
       howToUse: req.body.howToUse,
       suitableFor: parseArray(req.body.suitableFor),
       images: uploadedImageUrls,
+      aboutGraphic: uploadedAboutGraphicUrls[0] || "",
       infographics: infographicRecords(uploadedInfographicUrls, req.body.name),
       videos: videoRecords(uploadedVideoUrls, req.body.name),
       price: commercial.price,
@@ -214,6 +220,22 @@ export const updateProduct = async (req, res, next) => {
     if (req.body.isFeatured !== undefined) product.isFeatured = parseBoolean(req.body.isFeatured);
     if (req.body.isBestSeller !== undefined) product.isBestSeller = parseBoolean(req.body.isBestSeller);
 
+    const previousAboutGraphic = product.aboutGraphic;
+    const aboutGraphicFiles = uploadedFiles(req, "aboutGraphic");
+    let aboutGraphicChanged = false;
+    if (aboutGraphicFiles.length) {
+      const uploadedAboutGraphicUrls = await uploadMultipleImages(
+        aboutGraphicFiles,
+        "product-about",
+        { width: 1600, quality: 88, minQuality: 55, maxBytes: 900 * 1024 },
+      );
+      product.aboutGraphic = uploadedAboutGraphicUrls[0] || "";
+      aboutGraphicChanged = true;
+    } else if (parseBoolean(req.body.clearAboutGraphic)) {
+      product.aboutGraphic = "";
+      aboutGraphicChanged = Boolean(previousAboutGraphic);
+    }
+
     legalFields.forEach((field) => {
       if (req.body[field] !== undefined) {
         if (field === "warnings") product.warnings = parseArray(req.body[field]);
@@ -237,6 +259,9 @@ export const updateProduct = async (req, res, next) => {
 
     await product.save();
     if (imagePlan.shouldUpdate) await deleteUploadedImages(imagePlan.removedImages);
+    if (aboutGraphicChanged && previousAboutGraphic && previousAboutGraphic !== product.aboutGraphic) {
+      await deleteUploadedImages([previousAboutGraphic]);
+    }
     res.json({ success: true, data: product });
   } catch (error) {
     next(error);

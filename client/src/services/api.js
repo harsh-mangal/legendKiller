@@ -82,6 +82,7 @@ export const normalizeProduct = (product = {}) => ({
   stockKnown: product.availableStock != null || product.stock != null,
   availableStock: Number(product.availableStock ?? product.stock ?? 0),
   images: Array.isArray(product.images) ? product.images.map(imageUrl).filter(Boolean) : [],
+  aboutGraphic: imageUrl(product.aboutGraphic),
   infographics: Array.isArray(product.infographics)
     ? product.infographics.map(normalizeInfographic).filter((item) => item.url)
     : [],

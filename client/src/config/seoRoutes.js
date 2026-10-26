@@ -1,3 +1,5 @@
+import { ARCHITECTURE_SUMMARIES } from "../data/architectureSummaries.js";
+
 const BRAND = "Legend Killer";
 const COMPANY = "Legend Born Nutrition";
 
@@ -59,12 +61,12 @@ export const STATIC_INDEXABLE_ROUTES = Object.freeze([
     description: `Send a wholesale or distribution inquiry to ${COMPANY}.`,
     keywords: "Legend Born Nutrition dealer, distributor, wholesale supplements, become a dealer",
   },
-  {
-    path: "/architectures/atp-cellular-forge",
-    title: `ATP Cellular Forge™ Architecture | ${BRAND}`,
-    description: `Read ATP Cellular Forge: Phosphocreatine Regeneration, Creatine Utilization, Intramuscular Buffering & Muscle Contractile Support.`,
-    keywords: "ATP Cellular Forge, Creatine Monohydrate, Biocreat, Beta Alanine, Betaine Anhydrous, Taurine, Phosphocreatine Regeneration",
-  },
+  ...ARCHITECTURE_SUMMARIES.map((architecture) => ({
+    path: `/architectures/${architecture.slug}`,
+    title: `${architecture.title} Architecture | ${BRAND}`,
+    description: `Explore ${architecture.title}, the ${architecture.subtitle} within the Legend Slayer™ Viper Protocol.`,
+    keywords: `${architecture.title}, ${architecture.subtitle}, Viper Protocol Architecture, Legend Slayer Science`,
+  })),
   {
     path: "/about",
     title: `About ${BRAND} | ${COMPANY} | The Viper Protocol`,

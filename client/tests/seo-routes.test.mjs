@@ -36,6 +36,8 @@ test("public content detail patterns remain indexable", () => {
   assert.equal(getRouteSeo("/categories/digestive-care").kind, "category");
   assert.equal(getRouteSeo("/combos/sample-combo").kind, "combo");
   assert.equal(getRouteSeo("/articles/sample-article").kind, "article");
+  assert.equal(getRouteSeo("/architectures/neuro-amp").indexable, true);
+  assert.match(getRouteSeo("/architectures/neuro-amp").title, /Neuro AMP/);
 });
 
 test("unknown routes are noindex", () => {

@@ -61,6 +61,7 @@ const productSchema = new mongoose.Schema(
     seoTitle: { type: String, trim: true, maxlength: 70 },
     seoDescription: { type: String, trim: true, maxlength: 180 },
     images: [String],
+    aboutGraphic: { type: String, trim: true, default: "" },
     infographics: [infographicSchema],
     videos: [productVideoSchema],
     price: { type: Number, required: true, min: 0 },

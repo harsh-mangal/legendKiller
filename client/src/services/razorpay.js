@@ -96,7 +96,7 @@ export const openRazorpayPayment = async ({
         amount: Math.round(Number(amount)),
         currency,
         order_id: razorpayOrderId,
-        name: SITE.name,
+        name: SITE.legalEntity,
         description: `Order #${String(localOrderId || "").slice(-8).toUpperCase()}`,
         prefill: {
           name: customer?.name || "",
@@ -105,9 +105,12 @@ export const openRazorpayPayment = async ({
         },
         notes: {
           localOrderId,
-          brand: SITE.name,
+          brand: SITE.legalEntity,
         },
-        theme: { color: "#0f172a" },
+        theme: {
+          color: "#FF5500",
+          backdrop_color: "#0A0A0C",
+        },
         handler: async (response) => {
           try {
             const verified = await onVerify(response);

@@ -25,14 +25,14 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="cart-drawer-title"
-        className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl"
+        className="touch-scroll absolute right-0 top-0 flex h-full w-full max-w-md flex-col overflow-y-auto overscroll-contain bg-white shadow-2xl"
       >
-        <header className="flex items-center justify-between border-b border-slate-200 px-4 py-3.5 sm:px-5 sm:py-4">
+        <header className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 py-3.5 sm:px-5 sm:py-4">
           <div>
             <p className="section-eyebrow">Cart</p>
             <h2 id="cart-drawer-title" className="mt-1 text-xl font-semibold text-slate-950 sm:text-2xl">Shopping cart</h2>
           </div>
-          <button ref={initialFocusRef} type="button" onClick={closeCart} className="icon-button" aria-label="Close cart">
+          <button ref={initialFocusRef} type="button" onClick={closeCart} className="grid h-11 w-11 shrink-0 place-items-center border border-slate-300 bg-white text-slate-700 transition hover:border-slate-400 hover:bg-slate-100 hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-[#FFB800] focus:ring-offset-2 focus:ring-offset-white" aria-label="Close cart">
             <X size={19} />
           </button>
         </header>
@@ -50,12 +50,12 @@ export default function CartDrawer() {
           </div>
         ) : (
           <>
-            <div className="touch-scroll flex-1 space-y-3 overflow-y-auto px-3 py-3 sm:px-5 sm:py-4">
+            <div className="shrink-0 space-y-3 px-3 py-3 sm:px-5 sm:py-4">
               {items.map((item) => (
                 <CartLineItem key={`${item.itemType}-${item.product._id}`} item={item} onNavigate={closeCart} />
               ))}
             </div>
-            <div className="mobile-safe-bottom border-t border-slate-200 bg-slate-50 p-4 sm:p-5">
+            <div className="mobile-safe-bottom mt-auto shrink-0 border-t border-slate-200 bg-slate-50 p-4 sm:p-5">
               <CartSummary compact onCheckout={closeCart} />
               <div className="mt-3 flex items-center justify-center gap-4 text-sm font-semibold">
                 <Link to="/cart" onClick={closeCart} className="text-slate-600 hover:text-slate-950">View full cart</Link>

@@ -7,7 +7,7 @@ import { currency, parseLines, percentageOff, toLines } from "../utils/format";
 import { getErrorMessage } from "../utils/errors";
 import { isFiniteNumber, isWholeNumber, validateImageFiles, validateVideoFiles } from "../utils/validation";
 import { downloadCsv } from "../utils/csv";
-import { useObjectUrls } from "../hooks/useObjectUrl";
+import { useObjectUrl, useObjectUrls } from "../hooks/useObjectUrl";
 import { generateQrCodeSvg } from "../utils/qrcode";
 import { generateBarcodeSvg } from "../utils/barcode";
 
@@ -18,7 +18,7 @@ const blank = {
   manufacturerName: "", marketerName: "", countryOfOrigin: "India", licenceType: "", licenceNumber: "", hsnCode: "", gstRate: "0",
   vegetarian: "", batchTrackingEnabled: false, expiryTrackingEnabled: false,
   seoTitle: "", seoDescription: "", isFeatured: false, isBestSeller: false, isActive: true, images: [],
-  infographics: [], videos: [], clearInfographics: false, clearVideos: false,
+  aboutGraphic: null, clearAboutGraphic: false, infographics: [], videos: [], clearInfographics: false, clearVideos: false,
   authenticityCode: "", verificationCount: 0,
 };
 
@@ -33,7 +33,7 @@ const mapProduct = (product) => ({
   price: String(product.price ?? ""), mrp: String(product.mrp ?? ""), stock: String(product.stock ?? 0), lowStockThreshold: String(product.lowStockThreshold ?? 5), gstRate: String(product.gstRate ?? 0),
   benefits: toLines(product.benefits), ingredients: toLines(product.ingredients), suitableFor: toLines(product.suitableFor), warnings: toLines(product.warnings),
   vegetarian: product.vegetarian === true ? "true" : product.vegetarian === false ? "false" : "",
-  images: [], infographics: [], videos: [], clearInfographics: false, clearVideos: false,
+  images: [], aboutGraphic: null, clearAboutGraphic: false, infographics: [], videos: [], clearInfographics: false, clearVideos: false,
   authenticityCode: product.authenticityCode || "",
   verificationCount: product.verificationCount || 0,
 });
@@ -50,6 +50,7 @@ export default function Products() {
   const [activeTab, setActiveTab] = useState("basic");
   const [form, setForm] = useState(blank);
   const [existingImages, setExistingImages] = useState([]);
+  const [existingAboutGraphic, setExistingAboutGraphic] = useState("");
   const [existingInfographics, setExistingInfographics] = useState([]);
   const [existingVideos, setExistingVideos] = useState([]);
   const [saving, setSaving] = useState(false);
@@ -80,8 +81,8 @@ export default function Products() {
     });
   }, [products, search, categoryFilter, statusFilter]);
 
-  const openCreate = () => { setEditingId(""); setForm(blank); setExistingImages([]); setExistingInfographics([]); setExistingVideos([]); setActiveTab("basic"); setEditorOpen(true); };
-  const openEdit = (product) => { setEditingId(product._id); setForm(mapProduct(product)); setExistingImages(product.images || []); setExistingInfographics(product.infographics || []); setExistingVideos(product.videos || []); setActiveTab("basic"); setEditorOpen(true); };
+  const openCreate = () => { setEditingId(""); setForm(blank); setExistingImages([]); setExistingAboutGraphic(""); setExistingInfographics([]); setExistingVideos([]); setActiveTab("basic"); setEditorOpen(true); };
+  const openEdit = (product) => { setEditingId(product._id); setForm(mapProduct(product)); setExistingImages(product.images || []); setExistingAboutGraphic(product.aboutGraphic || ""); setExistingInfographics(product.infographics || []); setExistingVideos(product.videos || []); setActiveTab("basic"); setEditorOpen(true); };
 
   const validate = () => {
     const price = Number(form.price);
@@ -98,6 +99,8 @@ export default function Products() {
     if (!editingId && !form.images.length) return "Upload at least one product image.";
     const imageError = validateImageFiles(form.images);
     if (imageError) return imageError;
+    const aboutGraphicError = validateImageFiles(form.aboutGraphic ? [form.aboutGraphic] : [], { maxFiles: 1 });
+    if (aboutGraphicError) return aboutGraphicError;
     const infographicError = validateImageFiles(form.infographics, { maxFiles: 8 });
     if (infographicError) return infographicError;
     const videoError = validateVideoFiles(form.videos);
@@ -115,15 +118,16 @@ export default function Products() {
       setSaving(true);
       const fd = new FormData();
       const arrayFields = new Set(["benefits", "ingredients", "suitableFor", "warnings"]);
-      const boolFields = new Set(["isFeatured", "isBestSeller", "isActive", "batchTrackingEnabled", "expiryTrackingEnabled", "clearInfographics", "clearVideos"]);
+      const boolFields = new Set(["isFeatured", "isBestSeller", "isActive", "batchTrackingEnabled", "expiryTrackingEnabled", "clearAboutGraphic", "clearInfographics", "clearVideos"]);
       Object.entries(form).forEach(([key, value]) => {
-        if (["images", "infographics", "videos"].includes(key)) return;
+        if (["images", "aboutGraphic", "infographics", "videos"].includes(key)) return;
         if (arrayFields.has(key)) fd.append(key, JSON.stringify(parseLines(value)));
         else if (boolFields.has(key)) fd.append(key, String(Boolean(value)));
         else fd.append(key, value ?? "");
       });
       form.images.forEach((file) => fd.append("images", file));
       if (editingId) fd.append("retainedImages", JSON.stringify(existingImages));
+      if (form.aboutGraphic) fd.append("aboutGraphic", form.aboutGraphic);
       form.infographics.forEach((file) => fd.append("infographics", file));
       form.videos.forEach((file) => fd.append("videos", file));
       const { data } = editingId ? await API.put(`/products/${editingId}`, fd) : await API.post("/products", fd);
@@ -142,6 +146,7 @@ export default function Products() {
   };
 
   const filePreviews = useObjectUrls(form.images);
+  const aboutGraphicPreview = useObjectUrl(form.aboutGraphic);
   const infographicPreviews = useObjectUrls(form.infographics);
   const videoPreviews = useObjectUrls(form.videos);
 
@@ -172,6 +177,32 @@ export default function Products() {
       {activeTab === "content" && <div className="grid gap-5 md:grid-cols-2"><Field label="Benefits" hint="One point per line."><Textarea rows="8" value={form.benefits} onChange={(event) => setForm((current) => ({ ...current, benefits: event.target.value }))} /></Field><Field label="Ingredients" hint="One ingredient per line."><Textarea rows="8" value={form.ingredients} onChange={(event) => setForm((current) => ({ ...current, ingredients: event.target.value }))} /></Field><Field label="Suitable for" hint="One audience or use case per line."><Textarea rows="6" value={form.suitableFor} onChange={(event) => setForm((current) => ({ ...current, suitableFor: event.target.value }))} /></Field><Field label="Warnings" hint="Use packaging-approved wording only."><Textarea rows="6" value={form.warnings} onChange={(event) => setForm((current) => ({ ...current, warnings: event.target.value }))} /></Field><Field label="How to use" className="md:col-span-2"><Textarea rows="4" value={form.howToUse} onChange={(event) => setForm((current) => ({ ...current, howToUse: event.target.value }))} /></Field><Field label="Storage instructions"><Textarea rows="4" value={form.storageInstructions} onChange={(event) => setForm((current) => ({ ...current, storageInstructions: event.target.value }))} /></Field><Field label="Legal disclaimer"><Textarea rows="4" value={form.legalDisclaimer} onChange={(event) => setForm((current) => ({ ...current, legalDisclaimer: event.target.value }))} /></Field></div>}
       {activeTab === "media" && (
         <div className="space-y-7">
+          <div className="rounded-xl border border-[#FF5500]/30 bg-orange-50 p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <div className="flex items-center gap-2"><ImagePlus size={19} className="text-[#FF5500]" /><h3 className="font-bold text-stone-950">About this Product graphic</h3></div>
+                <p className="mt-2 text-sm leading-6 text-stone-600">This single graphic replaces the written content inside the About this Product tab. Recommended canvas: <strong>1600 × 2000 px</strong> (4:5). Taller images are supported and display at full width without cropping.</p>
+              </div>
+              {form.aboutGraphic ? (
+                <Button type="button" size="sm" variant="secondary" onClick={() => setForm((current) => ({ ...current, aboutGraphic: null, clearAboutGraphic: false }))}><Trash2 size={15} /> Discard replacement</Button>
+              ) : existingAboutGraphic ? (
+                <Button type="button" size="sm" variant="danger" onClick={() => { setExistingAboutGraphic(""); setForm((current) => ({ ...current, aboutGraphic: null, clearAboutGraphic: true })); }}><Trash2 size={15} /> Remove graphic</Button>
+              ) : null}
+            </div>
+            <Field label="About graphic file" className="mt-4" hint="One JPG, PNG or WEBP image, maximum 10 MB. Use large readable text and keep important content away from the edges.">
+              <Input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => setForm((current) => ({ ...current, aboutGraphic: event.target.files?.[0] || null, clearAboutGraphic: false }))} />
+            </Field>
+            {(aboutGraphicPreview || existingAboutGraphic) && (
+              <div className="mt-4">
+                <p className="field-label">Storefront preview</p>
+                <div className="max-h-[520px] overflow-y-auto rounded-xl border border-stone-200 bg-white">
+                  <img src={aboutGraphicPreview || assetUrl(existingAboutGraphic)} alt="About this Product graphic preview" className="h-auto w-full" />
+                </div>
+              </div>
+            )}
+            {form.clearAboutGraphic && !form.aboutGraphic && <p className="mt-3 text-sm font-semibold text-red-700">The current About graphic will be removed when you save. Written product content will appear again.</p>}
+          </div>
+
           <div className="rounded-xl border border-stone-200 bg-stone-50 p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div><div className="flex items-center gap-2"><ImagePlus size={19} className="text-brand-700" /><h3 className="font-bold text-stone-950">Description infographics</h3></div><p className="mt-2 text-sm leading-6 text-stone-600">Upload up to 8 JPG, PNG or WEBP graphics. They appear after the written product description in the selected order.</p></div>

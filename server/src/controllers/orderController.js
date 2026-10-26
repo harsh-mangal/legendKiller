@@ -11,6 +11,7 @@ import { ApiError } from "../utils/apiError.js";
 import { buildInvoiceData, generateInvoiceHtml } from "../utils/invoice.js";
 import { orderPlacedTemplate, orderStatusTemplate, sendMail } from "../utils/mailer.js";
 import { escapeRegex, normalizeEmail, normalizePhone, sanitizeShippingAddress, sha256 } from "../utils/validation.js";
+import { toRazorpayAmount, verifyRazorpayPaymentSignature } from "../utils/razorpay.js";
 import { withTransaction, saveWithSession, useSession } from "../utils/transaction.js";
 import {
   buildOrderItems,
@@ -36,8 +37,23 @@ const transitionMap = {
 };
 
 const getRazorpay = () => {
-  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) throw new ApiError(503, "Online payment is not configured");
-  return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
+  const keyId = String(process.env.RAZORPAY_KEY_ID || "").trim();
+  const keySecret = String(process.env.RAZORPAY_KEY_SECRET || "").trim();
+  if (!keyId || !keySecret) throw new ApiError(503, "Online payment is not configured");
+  return new Razorpay({ key_id: keyId, key_secret: keySecret });
+};
+
+const asRazorpayApiError = (error) => {
+  if (error instanceof ApiError) return error;
+  if (error instanceof RangeError) return new ApiError(400, error.message);
+
+  const status = Number(
+    error?.statusCode || error?.status || error?.response?.status || 0,
+  );
+  if (status === 401) {
+    return new ApiError(401, "Razorpay authentication failed. Check the configured API credentials.");
+  }
+  return new ApiError(500, "Razorpay could not create or verify the payment. Please try again.");
 };
 
 const publicOrder = (order) => {
@@ -74,8 +90,9 @@ const sendStatusEmail = async (order, message) => {
 };
 
 const createRazorpayOrder = async (order) => {
+  const amount = toRazorpayAmount(order.totalPrice);
   const gatewayOrder = await getRazorpay().orders.create({
-    amount: Math.round(Number(order.totalPrice || 0) * 100),
+    amount,
     currency: "INR",
     receipt: String(order.publicOrderNumber || order._id).slice(0, 40),
     notes: {
@@ -99,9 +116,12 @@ const createRazorpayOrder = async (order) => {
 };
 
 const verifyRazorpaySignature = ({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) => {
-  const expected = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET).update(`${razorpay_order_id}|${razorpay_payment_id}`).digest("hex");
-  const provided = String(razorpay_signature || "");
-  return expected.length === provided.length && crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(provided));
+  return verifyRazorpayPaymentSignature({
+    orderId: razorpay_order_id,
+    paymentId: razorpay_payment_id,
+    signature: razorpay_signature,
+    keySecret: process.env.RAZORPAY_KEY_SECRET,
+  });
 };
 
 const verifyWebhookSignature = (body, signature) => {
@@ -261,7 +281,7 @@ const createOrderHandler = ({ guestCheckout }) => async (req, res, next) => {
         return res.status(201).json({ success: true, message: "Order created. Complete payment to confirm it.", data: publicOrder(order), razorpay });
       } catch (gatewayError) {
         await releaseOrderResources(order._id, { reason: "Payment provider could not create a payment order", paymentStatus: "FAILED" });
-        throw gatewayError;
+        throw asRazorpayApiError(gatewayError);
       }
     }
     await sendOrderEmail(order, req.user || null);
@@ -284,10 +304,25 @@ export const verifyRazorpayPayment = async (req, res, next) => {
     if (!existing) throw new ApiError(404, "Order not found");
     if (existing.paymentStatus === "PAID") return res.json({ success: true, message: "Payment already verified", data: publicOrder(existing) });
 
-    let payment = await getRazorpay().payments.fetch(razorpay_payment_id);
+    let payment;
+    try {
+      payment = await getRazorpay().payments.fetch(razorpay_payment_id);
+    } catch (gatewayError) {
+      throw asRazorpayApiError(gatewayError);
+    }
     if (payment.order_id !== razorpay_order_id) throw new ApiError(400, "Payment does not belong to this order");
     if (Number(payment.amount) !== Math.round(Number(existing.totalPrice || 0) * 100)) throw new ApiError(400, "Payment amount does not match the order total");
-    if (payment.status === "authorized") payment = await getRazorpay().payments.capture(razorpay_payment_id, payment.amount, payment.currency || "INR");
+    if (payment.status === "authorized") {
+      try {
+        payment = await getRazorpay().payments.capture(
+          razorpay_payment_id,
+          payment.amount,
+          payment.currency || "INR",
+        );
+      } catch (gatewayError) {
+        throw asRazorpayApiError(gatewayError);
+      }
+    }
     if (payment.status !== "captured") throw new ApiError(409, "Payment has not been captured yet");
 
     let paidOrder;
@@ -462,7 +497,7 @@ export const retryPayment = async (req, res, next) => {
       throw new ApiError(409, "The payment reservation has expired. Please place a new order");
     }
     const razorpay = order.razorpayOrderId
-      ? { key: process.env.RAZORPAY_KEY_ID, orderId: order.razorpayOrderId, razorpayOrderId: order.razorpayOrderId, amount: Math.round(order.totalPrice * 100), currency: "INR" }
+      ? { key: process.env.RAZORPAY_KEY_ID, orderId: order.razorpayOrderId, razorpayOrderId: order.razorpayOrderId, amount: toRazorpayAmount(order.totalPrice), currency: "INR" }
       : await createRazorpayOrder(order);
     const orderSummary = {
       _id: order._id,

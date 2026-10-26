@@ -45,16 +45,16 @@ export default function CartLineItem({ item, onNavigate }) {
         </div>
 
         <div className="mt-2.5 flex items-center justify-between gap-2 sm:mt-3 sm:gap-3">
-          <div className="inline-flex items-center rounded-[4px] border border-slate-300 bg-white">
-            <button type="button" onClick={decrease} className="grid h-10 w-10 place-items-center transition hover:bg-slate-100" aria-label={`Decrease ${product?.name} quantity`}>
+          <div className="inline-flex items-center rounded-[4px] border border-slate-300 bg-white text-slate-800">
+            <button type="button" onClick={decrease} className="grid h-10 w-10 place-items-center text-slate-700 transition hover:bg-slate-100 hover:text-slate-950" aria-label={`Decrease ${product?.name} quantity`}>
               <Minus size={14} />
             </button>
-            <span className="min-w-9 text-center text-sm font-semibold" aria-live="polite">{quantity}</span>
+            <span className="min-w-9 text-center text-sm font-semibold text-slate-950" aria-live="polite">{quantity}</span>
             <button
               type="button"
               onClick={() => updateQuantity(key, quantity + 1)}
               disabled={unavailable || (stockKnown && quantity >= stock)}
-              className="grid h-10 w-10 place-items-center transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+              className="grid h-10 w-10 place-items-center text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 disabled:cursor-not-allowed disabled:text-slate-400"
               aria-label={`Increase ${product?.name} quantity`}
             >
               <Plus size={14} />
