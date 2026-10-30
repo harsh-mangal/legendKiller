@@ -9,7 +9,8 @@ const columns = [
       ["All Supplements", "/products"],
       ["Legend Born Architectures", "/architectures"],
       ["Patents", "/patents"],
-      ["Article of Legend Slayer: The Viper Protocol", "/articles"],
+      ["Articles", "/articles"],
+      ["About Legend Slayer: The Viper Protocol", "/articles#about-legend-slayer"],
       ["My Wishlist", "/wishlist"],
     ],
   },
@@ -49,7 +50,7 @@ const authenticationSteps = [
     step: "01",
     title: "Find the QR Code",
     description:
-      "Every genuine Legend Killer jar comes with a unique authentication QR code.",
+      "Every genuine Legend Slayer jar comes with a unique authentication QR code.",
   },
   {
     step: "02",
@@ -98,7 +99,7 @@ export default function Footer() {
             </h2>
 
             <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-slate-400">
-              Every Legend Killer product can be authenticated in seconds. Scan.
+              Every Legend Slayer product can be authenticated in seconds. Scan.
               Verify. Trust.
             </p>
           </div>
@@ -139,17 +140,17 @@ export default function Footer() {
             <Link
               to="/"
               className="inline-block p-0 transition hover:opacity-90"
-              aria-label="Legend Killer home"
+              aria-label="Legend Slayer home"
             >
               <img
                 src="/logo.png"
-                alt="Legend Killer"
+                alt="Legend Slayer"
                 className="block h-20 w-auto max-w-[340px] object-contain sm:h-28 sm:max-w-[440px] md:h-32 lg:h-36 lg:max-w-[520px]"
               />
             </Link>
 
             <p className="mt-5 max-w-md text-sm leading-7 text-slate-400">
-              Legend Killer — The Viper Protocol.
+              Legend Slayer — The Viper Protocol.
               <br /> Where world-class ingredients, globally patented
               innovations, and architectural design converge into one unified
               human performance system.

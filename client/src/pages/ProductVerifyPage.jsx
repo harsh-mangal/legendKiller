@@ -71,11 +71,11 @@ export default function ProductVerifyPage() {
             <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-red-500">Security Warning</p>
             <h1 className="mt-2 text-3xl font-black uppercase text-white">Authentication Failed</h1>
             <p className="mt-4 text-sm leading-6 text-slate-300">
-              The code <span className="font-mono font-bold text-red-400 bg-black px-2 py-1">{code || "N/A"}</span> was not found in the official Legend Killer product authentication registry.
+              The code <span className="font-mono font-bold text-red-400 bg-black px-2 py-1">{code || "N/A"}</span> was not found in the official Legend Slayer product authentication registry.
             </p>
             <div className="mt-6 border-t border-slate-800 pt-6 text-xs text-slate-400 leading-5">
               <p className="font-bold text-white">Suspect Counterfeit Product?</p>
-              <p className="mt-1">Only purchase Legend Killer supplements from our official webstore or verified authorized dealers to guarantee 100% genuine formulation.</p>
+              <p className="mt-1">Only purchase Legend Slayer supplements from our official webstore or verified authorized dealers to guarantee 100% genuine formulation.</p>
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link to="/products" className="btn-primary">EXPLORE GENUINE PRODUCTS</Link>
@@ -100,7 +100,7 @@ export default function ProductVerifyPage() {
             </div>
             <div className="mt-4 sm:mt-0 flex-1">
               <div className="inline-flex items-center gap-2 bg-emerald-950 border border-emerald-700/60 px-3 py-1 text-[11px] font-black uppercase tracking-[0.15em] text-emerald-400">
-                <ShieldCheck size={15} /> 100% Genuine & Original Legend Killer Product
+                <ShieldCheck size={15} /> 100% Genuine & Original Legend Slayer Product
               </div>
               <h1 className="mt-3 text-2xl font-black uppercase tracking-tight text-white sm:text-4xl">AUTHENTICATED SUPPLEMENT</h1>
               <p className="mt-2 text-sm text-slate-300">
@@ -193,7 +193,7 @@ export default function ProductVerifyPage() {
 
           {/* Direct CTA */}
           <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-slate-800 pt-6 sm:flex-row">
-            <p className="text-xs text-slate-400">Legend Killer Verification Protocol v2.0 • Live Scan Stamp</p>
+            <p className="text-xs text-slate-400">Legend Slayer Verification Protocol v2.0 • Live Scan Stamp</p>
             <Link to={`/products/${data.slug}`} className="btn-primary inline-flex items-center gap-2">
               VIEW PRODUCT SPECS & BUY <ArrowRight size={16} />
             </Link>

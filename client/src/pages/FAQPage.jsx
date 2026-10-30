@@ -12,7 +12,7 @@ export default function FAQPage() {
         <div className="max-w-2xl">
           <p className="section-eyebrow">Help centre</p>
           <h1 className="section-title mt-3">Questions Indian shoppers often ask</h1>
-          <p className="mt-4 text-[15px] leading-7 text-slate-600 sm:mt-5 sm:text-base sm:leading-8">Simple answers about choosing products, COD and online payments, Indian pincode delivery, returns, refunds and responsible use.</p>
+          <p className="mt-4 text-[15px] leading-7 text-slate-600 sm:mt-5 sm:text-base sm:leading-8">Simple answers about choosing products, online payments, Indian pincode delivery, returns, refunds and responsible use.</p>
         </div>
 
         <div className="mt-8 divide-y divide-slate-200 border-y border-slate-200 sm:mt-10">

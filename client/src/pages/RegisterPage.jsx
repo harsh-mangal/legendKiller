@@ -53,7 +53,7 @@ export default function RegisterPage() {
     <section className="page-section bg-[#0A0A0C]">
       <div className="container-page max-w-lg">
         <form onSubmit={submit} className="border border-slate-800 bg-[#121216] p-5 shadow-2xl rounded-none sm:p-8">
-          <p className="section-eyebrow">Join Legend Killer</p>
+          <p className="section-eyebrow">Join Legend Slayer</p>
           <h1 className="mt-3 text-3xl font-black uppercase text-white">Create Your Free Account</h1>
           <p className="mt-3 text-sm leading-6 text-slate-300">Save delivery addresses, track supplement shipments, and earn Viper Coins on every order.</p>
 
@@ -66,7 +66,7 @@ export default function RegisterPage() {
           </div>
 
           {error && <Alert type="error" className="mt-5">{error}</Alert>}
-          <button type="submit" disabled={loading} className="btn-primary mt-6 w-full text-center">{loading ? "Creating Account…" : "JOIN LEGEND KILLER"}</button>
+          <button type="submit" disabled={loading} className="btn-primary mt-6 w-full text-center">{loading ? "Creating Account…" : "JOIN LEGEND SLAYER"}</button>
           <p className="mt-5 text-center text-sm text-slate-300">Already have an account? <Link to="/login" state={{ from: redirectTo }} className="font-bold text-[#FFB800] hover:underline">Log in</Link></p>
         </form>
       </div>

@@ -6,7 +6,7 @@ const deliverySettingSchema = new mongoose.Schema(
     serviceAllIndia: { type: Boolean, default: true },
     serviceablePincodes: [{ type: String, trim: true }],
     excludedPincodes: [{ type: String, trim: true }],
-    codEnabled: { type: Boolean, default: true },
+    codEnabled: { type: Boolean, default: false },
     onlinePaymentEnabled: { type: Boolean, default: true },
     shippingFee: { type: Number, default: 80, min: 0 },
     freeShippingThreshold: { type: Number, default: 999, min: 0 },

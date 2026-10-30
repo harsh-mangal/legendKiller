@@ -24,7 +24,7 @@ export default function Login() {
     try {
       setSubmitting(true);
       await login({ email: form.email.trim(), password: form.password });
-      toast.success("Welcome back. Legend Killer admin session verified.");
+      toast.success("Welcome back. Legend Slayer admin session verified.");
       navigate(next, { replace: true });
     } catch (error) {
       toast.error(getErrorMessage(error, "Unable to sign in."));
@@ -38,13 +38,13 @@ export default function Login() {
       <section className="relative hidden overflow-hidden bg-slate-900 border-r border-slate-200 p-12 text-white lg:flex lg:flex-col lg:justify-between">
         <div className="absolute -right-32 -top-24 h-96 w-96 rounded-full border border-white/10" />
         <div className="absolute -bottom-48 -left-16 h-[520px] w-[520px] rounded-full bg-[#FF5500]/20 blur-3xl" />
-        <div className="relative flex items-center gap-4"><img src="/admin-logo.png" alt="Legend Killer" className="h-16 w-40 rounded-none bg-black object-contain px-2 border border-slate-700" /><div><p className="text-xl font-black uppercase text-[#FFB800]">Legend Killer</p><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FF5500]">Operations Portal</p></div></div>
-        <div className="relative max-w-xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FFB800]">Operations & Control Center</p><h1 className="mt-4 text-5xl font-black uppercase leading-tight text-white">Dominate Orders, Products & Viper Coins.</h1><p className="mt-5 max-w-lg text-base leading-7 text-slate-300">Live operational control center for Legend Killer protein supplements, stock reservations, order tracking, and customer loyalty.</p></div>
+        <div className="relative flex items-center gap-4"><img src="/admin-logo.png" alt="Legend Slayer" className="h-16 w-40 rounded-none bg-black object-contain px-2 border border-slate-700" /><div><p className="text-xl font-black uppercase text-[#FFB800]">Legend Slayer</p><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FF5500]">Operations Portal</p></div></div>
+        <div className="relative max-w-xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FFB800]">Operations & Control Center</p><h1 className="mt-4 text-5xl font-black uppercase leading-tight text-white">Dominate Orders, Products & Viper Coins.</h1><p className="mt-5 max-w-lg text-base leading-7 text-slate-300">Live operational control center for Legend Slayer protein supplements, stock reservations, order tracking, and customer loyalty.</p></div>
         <div className="relative flex items-center gap-3 text-sm text-slate-300"><ShieldCheck className="text-[#FFB800]" size={20} /> Protected Administrator Access</div>
       </section>
       <section className="grid place-items-center px-5 py-10 sm:px-10">
         <div className="w-full max-w-md">
-          <div className="mb-8 lg:hidden"><img src="/admin-logo.png" alt="Legend Killer" className="h-16 w-40 rounded-none bg-slate-900 object-contain px-2 border border-slate-200 shadow-sm" /></div>
+          <div className="mb-8 lg:hidden"><img src="/admin-logo.png" alt="Legend Slayer" className="h-16 w-40 rounded-none bg-slate-900 object-contain px-2 border border-slate-200 shadow-sm" /></div>
           <p className="page-eyebrow">Administrator Sign In</p>
           <h2 className="mt-2 text-3xl font-black uppercase tracking-tight text-slate-900">Operations Portal</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">Sign in with an account having <strong>ADMIN</strong> role permissions.</p>

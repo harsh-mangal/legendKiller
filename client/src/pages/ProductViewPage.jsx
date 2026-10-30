@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
+import { VIPER_PROTOCOL_MATRICES, VIPER_PROTOCOL_SLUG } from "../content/viperProtocol";
 import ProductCard from "../components/product/ProductCard";
 import RecentlyViewed from "../components/home/RecentlyViewed";
 import Seo, { absoluteUrl, breadcrumbSchema } from "../components/seo/Seo";
@@ -353,7 +354,7 @@ export default function ProductViewPage() {
       title: product.seoTitle || product.name,
       text:
         product.shortDescription ||
-        `Check out ${product.name} on Legend Killer.`,
+        `Check out ${product.name} on Legend Slayer.`,
       url: shareUrl,
     };
 
@@ -672,11 +673,11 @@ export default function ProductViewPage() {
         <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-7">
           <div className="flex items-start justify-between gap-4">
             <p className="section-eyebrow">
-              {product.category?.name || "Legend Killer"}
+              {product.category?.name || "Legend Slayer"}
             </p>
           </div>
 
-          <h1 className="mt-3 break-words !font-sans text-[1.4rem] font-semibold leading-[1.25] tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+          <h1 className="mt-3 break-words !font-sans text-[1.4rem] font-semibold leading-[1.25] tracking-tight text-[#FF5500] sm:text-4xl lg:text-5xl">
             {product.name}
           </h1>
 
@@ -863,16 +864,29 @@ export default function ProductViewPage() {
       <div className="container-page mt-10 sm:mt-16">
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200">
-            <div className="grid w-full grid-cols-3" role="tablist" aria-label="Product information">
+            <div className="grid w-full grid-cols-4" role="tablist" aria-label="Product information">
               {[
                 { key: "about", label: "About this Product" },
                 { key: "nutrition", label: "Nutritional Facts" },
+                { key: "ingredients", label: "What’s in it" },
                 { key: "usage", label: "How to Use" },
               ].map((tab) => (
                 <button
                   key={tab.key}
                   type="button"
                   onClick={() => setActiveProductTab(tab.key)}
+                  tabIndex={activeProductTab === tab.key ? 0 : -1}
+                  onKeyDown={(event) => {
+                    const keys = ["about", "nutrition", "ingredients", "usage"];
+                    const current = keys.indexOf(tab.key);
+                    const next = event.key === "ArrowRight" ? (current + 1) % keys.length
+                      : event.key === "ArrowLeft" ? (current + keys.length - 1) % keys.length
+                      : event.key === "Home" ? 0 : event.key === "End" ? keys.length - 1 : -1;
+                    if (next < 0) return;
+                    event.preventDefault();
+                    setActiveProductTab(keys[next]);
+                    document.getElementById(`product-tab-${keys[next]}`)?.focus();
+                  }}
                   role="tab"
                   id={`product-tab-${tab.key}`}
                   aria-selected={activeProductTab === tab.key}
@@ -888,13 +902,13 @@ export default function ProductViewPage() {
             </div>
           </div>
           <div
-            className={activeProductTab === "about" && product.aboutGraphic ? "p-0" : "p-5 sm:p-8 lg:p-10"}
+            className={`p-5 sm:p-8 lg:p-10 ${["about", "usage", "ingredients"].includes(activeProductTab) ? "protocol-content" : ""}`}
             role="tabpanel"
             id={`product-panel-${activeProductTab}`}
             aria-labelledby={`product-tab-${activeProductTab}`}
           >
             {activeProductTab === "about" && (
-              product.aboutGraphic ? (
+              product.aboutGraphic && !product.description && !product.longDescription ? (
                 <div>
                   <img
                     src={product.aboutGraphic}
@@ -943,7 +957,13 @@ export default function ProductViewPage() {
                 <h2 className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">
                   Nutritional Facts
                 </h2>
-                {Array.isArray(product.nutritionalFacts) &&
+                {(product.nutritionGraphic || product.slug === VIPER_PROTOCOL_SLUG) && (
+                  <a href={product.nutritionGraphic || "/viper-protocol-nutrition-facts.png"} target="_blank" rel="noreferrer" className="mt-6 block" aria-label="Open full-size nutritional facts">
+                    <img src={product.nutritionGraphic || "/viper-protocol-nutrition-facts.png"} alt={`${product.name} nutrition facts: serving sizes, ingredients and quantities`} className="mx-auto h-auto w-full max-w-4xl" loading="lazy" />
+                    <span className="mt-3 block text-center text-sm font-semibold text-orange-700 underline">View full-size nutritional facts</span>
+                  </a>
+                )}
+                {!product.nutritionGraphic && product.slug !== VIPER_PROTOCOL_SLUG && (Array.isArray(product.nutritionalFacts) &&
                 product.nutritionalFacts.length > 0 ? (
                   <div className="mt-6 overflow-hidden rounded-lg border border-slate-200">
                     <div className="divide-y divide-slate-200">
@@ -967,12 +987,19 @@ export default function ProductViewPage() {
                       ))}
                     </div>
                   </div>
-                ) : !Array.isArray(product.ingredients) ||
-                  product.ingredients.length === 0 ? (
+                ) : (
                   <div className="mt-6 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
                     Nutritional information is not available for this product.
                   </div>
-                ) : null}
+                ))}
+
+              </div>
+            )}
+            {activeProductTab === "ingredients" && (
+              <div>
+                <p className="section-eyebrow">Inside the formula</p>
+                <h2 className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">What’s in it</h2>
+                {product.whatsInIt && <p className="mt-6 max-w-4xl whitespace-pre-line text-[15px] leading-8">{product.whatsInIt}</p>}
                 {Array.isArray(product.ingredients) &&
                   product.ingredients.length > 0 && (
                     <div className="mt-8">
@@ -992,6 +1019,16 @@ export default function ProductViewPage() {
                       </ul>
                     </div>
                   )}
+                {!product.ingredients?.length && product.slug === VIPER_PROTOCOL_SLUG && (
+                  <div className="mt-6 space-y-6">
+                    <p className="max-w-4xl text-sm leading-7">The seven functional matrices and their ingredients are listed below. See Nutritional Facts for quantities and serving sizes.</p>
+                    {VIPER_PROTOCOL_MATRICES.map((matrix) => <section key={matrix.name} className="border-l-2 border-[#FF5500]/60 pl-5">
+                      <h3 className="text-lg font-bold">{matrix.name}</h3>
+                      <p className="mt-2 text-sm leading-7">{matrix.ingredients.join(" · ")}</p>
+                    </section>)}
+                  </div>
+                )}
+                {!product.whatsInIt && !product.ingredients?.length && product.slug !== VIPER_PROTOCOL_SLUG && <p className="mt-6 text-sm">Ingredient information is not available for this product.</p>}
               </div>
             )}
             {activeProductTab === "usage" && (

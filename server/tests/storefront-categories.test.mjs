@@ -3,12 +3,11 @@ import test from "node:test";
 
 import { storefrontCategories } from "../src/services/storefrontCategoryService.js";
 
-test("the storefront exposes exactly the two requested performance categories", () => {
+test("the storefront exposes only the current pre-workout category", () => {
   assert.deepEqual(
     storefrontCategories.map(({ name, slug }) => ({ name, slug })),
     [
       { name: "Pre-Workout", slug: "pre-workout-energy" },
-      { name: "Coconut Water", slug: "coconut-water" },
     ]
   );
 });

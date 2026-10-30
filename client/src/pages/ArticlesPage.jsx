@@ -63,6 +63,19 @@ export default function ArticlesPage() {
           </p>
         </div>
 
+        <section id="about-legend-slayer" aria-labelledby="about-legend-slayer-title" className="protocol-content mt-10 scroll-mt-36 rounded-xl p-6 sm:p-10">
+          <p className="section-eyebrow">About the pre-workout</p>
+          <h2 id="about-legend-slayer-title" className="mt-3 font-display text-2xl font-black uppercase sm:text-3xl">About Legend Slayer: <span className="text-[#FF5500]">The Viper Protocol</span></h2>
+          <div className="mt-6 grid items-center gap-8 md:grid-cols-[180px_1fr]">
+            <Link to="/products/legend-slayer-the-viper-protocol" aria-label="View Legend Slayer: The Viper Protocol"><img src="/viper-protocol-pre-workout.webp" alt="Legend Slayer: The Viper Protocol pre-workout" className="mx-auto h-auto w-full max-w-[220px]" loading="lazy" /></Link>
+            <div className="space-y-4 text-sm leading-7 sm:text-base">
+              <p><strong>Legend Slayer: The Viper Protocol</strong> is a pre-workout formulation featuring 56 ingredients, 9 globally patented ingredients, 7 functional matrices, and 6 integrated performance architectures.</p>
+              <p>Explore the product description, What’s in it, Nutritional Facts, and How to Use for the complete product information.</p>
+              <div className="flex flex-wrap gap-4"><Link to="/products/legend-slayer-the-viper-protocol" className="inline-flex min-h-11 items-center gap-2 font-bold">Explore the product <ArrowRight size={16} /></Link><Link to="/architectures" className="inline-flex min-h-11 items-center font-bold">Explore architectures</Link><Link to="/patents" className="inline-flex min-h-11 items-center font-bold">View patents</Link></div>
+            </div>
+          </div>
+        </section>
+
         {loading ? (
           <PageLoading label="Loading fitness guides…" />
         ) : error ? (
@@ -71,7 +84,7 @@ export default function ArticlesPage() {
           <div className="mt-8">
             <EmptyState
               title="Guides are being compiled"
-              description="Check back soon for scientific training and sports nutrition guides from Legend Killer."
+              description="Check back soon for scientific training and sports nutrition guides from Legend Slayer."
               action={<Link to="/products" className="btn-primary">Explore Products</Link>}
             />
           </div>

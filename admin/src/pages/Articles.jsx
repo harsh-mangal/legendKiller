@@ -197,7 +197,7 @@ export default function Articles() {
   const autoFillMeta = () => {
     setForm((current) => ({
       ...current,
-      metaTitle: current.title ? `${current.title.trim()} | Legend Killer` : "",
+      metaTitle: current.title ? `${current.title.trim()} | Legend Slayer` : "",
       metaDescription: current.excerpt
         ? current.excerpt.trim().slice(0, 160)
         : current.content.trim().slice(0, 155).replace(/\s+/g, " "),
@@ -834,7 +834,7 @@ export default function Articles() {
                     <Input
                       value={form.imageAlt}
                       onChange={(e) => setForm((c) => ({ ...c, imageAlt: e.target.value }))}
-                      placeholder="e.g. Legend Killer pure whey protein isolate lab certificate"
+                      placeholder="e.g. Legend Slayer pure whey protein isolate lab certificate"
                     />
                   </Field>
                 </div>

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
-  Droplets,
   Dumbbell,
   ShieldCheck,
   Check,
@@ -16,15 +15,8 @@ const featuredGoals = [
   {
     image: "/viper-protocol-pre-workout.webp",
     title: "Pre-Workout",
+    label: "Legend Slayer: The Viper Protocol",
     to: "/products/legend-slayer-the-viper-protocol",
-  },
-  {
-    icon: Droplets,
-    label: "Hydration + recovery",
-    title: "Coconut Water",
-    description:
-      "Electrolyte-rich hydration support for endurance, recovery, and sustained performance.",
-    to: "/categories/coconut-water",
   },
 ];
 
@@ -452,9 +444,7 @@ function ReadyToShop() {
             <p className="mt-1 text-sm font-semibold text-black/80">
               The future has been formulated. The standards have been set. The
               stage is yours. Now step forward and let the world witness your
-              arrival. Where world-class ingredients, globally patented
-              innovations, and architectural design converge into one unified
-              human performance system.
+              arrival.
             </p>
           </div>
         </div>
@@ -464,12 +454,6 @@ function ReadyToShop() {
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded bg-black px-6 text-sm font-black uppercase tracking-wider text-white transition hover:bg-slate-900"
           >
             Shop Pre-Workout <ArrowRight size={17} />
-          </Link>
-          <Link
-            to="/products"
-            className="inline-flex min-h-12 items-center justify-center rounded border border-black/30 bg-white/20 px-6 text-sm font-black uppercase tracking-wider text-black transition hover:bg-white/40"
-          >
-            Shop All Products
           </Link>
         </div>
       </div>

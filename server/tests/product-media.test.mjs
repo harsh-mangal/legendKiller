@@ -26,11 +26,15 @@ test("products accept structured infographic and video records", async () => {
   const product = new Product({
     ...baseProduct(),
     aboutGraphic: "/uploads/product-about/about.webp",
+    nutritionGraphic: "/uploads/product-nutrition/label.webp",
+    whatsInIt: "The complete ingredient breakdown.",
     infographics: [{ url: "/uploads/product-infographics/guide.webp", altText: "Usage guide" }],
     videos: [{ url: "/uploads/product-videos/demo.mp4", title: "Product demonstration" }],
   });
   await product.validate();
   assert.equal(product.aboutGraphic, "/uploads/product-about/about.webp");
+  assert.equal(product.nutritionGraphic, "/uploads/product-nutrition/label.webp");
+  assert.equal(product.whatsInIt, "The complete ingredient breakdown.");
   assert.equal(product.infographics[0].altText, "Usage guide");
   assert.equal(product.videos[0].title, "Product demonstration");
 });

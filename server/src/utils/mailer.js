@@ -19,7 +19,7 @@ const getTransporter = () => {
 };
 
 const brand = {
-  name: process.env.MAIL_FROM_NAME || "Legend Killer",
+  name: process.env.MAIL_FROM_NAME || "Legend Slayer",
   from: process.env.MAIL_FROM || process.env.SMTP_USER,
 };
 
@@ -37,7 +37,7 @@ const shell = (content) => `
 <div style="font-family:Arial,sans-serif;background:#0A0A0C;padding:24px;color:#f1f5f9;">
   <div style="max-width:680px;margin:auto;background:#121216;border:1px solid #FF5500;overflow:hidden;border-radius:8px;">
     <div style="background:linear-gradient(90deg, #FFB800, #FF5500, #FF1F00);color:#000000;padding:22px 26px;">
-      <strong style="font-size:22px;letter-spacing:1px;text-transform:uppercase;">Legend Killer - The Viper Protocol</strong>
+      <strong style="font-size:22px;letter-spacing:1px;text-transform:uppercase;">Legend Slayer - The Viper Protocol</strong>
     </div>
     <div style="padding:26px;color:#f1f5f9;">${content}</div>
   </div>
@@ -49,18 +49,18 @@ export const orderPlacedTemplate = ({ userName, order }) => {
   return shell(`
     <h1 style="margin:0;font-size:24px;color:#FFB800;">Order Received</h1>
     <p>Hello ${userName || "there"},</p>
-    <p>We have received your Legend Killer order. Keep this order number for tracking: <strong style="color:#FF5500;">${order.publicOrderNumber || order._id}</strong>.</p>
+    <p>We have received your Legend Slayer order. Keep this order number for tracking: <strong style="color:#FF5500;">${order.publicOrderNumber || order._id}</strong>.</p>
     <table style="width:100%;border-collapse:collapse;margin-top:16px;"><thead><tr><th style="text-align:left;padding:10px;background:#1A1A22;color:#FFB800;">Supplement</th><th style="padding:10px;background:#1A1A22;color:#FFB800;">Qty</th><th style="text-align:right;padding:10px;background:#1A1A22;color:#FFB800;">Amount</th></tr></thead><tbody>${rows}</tbody></table>
     <p style="text-align:right;font-size:18px;color:#FFB800;"><strong>Total: ₹${Number(order.totalPrice || 0).toLocaleString("en-IN")}</strong></p>
     <p>Payment: ${order.paymentMethod} (${order.paymentStatus}). We will share live courier updates once dispatched.</p>`);
 };
 
 export const otpTemplate = ({ name, otp }) => shell(`
-  <h1 style="margin:0 0 10px;font-size:24px;color:#FFB800;">Your Legend Killer Login OTP</h1><p>Hello ${name || "there"},</p><p>Use this OTP to sign in to your Legend Killer account. It expires in 10 minutes.</p>
+  <h1 style="margin:0 0 10px;font-size:24px;color:#FFB800;">Your Legend Slayer Login OTP</h1><p>Hello ${name || "there"},</p><p>Use this OTP to sign in to your Legend Slayer account. It expires in 10 minutes.</p>
   <div style="font-size:32px;font-weight:900;letter-spacing:8px;background:linear-gradient(90deg, #FFB800, #FF5500);color:#000;padding:16px;text-align:center;margin:22px 0;border-radius:4px;">${otp}</div><p>Do not share this OTP with anyone.</p>`);
 
 export const welcomeTemplate = ({ name }) => shell(`
-  <h1 style="margin:0 0 10px;font-size:24px;color:#FFB800;">Welcome to Legend Killer</h1><p>Hello ${name || "there"},</p><p>Your account is ready. You can now track orders, save shipping addresses, and earn Viper Coins on every order.</p>`);
+  <h1 style="margin:0 0 10px;font-size:24px;color:#FFB800;">Welcome to Legend Slayer</h1><p>Hello ${name || "there"},</p><p>Your account is ready. You can now track orders, save shipping addresses, and earn Viper Coins on every order.</p>`);
 
 export const passwordResetTemplate = ({ name, resetUrl }) => shell(`
   <h1 style="margin:0 0 10px;font-size:24px;color:#FFB800;">Reset Your Password</h1><p>Hello ${name || "there"},</p><p>Use the link below to choose a new password. The link expires in 30 minutes.</p>

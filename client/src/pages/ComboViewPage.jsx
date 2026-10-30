@@ -110,7 +110,7 @@ export default function ComboViewPage() {
         <div>
           <p className="section-eyebrow">Combo pack</p>
           <h1 className="section-title mt-3">{combo.name}</h1>
-          <p className="mt-5 text-[15px] leading-7 text-slate-600 sm:text-base sm:leading-8">{combo.description || combo.shortDescription || "A curated performance stack of Legend Killer supplements."}</p>
+          <p className="mt-5 text-[15px] leading-7 text-slate-600 sm:text-base sm:leading-8">{combo.description || combo.shortDescription || "A curated performance stack of Legend Slayer supplements."}</p>
 
           <div className="mt-7 flex flex-wrap items-end gap-3 border-y border-slate-200 py-6">
             <span className="text-3xl font-semibold text-slate-950 sm:text-4xl">{money(combo.price)}</span>

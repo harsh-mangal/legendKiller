@@ -55,7 +55,7 @@ app.use(express.json({ limit: structuredBodyLimit }));
 app.use(express.urlencoded({ extended: true, limit: structuredBodyLimit }));
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads"), { maxAge: "7d", immutable: false, dotfiles: "deny" }));
 
-app.get("/", (req, res) => res.json({ success: true, message: "Legend Killer Ecommerce API running", version: "2.0.0" }));
+app.get("/", (req, res) => res.json({ success: true, message: "Legend Slayer Ecommerce API running", version: "2.0.0" }));
 app.get("/health", (req, res) => res.json({ success: true, status: "ok", uptime: process.uptime(), timestamp: new Date().toISOString() }));
 app.get("/ready", (req, res) => {
   const ready = mongoose.connection.readyState === 1;

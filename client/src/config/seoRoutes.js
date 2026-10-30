@@ -1,13 +1,13 @@
 import { ARCHITECTURE_SUMMARIES } from "../data/architectureSummaries.js";
 
-const BRAND = "Legend Killer";
+const BRAND = "Legend Slayer";
 const COMPANY = "Legend Born Nutrition";
 
 export const DEFAULT_DESCRIPTION =
   "Shop high-performance Whey Protein Isolates, Pre-Workout, Creatine Monohydrate, and Mass Gainers from Legend Born Nutrition engineered for elite athletes.";
 
 export const DEFAULT_KEYWORDS =
-  "Legend Killer, Legend Born Nutrition, Whey Protein Isolate, Pre Workout Supplement, Creatine Monohydrate, Mass Gainer, Sports Nutrition India, NABL Certified Protein, Raw Imported Isolate, Authentic Fitness Supplements";
+  "Legend Slayer, Legend Born Nutrition, Whey Protein Isolate, Pre Workout Supplement, Creatine Monohydrate, Mass Gainer, Sports Nutrition India, NABL Certified Protein, Raw Imported Isolate, Authentic Fitness Supplements";
 
 export const POLICY_TITLES = Object.freeze({
   privacy: "Privacy Policy",
@@ -29,7 +29,7 @@ export const STATIC_INDEXABLE_ROUTES = Object.freeze([
     path: "/products",
     title: `Protein & Sports Nutrition Supplements | ${BRAND} by ${COMPANY}`,
     description: `Explore the ${BRAND} performance range by ${COMPANY} with transparent macros, amino acid profiles, and lab test reports.`,
-    keywords: "Buy Whey Protein Online, Pre Workout Powder India, Creatine Monohydrate Powder, Legend Killer Products, Sports Nutrition Shop, Muscle Building Supplements",
+    keywords: "Buy Whey Protein Online, Pre Workout Powder India, Creatine Monohydrate Powder, Legend Slayer Products, Sports Nutrition Shop, Muscle Building Supplements",
   },
   {
     path: "/categories",
@@ -71,19 +71,19 @@ export const STATIC_INDEXABLE_ROUTES = Object.freeze([
     path: "/about",
     title: `About ${BRAND} | ${COMPANY} | The Viper Protocol`,
     description: `Learn how ${COMPANY} delivers 100% raw imported protein isolates with clinical dosages and NABL lab certification.`,
-    keywords: "About Legend Born Nutrition, Legend Killer Brand, Pure Raw Isolate, NABL Accredited Lab Testing, Authentic Supplement Brand India",
+    keywords: "About Legend Born Nutrition, Legend Slayer Brand, Pure Raw Isolate, NABL Accredited Lab Testing, Authentic Supplement Brand India",
   },
   {
     path: "/contact",
     title: `Contact ${COMPANY} | ${BRAND} Athlete Support`,
     description: `Contact ${COMPANY} for product guidance, order tracking, express delivery, and account support.`,
-    keywords: "Contact Legend Born Nutrition, Legend Killer Support, Supplement Customer Care, Order Help, Legend Born Phone Number",
+    keywords: "Contact Legend Born Nutrition, Legend Slayer Support, Supplement Customer Care, Order Help, Legend Born Phone Number",
   },
   {
     path: "/faq",
     title: `Frequently Asked Questions | ${BRAND} by ${COMPANY}`,
     description: "Answers about supplement authenticity, scratch codes, protein dosage, pre-workout, shipping, and returns.",
-    keywords: "Legend Killer Scratch Code, Authentic Protein Verification, Pre Workout Dosage FAQ, Legend Born Shipping FAQ, Supplement Authenticity",
+    keywords: "Legend Slayer Scratch Code, Authentic Protein Verification, Pre Workout Dosage FAQ, Legend Born Shipping FAQ, Supplement Authenticity",
   },
   ...Object.entries(POLICY_TITLES).map(([key, title]) => ({
     path: `/policies/${key}`,

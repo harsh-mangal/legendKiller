@@ -132,7 +132,7 @@ export default function LoginPage() {
 
             <p className="text-center text-sm text-slate-300">
               New athlete?{" "}
-              <Link to="/register" state={{ from: redirectTo }} className="font-bold text-[#FFB800] hover:underline">Join Legend Killer</Link>
+              <Link to="/register" state={{ from: redirectTo }} className="font-bold text-[#FFB800] hover:underline">Join Legend Slayer</Link>
             </p>
           </div>
         </form>

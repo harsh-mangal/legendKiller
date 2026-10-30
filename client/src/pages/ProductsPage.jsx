@@ -467,7 +467,7 @@ export default function ProductsPage() {
         <div className="border border-slate-800 bg-[#121216] p-4 rounded-none sm:p-8 shadow-2xl">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="section-eyebrow">Legend Killer Vault</p>
+              <p className="section-eyebrow">Legend Slayer Vault</p>
 
               <h1 className="section-title mt-3">
                 {bestSeller

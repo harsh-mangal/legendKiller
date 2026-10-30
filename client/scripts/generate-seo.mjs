@@ -35,7 +35,7 @@ const siteUrl = String(process.env.VITE_SITE_URL || fileEnv.VITE_SITE_URL || "ht
 const apiBaseUrl = String(process.env.SITEMAP_API_BASE_URL || process.env.VITE_API_BASE_URL || fileEnv.SITEMAP_API_BASE_URL || "https://api.legendbornnutrition.com/api").replace(/\/$/, "");
 const assetBaseUrl = String(process.env.VITE_ASSET_BASE_URL || fileEnv.VITE_ASSET_BASE_URL || apiBaseUrl.replace(/\/api(?:\/v\d+)?\/?$/, "")).replace(/\/$/, "");
 const defaultImage = `${siteUrl}/og-social.jpg`;
-const defaultImageAlt = "Legend Killer by Legend Born Nutrition — High Performance Sports Nutrition & Whey Protein Isolates";
+const defaultImageAlt = "Legend Slayer by Legend Born Nutrition — High Performance Sports Nutrition & Whey Protein Isolates";
 
 const absoluteSiteUrl = (pathname = "/") => new URL(pathname, `${siteUrl}/`).toString();
 const absoluteAssetUrl = (value) => {
@@ -106,11 +106,11 @@ const dynamicPages = async () => {
   const [products, categories, combos, articles] = results.map((result) => result.status === "fulfilled" ? result.value : []);
 
   return [
-    ...products.filter((item) => item?.slug).map((item) => ({
+    ...products.filter((item) => item?.slug && item.category?.slug !== "coconut-water").map((item) => ({
       path: `/products/${item.slug}`,
-      title: cleanText(item.seoTitle || `${item.name} | Legend Killer`),
+      title: cleanText(item.seoTitle || `${item.name} | Legend Slayer`),
       description: makeDescription(item, `View ${item.name}, price, pack information and responsible-use details.`),
-      keywords: `${item.name}, ${item.brand || "Legend Killer"}, ${item.category?.name || "Fitness Supplement"}, Whey Protein, Buy ${item.name} Online, Legend Born Nutrition`,
+      keywords: `${item.name}, ${item.brand || "Legend Slayer"}, ${item.category?.name || "Fitness Supplement"}, Whey Protein, Buy ${item.name} Online, Legend Born Nutrition`,
       type: "product",
       image: absoluteAssetUrl(item.images?.[0]) || defaultImage,
       imageAlt: cleanText(item.name, defaultImageAlt),
@@ -118,7 +118,7 @@ const dynamicPages = async () => {
       data: {
         name: item.name,
         sku: item.sku,
-        brand: item.brand || "Legend Killer",
+        brand: item.brand || "Legend Slayer",
         price: Number(item.price || 0),
         stock: Number(item.availableStock ?? item.stock ?? 0),
         stockKnown: item.availableStock != null || item.stock != null,
@@ -128,11 +128,11 @@ const dynamicPages = async () => {
         categorySlug: item.category?.slug,
       },
     })),
-    ...categories.filter((item) => item?.slug).map((item) => ({
+    ...categories.filter((item) => item?.slug && item.slug !== "coconut-water").map((item) => ({
       path: `/categories/${item.slug}`,
-      title: `${cleanText(item.name)} Products | Legend Killer`,
-      description: makeDescription(item, `Browse Legend Killer products in the ${item.name} category.`),
-      keywords: `${item.name}, ${item.name} Supplements, Legend Killer ${item.name}, Buy ${item.name} India, Legend Born Nutrition`,
+      title: `${cleanText(item.name)} Products | Legend Slayer`,
+      description: makeDescription(item, `Browse Legend Slayer products in the ${item.name} category.`),
+      keywords: `${item.name}, ${item.name} Supplements, Legend Slayer ${item.name}, Buy ${item.name} India, Legend Born Nutrition`,
       type: "category",
       image: absoluteAssetUrl(item.image) || defaultImage,
       imageAlt: cleanText(item.name, defaultImageAlt),
@@ -141,9 +141,9 @@ const dynamicPages = async () => {
     })),
     ...combos.filter((item) => item?.slug).map((item) => ({
       path: `/combos/${item.slug}`,
-      title: cleanText(item.seoTitle || `${item.name} Combo Pack | Legend Killer`),
+      title: cleanText(item.seoTitle || `${item.name} Combo Pack | Legend Slayer`),
       description: makeDescription(item, `View ${item.name}, included products, price and availability.`),
-      keywords: `${item.name}, ${item.name} Stack, Legend Killer Combo, Bodybuilding Combo Pack, Discount Supplement Stack`,
+      keywords: `${item.name}, ${item.name} Stack, Legend Slayer Combo, Bodybuilding Combo Pack, Discount Supplement Stack`,
       type: "product",
       image: absoluteAssetUrl(item.images?.[0] || item.products?.[0]?.product?.images?.[0]) || defaultImage,
       imageAlt: cleanText(item.name, defaultImageAlt),
@@ -157,8 +157,8 @@ const dynamicPages = async () => {
     })),
     ...articles.filter((item) => item?.slug).map((item) => ({
       path: `/articles/${item.slug}`,
-      title: `${cleanText(item.title)} | Legend Killer`,
-      description: makeDescription(item, `Read ${item.title} from Legend Killer.`),
+      title: `${cleanText(item.title)} | Legend Slayer`,
+      description: makeDescription(item, `Read ${item.title} from Legend Slayer.`),
       keywords: `${item.title}, Fitness Guide, Bodybuilding Tips, Legend Born Blog, Nutrition Article`,
       type: "article",
       image: absoluteAssetUrl(item.coverImage) || defaultImage,
@@ -166,7 +166,7 @@ const dynamicPages = async () => {
       lastmod: item.updatedAt || item.publishedAt,
       data: {
         headline: item.title,
-        author: item.author || "Legend Killer",
+        author: item.author || "Legend Slayer",
         publishedAt: item.publishedAt,
         updatedAt: item.updatedAt,
       },
@@ -253,9 +253,9 @@ const jsonLdFor = (page) => {
     name: "Legend Born Nutrition",
     alternateName: [
       "LEGEND BORN NUTRITION PRIVATE LIMITED",
-      "Legend Killer",
+      "Legend Slayer",
       "The Viper Protocol",
-      "Legend Killer Nutrition",
+      "Legend Slayer Nutrition",
       "Legend Born",
     ],
     legalName: "LEGEND BORN NUTRITION PRIVATE LIMITED",
@@ -269,7 +269,7 @@ const jsonLdFor = (page) => {
       height: "512",
     },
     image: `${siteUrl}/og-social.jpg`,
-    description: "Legend Born Nutrition Private Limited is India's high-performance sports nutrition company manufacturing Legend Killer supplements including 100% pure whey protein isolates, creatine monohydrate, and clinical pre-workout formulas.",
+    description: "Legend Born Nutrition Private Limited is India's high-performance sports nutrition company manufacturing Legend Slayer supplements including 100% pure whey protein isolates, creatine monohydrate, and clinical pre-workout formulas.",
     foundingDate: "2024",
     address: {
       "@type": "PostalAddress",
@@ -301,7 +301,7 @@ const jsonLdFor = (page) => {
     "@type": "WebSite",
     "@id": `${siteUrl}/#website`,
     name: "Legend Born Nutrition",
-    alternateName: "Legend Killer",
+    alternateName: "Legend Slayer",
     url: `${siteUrl}/`,
     publisher: { "@id": `${siteUrl}/#organization` },
     inLanguage: "en-IN",
@@ -423,7 +423,7 @@ const jsonLdFor = (page) => {
 const renderHead = (page, indexable = true) => {
   const canonical = absoluteSiteUrl(page.path);
   const image = page.image || defaultImage;
-  const keywords = page.keywords || "Legend Killer, Legend Born Nutrition, Whey Protein Isolate, Pre Workout Supplement, Creatine Monohydrate, Sports Nutrition India";
+  const keywords = page.keywords || "Legend Slayer, Legend Born Nutrition, Whey Protein Isolate, Pre Workout Supplement, Creatine Monohydrate, Sports Nutrition India";
   const robots = indexable ? "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" : "noindex,follow";
   const type = page.type === "article" ? "article" : page.type === "product" ? "product" : "website";
   const schemas = indexable ? jsonLdFor(page) : [];
@@ -458,7 +458,7 @@ ${scripts ? `${scripts}\n` : ""}    <!-- SEO:END -->`;
 
 const renderStaticFallback = (page, indexable) => {
   if (!indexable) return '<div id="root"></div>';
-  const heading = page.data?.name || page.data?.headline || page.title.replace(/\s*\|\s*(?:Legend Killer|Legend Born Nutrition|legendbornnutrition).*$/i, "");
+  const heading = page.data?.name || page.data?.headline || page.title.replace(/\s*\|\s*(?:Legend Slayer|Legend Born Nutrition|legendbornnutrition).*$/i, "");
   return `<div id="root"><main style="min-height:60vh;padding:9rem 1.5rem 4rem;font-family:system-ui,-apple-system,sans-serif;color:#f8fafc;background:#0A0A0C"><div style="max-width:72rem;margin:0 auto"><p style="margin:0 0 1rem;color:#FF5500;font-size:.75rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase">Legend Born Nutrition</p><h1 style="max-width:52rem;margin:0;font-family:system-ui,-apple-system,sans-serif;font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.08;color:#ffffff">${htmlEscape(heading)}</h1><p style="max-width:46rem;margin:1.25rem 0 0;color:#cbd5e1;font-size:1rem;line-height:1.8">${htmlEscape(page.description)}</p><p style="margin-top:1.5rem"><a href="${htmlEscape(absoluteSiteUrl(page.path))}" style="color:#FFB800;font-weight:700">View this page</a></p></div></main></div>`;
 };
 

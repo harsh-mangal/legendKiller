@@ -6,7 +6,7 @@ const policies = {
     eyebrow: "Legal & Privacy",
     title: "Privacy Policy",
     updated: "1 August 2026",
-    intro: "This policy explains how Legend Killer collects, uses, stores, and protects information when you browse our website, create an account, contact us, or place an order.",
+    intro: "This policy explains how Legend Slayer collects, uses, stores, and protects information when you browse our website, create an account, contact us, or place an order.",
     sections: [
       ["Information We Collect", ["Account and contact information such as your name, phone number, email address, and delivery address.", "Order, payment status, supplement preferences, and customer support history.", "Technical information such as device type, browser, IP address, and security analytics."]],
       ["How We Use Information", ["To process, fulfill, deliver, and support your sports nutrition orders.", "To provide account services, order updates, customer support, refunds, and service communications.", "To prevent fraud, maintain website security, improve our performance range, and meet legal or regulatory obligations."]],
@@ -20,7 +20,7 @@ const policies = {
     eyebrow: "Legal",
     title: "Terms & Conditions",
     updated: "1 August 2026",
-    intro: "These terms govern your use of the Legend Killer platform and supplement purchases. By placing an order, you agree to these terms.",
+    intro: "These terms govern your use of the Legend Slayer platform and supplement purchases. By placing an order, you agree to these terms.",
     sections: [
       ["Platform Use", ["You must provide accurate account information and use the platform for lawful supplement purchases.", "You are responsible for safeguarding your account and notifying us of any unauthorized activity."]],
       ["Product & Supplement Information", ["We display supplement macros, ingredients, prices, and availability accurately. Tub packaging or label designs may vary slightly across batches.", "Product information is intended for training and fitness guidance and does not replace medical advice."]],
@@ -69,7 +69,7 @@ const policies = {
     eyebrow: "Important Information",
     title: "Health & Supplement Disclaimer",
     updated: "1 August 2026",
-    intro: "Legend Killer supplements are intended for healthy adults, bodybuilders, and fitness enthusiasts to support training goals. They do not diagnose, treat, or cure diseases.",
+    intro: "Legend Slayer supplements are intended for healthy adults, bodybuilders, and fitness enthusiasts to support training goals. They do not diagnose, treat, or cure diseases.",
     sections: [
       ["Professional Guidance", ["Consult a physician or certified fitness coach before beginning any intense supplement or workout regimen.", "Not recommended for pregnant or lactating women, or individuals under 18 unless advised by a healthcare provider."]],
       ["Individual Variation", ["Individual muscle growth and endurance outcomes depend on exercise intensity, diet, sleep, and metabolic factors."]],

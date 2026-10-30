@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import CategoryBanner from "../components/category/CategoryBanner";
 import Seo, { absoluteUrl, breadcrumbSchema } from "../components/seo/Seo";
 import ProductCard from "../components/product/ProductCard";
 import Alert from "../components/ui/Alert";
 import { EmptyState } from "../components/ui/PageState";
-import { bannerApi, categoryApi, productApi } from "../services/api";
+import { categoryApi, productApi } from "../services/api";
 import { SITE } from "../config/site";
 import { catalogItemPath } from "../utils/catalog";
 
@@ -13,7 +12,6 @@ export default function CategoryProductsPage() {
   const { slug } = useParams();
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
-  const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categoryError, setCategoryError] = useState("");
   const [productError, setProductError] = useState("");
@@ -24,18 +22,8 @@ export default function CategoryProductsPage() {
     setLoading(true);
     setCategory(null);
     setProducts([]);
-    setBanners([]);
     setCategoryError("");
     setProductError("");
-
-    bannerApi
-      .getBanners("categories", { signal: controller.signal, categorySlug: slug })
-      .then((items) => {
-        if (active) setBanners(items);
-      })
-      .catch(() => {
-        if (active) setBanners([]);
-      });
 
     Promise.allSettled([
       categoryApi.getCategories({ signal: controller.signal }),
@@ -94,7 +82,6 @@ export default function CategoryProductsPage() {
           structuredData={category ? [collectionSchema, breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Categories", path: "/categories" }, { name: category.name, path: canonicalPath }])] : []}
         />
       )}
-      {!loading && category && <CategoryBanner banners={banners} />}
       <div className="container-page pt-8 sm:pt-14">
         <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs text-slate-400">
           <Link to="/" className="hover:text-white">Home</Link><span aria-hidden="true">/</span>

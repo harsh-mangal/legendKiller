@@ -3,12 +3,29 @@ import { ArrowUp } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 export default function ScrollToTop() {
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [pathname, search]);
+    if (!hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      return undefined;
+    }
+    const scrollToSection = () => {
+      const section = document.getElementById(hash.slice(1));
+      if (!section) return false;
+      section.scrollIntoView({ behavior: "auto", block: "start" });
+      return true;
+    };
+    if (scrollToSection()) return undefined;
+    // Wait for a lazy-loaded page to mount before resolving its section link.
+    const observer = new MutationObserver(() => {
+      if (scrollToSection()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    const timeout = window.setTimeout(() => observer.disconnect(), 5000);
+    return () => { observer.disconnect(); window.clearTimeout(timeout); };
+  }, [pathname, search, hash]);
 
   useEffect(() => {
     const handleScroll = () => setVisible(window.scrollY > 420);

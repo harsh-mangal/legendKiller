@@ -19,7 +19,7 @@ import { money } from "../utils/format";
 export default function HomePage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#0A0A0C]">
-      <h1 className="sr-only">Legend Killer — High Performance Sports Nutrition & Whey Protein Isolates</h1>
+      <h1 className="sr-only">Legend Slayer — High Performance Sports Nutrition & Whey Protein Isolates</h1>
       <Hero />
 
       <ShoppingBenefits />

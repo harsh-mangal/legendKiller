@@ -187,3 +187,35 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* The product information panels share the black and orange ember palette. */
+.protocol-content {
+  color: #e2e2e6;
+  background-color: #090302;
+  background-image:
+    radial-gradient(ellipse at 100% 100%, rgba(255, 85, 0, .55), transparent 40%),
+    radial-gradient(ellipse at 90% 75%, rgba(178, 28, 0, .34), transparent 47%),
+    radial-gradient(ellipse at 100% 0%, rgba(163, 24, 0, .32), transparent 38%),
+    linear-gradient(120deg, #050505 30%, #170302 75%, #3c0802);
+  border-bottom: 2px solid #d64412;
+}
+.protocol-content h2, .protocol-content h3, .protocol-content h4,
+.protocol-content dt {
+  color: #fff;
+}
+.protocol-content .section-eyebrow {
+  color: #ff8728;
+}
+.protocol-content p, .protocol-content li, .protocol-content dd {
+  color: #e2e2e6;
+}
+.protocol-content .bg-slate-50, .protocol-content .bg-amber-50 {
+  background-color: rgba(8, 3, 2, .78);
+  border-color: rgba(255, 85, 0, .35);
+}
+.protocol-content a {
+  color: #ff9b45;
+}
+.protocol-content strong {
+  color: #ff8728;
+}

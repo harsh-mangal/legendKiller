@@ -10,7 +10,6 @@ import Sidebar from "./Sidebar";
 import { ARCHITECTURE_SUMMARIES } from "../../data/architectureSummaries";
 
 const navLinks = [
-  { label: "SHOP ALL", path: "/products" },
   { label: "PATENTS", path: "/patents" },
   { label: "CATEGORIES", path: "/categories" },
   { label: "ARTICLES", path: "/articles" },
@@ -106,10 +105,10 @@ export default function Navbar() {
               <Menu size={22} className="text-white" />
             </button>
 
-            <Link to="/" className="flex h-full min-w-0 flex-1 items-center justify-center overflow-hidden xl:flex-none" aria-label="Legend Killer Home">
+            <Link to="/" className="flex h-full min-w-0 flex-1 items-center justify-center overflow-hidden xl:flex-none" aria-label="Legend Slayer Home">
               <img
                 src="/logo.png"
-                alt="Legend Killer"
+                alt="Legend Slayer"
                 className="block h-auto w-full max-w-[190px] object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.12)] sm:max-w-[240px] xl:w-[270px] xl:max-w-none"
               />
             </Link>
@@ -127,6 +126,15 @@ export default function Navbar() {
                   : path === "/architectures"
                   ? location.pathname.startsWith("/architectures")
                   : location.pathname === path && (hasTargetSearch ? searchMatches : isProductsRoot ? !currentSearch.get("bestSeller") && !currentSearch.get("type") : true);
+
+                if (link.path === "/articles") {
+                  return <div key={link.path} className="group relative py-2">
+                    <Link to="/articles" className="py-2 text-xs font-black uppercase tracking-widest text-slate-300 hover:text-[#FFB800]">ARTICLES</Link>
+                    <div className="absolute left-0 top-full z-50 hidden w-72 border border-slate-800 bg-[#0A0A0C] p-3 shadow-2xl group-hover:block group-focus-within:block">
+                      <Link to="/articles#about-legend-slayer" className="block p-3 text-sm font-bold text-white hover:text-[#FF5500]">About Legend Slayer: The Viper Protocol</Link>
+                    </div>
+                  </div>;
+                }
 
                 if (link.hasDropdown) {
                   return (

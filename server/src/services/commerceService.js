@@ -13,7 +13,9 @@ import { saveWithSession, useSession } from "../utils/transaction.js";
 export const getDeliverySetting = async (session = null) => {
   const options = { upsert: true, new: true, setDefaultsOnInsert: true };
   if (session) options.session = session;
-  return DeliverySetting.findOneAndUpdate({ key: "default" }, { $setOnInsert: { key: "default" } }, options);
+  const setting = await DeliverySetting.findOneAndUpdate({ key: "default" }, { $setOnInsert: { key: "default" } }, options);
+  setting.codEnabled = false;
+  return setting;
 };
 
 export const checkDeliveryAvailability = async (pincode, session = null) => {
@@ -271,10 +273,10 @@ export const restoreCoins = async (order, session = null) => {
 };
 
 export const calculateOrderTotals = async ({ orderItems, itemsPrice, pincode, paymentMethod, couponCode, userId, useCoins, session = null }) => {
+  if (paymentMethod === "COD") throw new ApiError(400, "Cash on delivery is unavailable. Please choose online payment.");
   const delivery = await checkDeliveryAvailability(pincode, session);
   if (!delivery.serviceable) throw new ApiError(400, delivery.message);
   const setting = await getDeliverySetting(session);
-  if (paymentMethod === "COD" && !setting.codEnabled) throw new ApiError(400, "Cash on delivery is not available for this order");
   if (paymentMethod === "ONLINE" && !setting.onlinePaymentEnabled) throw new ApiError(400, "Online payment is currently unavailable");
   const shippingPrice = calculateShipping({
     itemsPrice,

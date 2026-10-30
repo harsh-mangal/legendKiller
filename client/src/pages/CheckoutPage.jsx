@@ -81,7 +81,7 @@ export default function CheckoutPage() {
     return Array.isArray(profile?.addresses) ? profile.addresses : [];
   }, [profile]);
 
-  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [paymentMethod, setPaymentMethod] = useState("ONLINE");
 
   const [form, setForm] = useState(emptyForm);
   const [addressMode, setAddressMode] = useState("new");
@@ -410,7 +410,7 @@ export default function CheckoutPage() {
           <h1 className="section-title mt-3">Your shopping bag is empty</h1>
 
           <p className="mt-4 text-slate-600">
-            Explore the Legend Killer supplement range and add products you would like for
+            Explore the Legend Slayer supplement range and add products you would like for
             your everyday wellness routine.
           </p>
 
@@ -668,14 +668,6 @@ export default function CheckoutPage() {
             </p>
 
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <PaymentOption
-                active={paymentMethod === "COD"}
-                onClick={() => setPaymentMethod("COD")}
-                icon={Truck}
-                title="Cash on delivery"
-                description="Pay when your order arrives"
-              />
-
               <PaymentOption
                 active={paymentMethod === "ONLINE"}
                 onClick={() => setPaymentMethod("ONLINE")}

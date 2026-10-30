@@ -58,10 +58,10 @@ export default function AboutPage() {
               Engineered for Legends. Tested for Greatness.
             </h1>
             <p className="mt-5 max-w-2xl text-[15px] leading-7 text-slate-300 sm:mt-7 sm:text-base sm:leading-8">
-              Legend Killer is India's premium high-performance nutritional supplement brand, engineered for athletes, bodybuilders, and fitness purists who refuse to compromise on quality.
+              Legend Slayer is India's premium high-performance nutritional supplement brand, engineered for athletes, bodybuilders, and fitness purists who refuse to compromise on quality.
             </p>
             <p className="mt-4 max-w-2xl text-[15px] leading-7 text-slate-400 sm:text-base sm:leading-8">
-              From Cross-Flow Microfiltered Whey Isolates to explosive Pre-Workout matrices and 100% pure Micronized Creatine, every Legend Killer product is engineered with clinical dosages, raw imported ingredients, and complete lab transparency.
+              From Cross-Flow Microfiltered Whey Isolates to explosive Pre-Workout matrices and 100% pure Micronized Creatine, every Legend Slayer product is engineered with clinical dosages, raw imported ingredients, and complete lab transparency.
             </p>
             <div className="mt-7 grid gap-3 sm:mt-9 sm:flex sm:flex-wrap">
               <Link to="/products" className="btn-primary">Explore Products</Link>
@@ -75,7 +75,7 @@ export default function AboutPage() {
               No Proprietary Blends. No Underdosed Fillers.
             </h2>
             <p className="relative z-10 mt-4 text-sm leading-7 text-slate-400">
-              We believe bodybuilders deserve to know exactly what goes into their shakers. Every Legend Killer tub features full label disclosure, premium raw materials sourced from top global suppliers, and rigorous batch quality checks.
+              We believe bodybuilders deserve to know exactly what goes into their shakers. Every Legend Slayer tub features full label disclosure, premium raw materials sourced from top global suppliers, and rigorous batch quality checks.
             </p>
             <div className="relative z-10 mt-7 border-t border-slate-800">
               {commitments.map(([Icon, title, description]) => (
@@ -100,7 +100,7 @@ export default function AboutPage() {
             <div>
               <h2 className="section-title">Built on Science. Proven in the Gym.</h2>
               <p className="mt-5 max-w-3xl text-base leading-8 text-slate-400">
-                Whether you're prepping for the stage, breaking personal strength records, or building lean muscle mass, Legend Killer gives your body the exact anabolic fuel it needs.
+                Whether you're prepping for the stage, breaking personal strength records, or building lean muscle mass, Legend Slayer gives your body the exact anabolic fuel it needs.
               </p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function AboutPage() {
               <h2 className="section-title">Official Brand Registry</h2>
             </div>
             <p className="text-sm leading-7 text-slate-400">
-              Official corporate registration and verified authority profiles for <strong className="text-white">Legend Born Nutrition</strong> (operating brand <strong className="text-white">Legend Killer</strong>). This page serves as the official Entity Home for search engine knowledge graphs and brand verification.
+              Official corporate registration and verified authority profiles for <strong className="text-white">Legend Born Nutrition</strong> (operating brand <strong className="text-white">Legend Slayer</strong>). This page serves as the official Entity Home for search engine knowledge graphs and brand verification.
             </p>
           </div>
 

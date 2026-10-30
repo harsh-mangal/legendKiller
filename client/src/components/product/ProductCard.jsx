@@ -71,7 +71,7 @@ export default function ProductCard({ product }) {
       <div className="flex flex-1 flex-col p-3.5 sm:p-5">
         <div className="flex min-w-0 items-center justify-between gap-2">
           <p className="truncate text-[9px] font-black uppercase tracking-[0.18em] text-[#FFB800] sm:text-[10px]">
-            {product.category?.name || (isCombo ? "Combo Pack" : "Legend Killer")}
+            {product.category?.name || (isCombo ? "Combo Pack" : "Legend Slayer")}
           </p>
           <Zap size={12} className="shrink-0 text-[#FF5500]" />
         </div>

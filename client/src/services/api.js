@@ -75,6 +75,7 @@ const normalizeProductVideo = (item) => {
 
 export const normalizeProduct = (product = {}) => ({
   ...product,
+  name: product.slug === "legend-slayer-the-viper-protocol" ? "Legend Slayer: The Viper Protocol" : String(product.name || "").replace(/legend killer/gi, "Legend Slayer"),
   itemType: "PRODUCT",
   catalogType: getCatalogType(product),
   price: Number(product.price || 0),
@@ -83,6 +84,7 @@ export const normalizeProduct = (product = {}) => ({
   availableStock: Number(product.availableStock ?? product.stock ?? 0),
   images: Array.isArray(product.images) ? product.images.map(imageUrl).filter(Boolean) : [],
   aboutGraphic: imageUrl(product.aboutGraphic),
+  nutritionGraphic: imageUrl(product.nutritionGraphic),
   infographics: Array.isArray(product.infographics)
     ? product.infographics.map(normalizeInfographic).filter((item) => item.url)
     : [],

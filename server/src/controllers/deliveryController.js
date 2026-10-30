@@ -24,7 +24,7 @@ export const updateDeliverySettings = async (req, res, next) => {
       serviceAllIndia: req.body.serviceAllIndia !== false && req.body.serviceAllIndia !== "false",
       serviceablePincodes: Array.isArray(req.body.serviceablePincodes) ? req.body.serviceablePincodes : [],
       excludedPincodes: Array.isArray(req.body.excludedPincodes) ? req.body.excludedPincodes : [],
-      codEnabled: req.body.codEnabled !== false && req.body.codEnabled !== "false",
+      codEnabled: false,
       onlinePaymentEnabled: req.body.onlinePaymentEnabled !== false && req.body.onlinePaymentEnabled !== "false",
       shippingFee: Math.max(0, Number(req.body.shippingFee || 0)),
       freeShippingThreshold: Math.max(0, Number(req.body.freeShippingThreshold || 0)),

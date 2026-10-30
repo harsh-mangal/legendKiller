@@ -35,7 +35,7 @@ export default function QuickViewModal({ product, open, onClose }) {
             <ProductImage src={product.images?.[0]} alt={product.name} className="h-72 w-full object-contain sm:h-96" fallbackClassName="h-72 w-full sm:h-96" />
           </div>
           <div className="p-5 sm:p-8">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FFB800]">{product.category?.name || (isCombo ? "Combo Pack" : "Legend Killer")}</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FFB800]">{product.category?.name || (isCombo ? "Combo Pack" : "Legend Slayer")}</p>
             <h2 id={`quick-view-${product._id}`} className="mt-3 text-2xl font-black uppercase leading-tight text-white sm:text-3xl">{product.name}</h2>
             <div className="mt-3 flex items-center gap-2 text-xs text-slate-300">
               <Star size={14} className={Number(product.rating) > 0 ? "fill-[#FFB800] text-[#FFB800]" : "text-slate-600"} />

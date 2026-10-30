@@ -53,8 +53,8 @@ export default function AdminLayout() {
       <aside className={`fixed inset-y-0 left-0 z-50 flex w-[286px] flex-col border-r border-slate-200 bg-white text-slate-800 shadow-md transition-transform lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex h-20 items-center justify-between border-b border-slate-200 px-5">
           <Link to="/" className="flex min-w-0 items-center gap-3">
-            <img src="/admin-icon.png" alt="Legend Killer" className="h-11 w-11 rounded-none border border-slate-200 bg-slate-900 object-contain p-1" />
-            <div className="min-w-0"><p className="truncate text-base font-black uppercase tracking-wider text-slate-900">Legend Killer</p><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF5500]">Operations Admin</p></div>
+            <img src="/admin-icon.png" alt="Legend Slayer" className="h-11 w-11 rounded-none border border-slate-200 bg-slate-900 object-contain p-1" />
+            <div className="min-w-0"><p className="truncate text-base font-black uppercase tracking-wider text-slate-900">Legend Slayer</p><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF5500]">Operations Admin</p></div>
           </Link>
           <button type="button" className="rounded-none p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close menu"><X size={20} /></button>
         </div>

@@ -152,6 +152,8 @@ export const createProduct = async (req, res, next) => {
       benefits: parseArray(req.body.benefits),
       ingredients: parseArray(req.body.ingredients),
       howToUse: req.body.howToUse,
+      whatsInIt: req.body.whatsInIt,
+      nutritionGraphic: (await uploadMultipleImages(uploadedFiles(req, "nutritionGraphic"), "product-nutrition", { width: 1600, quality: 95, maxBytes: 2 * 1024 * 1024 }))[0] || "",
       suitableFor: parseArray(req.body.suitableFor),
       images: uploadedImageUrls,
       aboutGraphic: uploadedAboutGraphicUrls[0] || "",
@@ -210,7 +212,7 @@ export const updateProduct = async (req, res, next) => {
       product.stock = commercial.stock;
     }
 
-    const fields = ["name", "shortDescription", "description", "longDescription", "howToUse", "unit", "weight"];
+    const fields = ["name", "shortDescription", "description", "longDescription", "howToUse", "whatsInIt", "unit", "weight"];
     fields.forEach((field) => {
       if (req.body[field] !== undefined) product[field] = req.body[field];
     });
@@ -221,6 +223,13 @@ export const updateProduct = async (req, res, next) => {
     if (req.body.isFeatured !== undefined) product.isFeatured = parseBoolean(req.body.isFeatured);
     if (req.body.isBestSeller !== undefined) product.isBestSeller = parseBoolean(req.body.isBestSeller);
 
+    const previousNutritionGraphic = product.nutritionGraphic;
+    const nutritionFiles = uploadedFiles(req, "nutritionGraphic");
+    if (nutritionFiles.length) {
+      product.nutritionGraphic = (await uploadMultipleImages(nutritionFiles, "product-nutrition", { width: 1600, quality: 95, maxBytes: 2 * 1024 * 1024 }))[0] || "";
+    } else if (parseBoolean(req.body.clearNutritionGraphic)) {
+      product.nutritionGraphic = "";
+    }
     const previousAboutGraphic = product.aboutGraphic;
     const aboutGraphicFiles = uploadedFiles(req, "aboutGraphic");
     let aboutGraphicChanged = false;
@@ -261,6 +270,7 @@ export const updateProduct = async (req, res, next) => {
     await product.save();
     await product.populate("category", "name slug");
     if (imagePlan.shouldUpdate) await deleteUploadedImages(imagePlan.removedImages);
+    if (previousNutritionGraphic && previousNutritionGraphic !== product.nutritionGraphic) await deleteUploadedImages([previousNutritionGraphic]);
     if (aboutGraphicChanged && previousAboutGraphic && previousAboutGraphic !== product.aboutGraphic) {
       await deleteUploadedImages([previousAboutGraphic]);
     }
@@ -372,7 +382,7 @@ export const verifyProductByCode = async (req, res, next) => {
       return res.status(404).json({
         success: false,
         isGenuine: false,
-        message: "Authenticity verification failed. This code is not registered in Legend Killer database.",
+        message: "Authenticity verification failed. This code is not registered in Legend Slayer database.",
       });
     }
 
@@ -394,7 +404,7 @@ export const verifyProductByCode = async (req, res, next) => {
     res.json({
       success: true,
       isGenuine: true,
-      message: "100% GENUINE & ORIGINAL LEGEND KILLER PRODUCT",
+      message: "100% GENUINE & ORIGINAL LEGEND SLAYER PRODUCT",
       data: {
         _id: product._id,
         name: product.name,
@@ -410,8 +420,8 @@ export const verifyProductByCode = async (req, res, next) => {
         ingredients: product.ingredients,
         benefits: product.benefits,
         warnings: product.warnings,
-        manufacturerName: product.manufacturerName || "Legend Killer Performance Nutrition Ltd.",
-        marketerName: product.marketerName || "Legend Killer Sports India",
+        manufacturerName: product.manufacturerName || "Legend Slayer Performance Nutrition Ltd.",
+        marketerName: product.marketerName || "Legend Slayer Sports India",
         countryOfOrigin: product.countryOfOrigin || "India",
         licenceType: product.licenceType || "FSSAI Central Licence",
         licenceNumber: product.licenceNumber || "10020022001234",
@@ -421,7 +431,7 @@ export const verifyProductByCode = async (req, res, next) => {
         qrCodeDataUrl,
         barcodeDataUrl,
         certificate: {
-          badge: "VERIFIED AUTHENTIC BY LEGEND KILLER PROTOCOL",
+          badge: "VERIFIED AUTHENTIC BY LEGEND SLAYER PROTOCOL",
           purityGuarantee: "100% Pure WPC / WPI - Zero Amino Spiking",
           testingSeal: "3rd-Party Lab Tested for Heavy Metals & Banned Substances",
           qualityClass: "Grade-A Pharmaceutical Quality Standard",
