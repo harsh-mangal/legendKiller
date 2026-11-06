@@ -5,7 +5,7 @@ import { Badge, Button, Card, ConfirmDialog, EmptyState, Field, Input, LoadingSt
 import { useToast } from "../context/ToastContext";
 import { currency, parseLines, percentageOff, toLines } from "../utils/format";
 import { getErrorMessage } from "../utils/errors";
-import { isFiniteNumber, isWholeNumber, validateImageFiles, validateVideoFiles } from "../utils/validation";
+import { isFiniteNumber, isWholeNumber, validateImageFiles, validatePdfFile, validateVideoFiles } from "../utils/validation";
 import { downloadCsv } from "../utils/csv";
 import { useObjectUrl, useObjectUrls } from "../hooks/useObjectUrl";
 import { generateQrCodeSvg } from "../utils/qrcode";
@@ -14,16 +14,16 @@ import { generateBarcodeSvg } from "../utils/barcode";
 const blank = {
   name: "", slug: "", sku: "", category: "", shortDescription: "", description: "", longDescription: "",
   price: "", mrp: "", stock: "0", lowStockThreshold: "5", unit: "Pack", weight: "",
-  benefits: "", ingredients: "", whatsInIt: "", suitableFor: "", howToUse: "", warnings: "", storageInstructions: "", legalDisclaimer: "",
+  benefits: "", ingredients: "", whatsInIt: "", nutritionText: "", suitableFor: "", howToUse: "", warnings: "", storageInstructions: "", legalDisclaimer: "",
   manufacturerName: "", marketerName: "", countryOfOrigin: "India", licenceType: "", licenceNumber: "", hsnCode: "", gstRate: "0",
   vegetarian: "", batchTrackingEnabled: false, expiryTrackingEnabled: false,
   seoTitle: "", seoDescription: "", isFeatured: false, isBestSeller: false, isActive: true, images: [],
-  aboutGraphic: null, clearAboutGraphic: false, nutritionGraphic: null, clearNutritionGraphic: false, infographics: [], videos: [], clearInfographics: false, clearVideos: false,
+  aboutGraphic: null, clearAboutGraphic: false, nutritionGraphic: null, clearNutritionGraphic: false, nutritionPdf: null, clearNutritionPdf: false, infographics: [], videos: [], clearInfographics: false, clearVideos: false,
   authenticityCode: "", verificationCount: 0,
 };
 
 const tabs = [
-  ["basic", "Basics"], ["commercial", "Pricing & stock"], ["content", "Product information"], ["media", "Infographics & video"], ["compliance", "Compliance"], ["publishing", "SEO & visibility"], ["authenticity", "QR Authenticity"],
+  ["basic", "Basics"], ["commercial", "Pricing & stock"], ["content", "Product information"], ["nutrition", "Nutritional Table"], ["media", "Infographics & video"], ["compliance", "Compliance"], ["publishing", "SEO & visibility"], ["authenticity", "QR Authenticity"],
 ];
 
 const PRODUCT_IMAGE_LIMIT = 10;
@@ -35,7 +35,7 @@ const mapProduct = (product) => ({
   price: String(product.price ?? ""), mrp: String(product.mrp ?? ""), stock: String(product.stock ?? 0), lowStockThreshold: String(product.lowStockThreshold ?? 5), gstRate: String(product.gstRate ?? 0),
   benefits: toLines(product.benefits), ingredients: toLines(product.ingredients), suitableFor: toLines(product.suitableFor), warnings: toLines(product.warnings),
   vegetarian: product.vegetarian === true ? "true" : product.vegetarian === false ? "false" : "",
-  images: [], aboutGraphic: null, clearAboutGraphic: false, nutritionGraphic: null, clearNutritionGraphic: false, infographics: [], videos: [], clearInfographics: false, clearVideos: false,
+  images: [], aboutGraphic: null, clearAboutGraphic: false, nutritionGraphic: null, clearNutritionGraphic: false, nutritionPdf: null, clearNutritionPdf: false, infographics: [], videos: [], clearInfographics: false, clearVideos: false,
   authenticityCode: product.authenticityCode || "",
   verificationCount: product.verificationCount || 0,
 });
@@ -54,6 +54,7 @@ export default function Products() {
   const [existingImages, setExistingImages] = useState([]);
   const [existingAboutGraphic, setExistingAboutGraphic] = useState("");
   const [existingNutritionGraphic, setExistingNutritionGraphic] = useState("");
+  const [existingNutritionPdf, setExistingNutritionPdf] = useState("");
   const [existingInfographics, setExistingInfographics] = useState([]);
   const [existingVideos, setExistingVideos] = useState([]);
   const [saving, setSaving] = useState(false);
@@ -84,8 +85,8 @@ export default function Products() {
     });
   }, [products, search, categoryFilter, statusFilter]);
 
-  const openCreate = () => { setEditingId(""); setForm(blank); setExistingImages([]); setExistingAboutGraphic(""); setExistingNutritionGraphic(""); setExistingInfographics([]); setExistingVideos([]); setActiveTab("basic"); setEditorOpen(true); };
-  const openEdit = (product) => { setEditingId(product._id); setForm(mapProduct(product)); setExistingImages(product.images || []); setExistingAboutGraphic(product.aboutGraphic || ""); setExistingNutritionGraphic(product.nutritionGraphic || ""); setExistingInfographics(product.infographics || []); setExistingVideos(product.videos || []); setActiveTab("basic"); setEditorOpen(true); };
+  const openCreate = () => { setEditingId(""); setForm(blank); setExistingImages([]); setExistingAboutGraphic(""); setExistingNutritionGraphic(""); setExistingNutritionPdf(""); setExistingInfographics([]); setExistingVideos([]); setActiveTab("basic"); setEditorOpen(true); };
+  const openEdit = (product) => { setEditingId(product._id); setForm(mapProduct(product)); setExistingImages(product.images || []); setExistingAboutGraphic(product.aboutGraphic || ""); setExistingNutritionGraphic(product.nutritionGraphic || ""); setExistingNutritionPdf(product.nutritionPdf || ""); setExistingInfographics(product.infographics || []); setExistingVideos(product.videos || []); setActiveTab("basic"); setEditorOpen(true); };
 
   const validate = () => {
     const price = Number(form.price);
@@ -104,6 +105,8 @@ export default function Products() {
     if (imageError) return imageError;
     const aboutGraphicError = validateImageFiles(form.aboutGraphic ? [form.aboutGraphic] : [], { maxFiles: 1 });
     if (aboutGraphicError) return aboutGraphicError;
+    const pdfError = validatePdfFile(form.nutritionPdf);
+    if (pdfError) return pdfError;
     const nutritionError = validateImageFiles(form.nutritionGraphic ? [form.nutritionGraphic] : [], { maxFiles: 1 });
     if (nutritionError) return nutritionError;
     const infographicError = validateImageFiles(form.infographics, { maxFiles: 8 });
@@ -123,9 +126,9 @@ export default function Products() {
       setSaving(true);
       const fd = new FormData();
       const arrayFields = new Set(["benefits", "ingredients", "suitableFor", "warnings"]);
-      const boolFields = new Set(["isFeatured", "isBestSeller", "isActive", "batchTrackingEnabled", "expiryTrackingEnabled", "clearAboutGraphic", "clearNutritionGraphic", "clearInfographics", "clearVideos"]);
+      const boolFields = new Set(["isFeatured", "isBestSeller", "isActive", "batchTrackingEnabled", "expiryTrackingEnabled", "clearAboutGraphic", "clearNutritionGraphic", "clearNutritionPdf", "clearInfographics", "clearVideos"]);
       Object.entries(form).forEach(([key, value]) => {
-        if (["images", "aboutGraphic", "nutritionGraphic", "infographics", "videos"].includes(key)) return;
+        if (["images", "aboutGraphic", "nutritionGraphic", "nutritionPdf", "infographics", "videos"].includes(key)) return;
         if (arrayFields.has(key)) fd.append(key, JSON.stringify(parseLines(value)));
         else if (boolFields.has(key)) fd.append(key, String(Boolean(value)));
         else fd.append(key, value ?? "");
@@ -134,6 +137,7 @@ export default function Products() {
       if (editingId) fd.append("retainedImages", JSON.stringify(existingImages));
       if (form.aboutGraphic) fd.append("aboutGraphic", form.aboutGraphic);
       if (form.nutritionGraphic) fd.append("nutritionGraphic", form.nutritionGraphic);
+      if (form.nutritionPdf) fd.append("nutritionPdf", form.nutritionPdf);
       form.infographics.forEach((file) => fd.append("infographics", file));
       form.videos.forEach((file) => fd.append("videos", file));
       const { data } = editingId ? await API.put(`/products/${editingId}`, fd) : await API.post("/products", fd);
@@ -152,6 +156,7 @@ export default function Products() {
   };
 
   const filePreviews = useObjectUrls(form.images);
+  const nutritionPdfPreview = useObjectUrl(form.nutritionPdf);
   const nutritionGraphicPreview = useObjectUrl(form.nutritionGraphic);
   const aboutGraphicPreview = useObjectUrl(form.aboutGraphic);
   const infographicPreviews = useObjectUrls(form.infographics);
@@ -182,8 +187,11 @@ export default function Products() {
       {activeTab === "basic" && <div className="grid gap-5 md:grid-cols-2"><Field label="Product name" required><Input value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} /></Field><Field label="Category" required><Select value={form.category} onChange={(event) => setForm((current) => ({ ...current, category: event.target.value }))}><option value="">Select category</option>{categories.filter((category) => category.isActive !== false || category._id === form.category).map((category) => <option key={category._id} value={category._id}>{category.name}{category.isActive === false ? " (inactive)" : ""}</option>)}</Select></Field><Field label="Slug" hint="Leave blank on new products to generate it from the name."><Input value={form.slug} onChange={(event) => setForm((current) => ({ ...current, slug: event.target.value }))} /></Field><Field label="SKU"><Input value={form.sku} onChange={(event) => setForm((current) => ({ ...current, sku: event.target.value.toUpperCase() }))} /></Field><Field label="Short description" className="md:col-span-2"><Textarea rows="3" value={form.shortDescription} onChange={(event) => setForm((current) => ({ ...current, shortDescription: event.target.value }))} maxLength="500" /></Field><Field label="Full description" required className="md:col-span-2"><Textarea rows="6" value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} /></Field><Field label="Additional long description" className="md:col-span-2"><Textarea rows="5" value={form.longDescription} onChange={(event) => setForm((current) => ({ ...current, longDescription: event.target.value }))} /></Field><Field label="Product images" className="md:col-span-2" hint="Keep, remove, or add images below. The saved gallery can contain up to 10 square JPG, PNG or WEBP images, 10 MB each."><Input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={addProductImages} disabled={existingImages.length + form.images.length >= PRODUCT_IMAGE_LIMIT} /></Field>{(existingImages.length > 0 || filePreviews.length > 0) && <div className="md:col-span-2 space-y-4"><div className="flex items-center justify-between gap-3"><p className="field-label mb-0">Product gallery ({existingImages.length + form.images.length}/{PRODUCT_IMAGE_LIMIT})</p>{existingImages.length > 0 && <Button type="button" size="sm" variant="danger" onClick={() => setExistingImages([])}><Trash2 size={15} /> Remove all existing</Button>}</div>{existingImages.length > 0 && <div><p className="mb-2 text-xs font-bold uppercase tracking-wide text-stone-500">Saved images</p><div className="flex flex-wrap gap-3">{existingImages.map((image, index) => <div key={`${image}-${index}`} className="relative overflow-hidden rounded-xl border border-stone-200 bg-white"><img src={assetUrl(image)} alt={`Saved product ${index + 1}`} className="h-24 w-24 object-cover" /><button type="button" className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-red-600 text-white shadow hover:bg-red-700" onClick={() => setExistingImages((current) => current.filter((_, itemIndex) => itemIndex !== index))} aria-label={`Remove saved image ${index + 1}`} title="Remove this image"><Trash2 size={14} /></button></div>)}</div></div>}{filePreviews.length > 0 && <div><p className="mb-2 text-xs font-bold uppercase tracking-wide text-stone-500">New images</p><div className="flex flex-wrap gap-3">{filePreviews.map((url, index) => <div key={`${url}-${index}`} className="relative overflow-hidden rounded-xl border border-emerald-300 bg-white"><img src={url} alt={`New product ${index + 1}`} className="h-24 w-24 object-cover" /><button type="button" className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-red-600 text-white shadow hover:bg-red-700" onClick={() => removeNewProductImage(index)} aria-label={`Remove new image ${index + 1}`} title="Remove this image"><Trash2 size={14} /></button></div>)}</div></div>}</div>}</div>}
       {activeTab === "commercial" && <div className="grid gap-5 md:grid-cols-2"><Field label="Selling price" required><Input type="number" min="0" step="0.01" value={form.price} onChange={(event) => setForm((current) => ({ ...current, price: event.target.value }))} /></Field><Field label="MRP" required><Input type="number" min="0" step="0.01" value={form.mrp} onChange={(event) => setForm((current) => ({ ...current, mrp: event.target.value }))} /></Field><Field label="Available stock"><Input type="number" min="0" step="1" value={form.stock} onChange={(event) => setForm((current) => ({ ...current, stock: event.target.value }))} /></Field><Field label="Low-stock threshold"><Input type="number" min="0" step="1" value={form.lowStockThreshold} onChange={(event) => setForm((current) => ({ ...current, lowStockThreshold: event.target.value }))} /></Field><Field label="Pack/unit"><Input value={form.unit} onChange={(event) => setForm((current) => ({ ...current, unit: event.target.value }))} placeholder="Bottle, box, pack" /></Field><Field label="Net quantity / weight"><Input value={form.weight} onChange={(event) => setForm((current) => ({ ...current, weight: event.target.value }))} placeholder="60 Capsules, 200 ml" /></Field><Field label="GST rate"><Input type="number" min="0" max="100" step="0.01" value={form.gstRate} onChange={(event) => setForm((current) => ({ ...current, gstRate: event.target.value }))} /></Field><Field label="HSN code"><Input value={form.hsnCode} onChange={(event) => setForm((current) => ({ ...current, hsnCode: event.target.value }))} /></Field><Toggle checked={form.batchTrackingEnabled} onChange={(value) => setForm((current) => ({ ...current, batchTrackingEnabled: value }))} label="Batch tracking required" description="The current backend stores the flag but not batch-wise stock records." /><Toggle checked={form.expiryTrackingEnabled} onChange={(value) => setForm((current) => ({ ...current, expiryTrackingEnabled: value }))} label="Expiry tracking required" description="Use this flag for products that must later receive batch/expiry records." /></div>}
       {activeTab === "content" && <div className="grid gap-5 md:grid-cols-2"><Field label="Benefits" hint="One point per line."><Textarea rows="8" value={form.benefits} onChange={(event) => setForm((current) => ({ ...current, benefits: event.target.value }))} /></Field><Field label="Ingredients" hint="One ingredient per line."><Textarea rows="8" value={form.ingredients} onChange={(event) => setForm((current) => ({ ...current, ingredients: event.target.value }))} /></Field><Field label="Suitable for" hint="One audience or use case per line."><Textarea rows="6" value={form.suitableFor} onChange={(event) => setForm((current) => ({ ...current, suitableFor: event.target.value }))} /></Field><Field label="Warnings" hint="Use packaging-approved wording only."><Textarea rows="6" value={form.warnings} onChange={(event) => setForm((current) => ({ ...current, warnings: event.target.value }))} /></Field><Field label="What’s in it" hint="Shown beside Nutritional Facts. The ingredient list above is also shown in this tab." className="md:col-span-2"><Textarea rows="6" value={form.whatsInIt} onChange={(event) => setForm((current) => ({ ...current, whatsInIt: event.target.value }))} /></Field><Field label="How to use" className="md:col-span-2"><Textarea rows="4" value={form.howToUse} onChange={(event) => setForm((current) => ({ ...current, howToUse: event.target.value }))} /></Field><Field label="Storage instructions"><Textarea rows="4" value={form.storageInstructions} onChange={(event) => setForm((current) => ({ ...current, storageInstructions: event.target.value }))} /></Field><Field label="Legal disclaimer"><Textarea rows="4" value={form.legalDisclaimer} onChange={(event) => setForm((current) => ({ ...current, legalDisclaimer: event.target.value }))} /></Field></div>}
-      {activeTab === "media" && (
-        <div className="space-y-7">
+      {activeTab === "nutrition" && <div className="space-y-6">
+        <p className="text-sm text-stone-600">Add nutritional information as text, an image, a PDF, or a combination. Saved options appear together in the product’s Nutritional Facts tab.</p>
+        <Field label="Nutritional table text" hint="Paste or type the nutritional table and serving information. Line breaks are preserved.">
+          <Textarea rows="12" value={form.nutritionText} onChange={(event) => setForm((current) => ({ ...current, nutritionText: event.target.value }))} />
+        </Field>
           <div className="rounded-xl border border-stone-200 p-5">
             <h3 className="font-bold text-stone-950">Nutritional Facts image</h3>
             <p className="mt-2 text-sm text-stone-600">Upload a clear label image. It appears in Nutritional Facts at its original aspect ratio and can be opened full-size.</p>
@@ -193,6 +201,16 @@ export default function Products() {
             {(nutritionGraphicPreview || existingNutritionGraphic) && <img src={nutritionGraphicPreview || assetUrl(existingNutritionGraphic)} alt="Nutrition label preview" className="mt-4 max-h-96 max-w-full object-contain" />}
             {form.nutritionGraphic ? <Button type="button" size="sm" variant="secondary" className="mt-3" onClick={() => setForm((current) => ({ ...current, nutritionGraphic: null }))}>Discard replacement</Button> : existingNutritionGraphic && <Button type="button" size="sm" variant="danger" className="mt-3" onClick={() => { setExistingNutritionGraphic(""); setForm((current) => ({ ...current, clearNutritionGraphic: true })); }}>Remove uploaded image</Button>}
           </div>
+        <div className="space-y-4 rounded-xl border border-stone-200 p-5">
+          <Field label="Nutritional table PDF" hint="One PDF document, maximum 10 MB. Customers can open the saved PDF from Nutritional Facts.">
+            <Input type="file" accept="application/pdf,.pdf" onChange={(event) => setForm((current) => ({ ...current, nutritionPdf: event.target.files?.[0] || null, clearNutritionPdf: false }))} />
+          </Field>
+          {(nutritionPdfPreview || existingNutritionPdf) && <a href={nutritionPdfPreview || assetUrl(existingNutritionPdf)} target="_blank" rel="noreferrer" className="block text-sm font-bold text-orange-700 underline">{form.nutritionPdf ? `Preview ${form.nutritionPdf.name}` : "View saved nutritional table PDF"}</a>}
+          {form.nutritionPdf ? <Button type="button" size="sm" variant="secondary" onClick={() => setForm((current) => ({ ...current, nutritionPdf: null }))}>Discard PDF replacement</Button> : existingNutritionPdf && <Button type="button" size="sm" variant="danger" onClick={() => { setExistingNutritionPdf(""); setForm((current) => ({ ...current, clearNutritionPdf: true })); }}>Remove PDF</Button>}
+        </div>
+      </div>}
+      {activeTab === "media" && (
+        <div className="space-y-7">
           <div className="rounded-xl border border-[#FF5500]/30 bg-orange-50 p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>

@@ -85,6 +85,7 @@ export const normalizeProduct = (product = {}) => ({
   images: Array.isArray(product.images) ? product.images.map(imageUrl).filter(Boolean) : [],
   aboutGraphic: imageUrl(product.aboutGraphic),
   nutritionGraphic: imageUrl(product.nutritionGraphic),
+  nutritionPdf: imageUrl(product.nutritionPdf),
   infographics: Array.isArray(product.infographics)
     ? product.infographics.map(normalizeInfographic).filter((item) => item.url)
     : [],
@@ -258,6 +259,10 @@ export const bannerApi = {
 };
 
 export const storefrontSettingsApi = {
+  getArticles: async (options = {}) => {
+    const data = unwrapData(await request("/storefront-settings/articles", { ...options, auth: "none" }));
+    return { ...data, aboutLegendSlayerBanner: imageUrl(data?.aboutLegendSlayerBanner) };
+  },
   getHomepage: async (options = {}) =>
     unwrapData(await request("/storefront-settings/homepage", { ...options, auth: "none" })),
 };
@@ -337,9 +342,14 @@ export const deliveryApi = {
   check: async (pincode, productId) => unwrapData(await request(`/delivery/check?pincode=${encodeURIComponent(pincode)}${productId ? `&productId=${encodeURIComponent(productId)}` : ""}`, { auth: "none" })),
 };
 
+const normalizeArchitecture = (item) => item ? {
+  ...item,
+  logoUrl: /^\/?uploads\//i.test(item.logoUrl || "") ? imageUrl(item.logoUrl) : item.logoUrl,
+} : null;
+
 export const architectureApi = {
-  getArchitectures: async () => extractArray(await request("/architectures", { auth: "none" })),
-  getArchitectureBySlug: async (slug) => unwrapData(await request(`/architectures/${encodeURIComponent(slug)}`, { auth: "none" })),
+  getArchitectures: async ({ summary = false } = {}) => extractArray(await request(`/architectures${summary ? "?summary=true" : ""}`, { auth: "none" })).map(normalizeArchitecture),
+  getArchitectureBySlug: async (slug) => normalizeArchitecture(unwrapData(await request(`/architectures/${encodeURIComponent(slug)}`, { auth: "none" }))),
 };
 
 export const partnerApi = {

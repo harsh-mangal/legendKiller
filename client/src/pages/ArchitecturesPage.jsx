@@ -61,13 +61,13 @@ export default function ArchitecturesPage() {
             const Icon = iconMap[arch.icon] || Zap;
             return (
               <div
-                key={arch.id}
+                key={arch._id || arch.id || arch.slug}
                 className="group relative flex flex-col justify-between rounded-none border border-slate-800 bg-[#121216] p-6 sm:p-8 transition duration-300 hover:border-[#FF5500] hover:shadow-[0_10px_30px_rgba(255,85,0,0.15)]"
               >
                 <div>
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex h-16 w-16 items-center justify-center overflow-hidden border border-slate-800 bg-[#0A0A0C] text-[#FFB800] transition duration-300 group-hover:border-[#FF5500]">
-                      {arch.logoUrl ? <img src={arch.logoUrl} alt="" className="h-full w-full scale-[2.2] object-cover" /> : <Icon size={24} />}
+                      {arch.logoUrl ? <img src={arch.logoUrl} alt="" className={arch.logoUrl.includes("/uploads/") ? "h-full w-full object-contain" : "h-full w-full scale-[2.2] object-cover"} /> : <Icon size={24} />}
                     </div>
                     <span className="text-[10px] font-black uppercase tracking-widest text-[#FF5500] bg-[#FF5500]/10 px-3 py-1 border border-[#FF5500]/30">
                       {arch.badge}

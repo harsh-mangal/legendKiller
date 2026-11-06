@@ -2,6 +2,7 @@ import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { STATIC_INDEXABLE_ROUTES, STATIC_NOINDEX_ROUTES } from "../src/config/seoRoutes.js";
+import { canPrerenderRoute } from "./seo-output.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
@@ -30,6 +31,8 @@ for (const value of urls) {
   if (url.origin !== "https://legendbornnutrition.com") failures.push(`Non-canonical sitemap origin: ${value}`);
   if (url.search || url.hash) failures.push(`Sitemap URL contains query or fragment: ${value}`);
   const pathname = decodeURIComponent(url.pathname);
+  // Oversized URLs remain in the sitemap and use the normal SPA fallback.
+  if (!canPrerenderRoute(pathname)) continue;
   const target = pathname === "/" ? path.join(dist, "index.html") : path.join(dist, pathname.replace(/^\//, ""), "index.html");
   const cleanUrlTarget = pathname === "/" ? target : path.join(dist, `${pathname.replace(/^\//, "")}.html`);
   let html = "";

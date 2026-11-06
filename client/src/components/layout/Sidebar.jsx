@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { ARCHITECTURE_SUMMARIES } from "../../data/architectureSummaries";
 import { useModalDialog } from "../../hooks/useModalDialog";
 
-export default function Sidebar({ open, onClose, links }) {
+export default function Sidebar({ open, onClose, links, architectures = ARCHITECTURE_SUMMARIES }) {
   const { isLoggedIn, logout, user } = useAuth();
   const navigate = useNavigate();
   const [archOpen, setArchOpen] = useState(false);
@@ -55,14 +55,14 @@ export default function Sidebar({ open, onClose, links }) {
 
                   {archOpen && (
                     <div className="ml-4 border-l border-slate-800 space-y-1 py-1">
-                      {ARCHITECTURE_SUMMARIES.map((arch) => (
+                      {architectures.map((arch) => (
                         <NavLink
-                          key={arch.id}
+                          key={arch._id || arch.id || arch.slug}
                           to={`/architectures/${arch.slug}`}
                           onClick={onClose}
                           className="flex items-center gap-3 px-4 py-2 text-xs font-bold uppercase text-slate-400 hover:text-[#FFB800]"
                         >
-                          {arch.logoUrl && <span className="h-9 w-9 shrink-0 overflow-hidden"><img src={arch.logoUrl} alt="" className="h-full w-full scale-[2.2] object-cover" /></span>}
+                          {arch.logoUrl && <span className="h-9 w-9 shrink-0 overflow-hidden"><img src={arch.logoUrl} alt="" className={arch.logoUrl.includes("/uploads/") ? "h-full w-full object-contain" : "h-full w-full scale-[2.2] object-cover"} /></span>}
                           {arch.title}
                         </NavLink>
                       ))}

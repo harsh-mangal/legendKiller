@@ -74,7 +74,7 @@ export default function ArchitectureDetailPage() {
           </div>
 
           <div className="mt-4 flex items-center gap-4">
-            {arch.logoUrl && <img src={arch.logoUrl} alt="" className="h-20 w-20 shrink-0 object-cover sm:h-28 sm:w-28" />}
+            {arch.logoUrl && <img src={arch.logoUrl} alt="" className="h-20 w-20 shrink-0 object-contain sm:h-28 sm:w-28" />}
             <h1 className="text-3xl font-black uppercase tracking-tight text-white sm:text-5xl lg:text-6xl">{arch.title}</h1>
           </div>
           <p className="mt-2 text-base font-bold uppercase tracking-wider text-[#FFB800] sm:text-xl">

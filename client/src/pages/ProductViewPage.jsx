@@ -24,6 +24,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 
 import { VIPER_PROTOCOL_MATRICES, VIPER_PROTOCOL_SLUG } from "../content/viperProtocol";
+import ProductNutrition from "../components/product/ProductNutrition";
 import ProductCard from "../components/product/ProductCard";
 import RecentlyViewed from "../components/home/RecentlyViewed";
 import Seo, { absoluteUrl, breadcrumbSchema } from "../components/seo/Seo";
@@ -951,50 +952,7 @@ export default function ProductViewPage() {
                 </div>
               )
             )}
-            {activeProductTab === "nutrition" && (
-              <div>
-                <p className="section-eyebrow">Formula Breakdown</p>
-                <h2 className="mt-3 text-2xl font-semibold text-slate-950 sm:text-3xl">
-                  Nutritional Facts
-                </h2>
-                {(product.nutritionGraphic || product.slug === VIPER_PROTOCOL_SLUG) && (
-                  <a href={product.nutritionGraphic || "/viper-protocol-nutrition-facts.png"} target="_blank" rel="noreferrer" className="mt-6 block" aria-label="Open full-size nutritional facts">
-                    <img src={product.nutritionGraphic || "/viper-protocol-nutrition-facts.png"} alt={`${product.name} nutrition facts: serving sizes, ingredients and quantities`} className="mx-auto h-auto w-full max-w-4xl" loading="lazy" />
-                    <span className="mt-3 block text-center text-sm font-semibold text-orange-700 underline">View full-size nutritional facts</span>
-                  </a>
-                )}
-                {!product.nutritionGraphic && product.slug !== VIPER_PROTOCOL_SLUG && (Array.isArray(product.nutritionalFacts) &&
-                product.nutritionalFacts.length > 0 ? (
-                  <div className="mt-6 overflow-hidden rounded-lg border border-slate-200">
-                    <div className="divide-y divide-slate-200">
-                      {product.nutritionalFacts.map((item, index) => (
-                        <div
-                          key={
-                            item._id || `${item.name || item.nutrient}-${index}`
-                          }
-                          className="grid grid-cols-[1fr_auto] gap-6 px-5 py-4 sm:grid-cols-[1fr_160px_120px]"
-                        >
-                          <span className="font-medium text-slate-900">
-                            {item.name || item.nutrient}
-                          </span>
-                          <span className="text-right text-slate-600">
-                            {item.amount || item.value}
-                          </span>
-                          <span className="hidden text-right font-semibold text-slate-800 sm:block">
-                            {item.dailyValue || "—"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="mt-6 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
-                    Nutritional information is not available for this product.
-                  </div>
-                ))}
-
-              </div>
-            )}
+            {activeProductTab === "nutrition" && <ProductNutrition product={product} />}
             {activeProductTab === "ingredients" && (
               <div>
                 <p className="section-eyebrow">Inside the formula</p>

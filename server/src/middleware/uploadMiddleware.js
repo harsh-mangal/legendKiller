@@ -6,9 +6,12 @@ const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 const allowedVideoTypes = new Set(["video/mp4", "video/webm", "video/quicktime"]);
 
 const fileFilter = (req, file, cb) => {
-  if (["image", "images", "infographics", "aboutGraphic", "nutritionGraphic"].includes(file.fieldname)) {
+  if (["image", "images", "banner", "infographics", "aboutGraphic", "nutritionGraphic"].includes(file.fieldname)) {
     if (allowedImageTypes.has(file.mimetype)) return cb(null, true);
     return cb(new Error("Product and infographic files must be JPG, PNG or WEBP"), false);
+  }
+  if (file.fieldname === "nutritionPdf") {
+    return cb(file.mimetype === "application/pdf" ? null : new Error("Nutrition documents must be PDF files"), file.mimetype === "application/pdf");
   }
   if (file.fieldname === "videos") {
     if (allowedVideoTypes.has(file.mimetype)) return cb(null, true);
@@ -23,7 +26,7 @@ export const upload = multer({
   fileFilter,
   limits: {
     fileSize: Math.max(1, Number(process.env.MAX_UPLOAD_MB || 10)) * 1024 * 1024,
-    files: 22,
+    files: 23,
     fields: 80,
     fieldSize: 1 * 1024 * 1024,
   },
@@ -33,6 +36,7 @@ export const uploadProductMedia = upload.fields([
   { name: "images", maxCount: PRODUCT_IMAGE_LIMIT },
   { name: "aboutGraphic", maxCount: 1 },
   { name: "nutritionGraphic", maxCount: 1 },
+  { name: "nutritionPdf", maxCount: 1 },
   { name: "infographics", maxCount: 8 },
   { name: "videos", maxCount: 2 },
 ]);

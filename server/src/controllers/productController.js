@@ -1,3 +1,4 @@
+import { saveNutritionPdf, validatePdfFile } from "../utils/pdfUpload.js";
 import Category from "../models/Category.js";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
@@ -125,6 +126,7 @@ export const getRelatedProducts = async (req, res, next) => {
 
 export const createProduct = async (req, res, next) => {
   try {
+    validatePdfFile(uploadedFiles(req, "nutritionPdf")[0]);
     const commercial = validateCommercialFields(req.body);
     const categoryDoc = await Category.findById(req.body.category);
     if (!categoryDoc) throw new ApiError(400, "Invalid category");
@@ -153,6 +155,8 @@ export const createProduct = async (req, res, next) => {
       ingredients: parseArray(req.body.ingredients),
       howToUse: req.body.howToUse,
       whatsInIt: req.body.whatsInIt,
+      nutritionText: req.body.nutritionText,
+      nutritionPdf: await saveNutritionPdf(uploadedFiles(req, "nutritionPdf")[0]),
       nutritionGraphic: (await uploadMultipleImages(uploadedFiles(req, "nutritionGraphic"), "product-nutrition", { width: 1600, quality: 95, maxBytes: 2 * 1024 * 1024 }))[0] || "",
       suitableFor: parseArray(req.body.suitableFor),
       images: uploadedImageUrls,
@@ -190,6 +194,7 @@ export const updateProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) throw new ApiError(404, "Product not found");
+    validatePdfFile(uploadedFiles(req, "nutritionPdf")[0]);
 
     if (req.body.name && req.body.name !== product.name) {
       product.slug = makeSlug(req.body.name);
@@ -212,7 +217,7 @@ export const updateProduct = async (req, res, next) => {
       product.stock = commercial.stock;
     }
 
-    const fields = ["name", "shortDescription", "description", "longDescription", "howToUse", "whatsInIt", "unit", "weight"];
+    const fields = ["name", "shortDescription", "description", "longDescription", "howToUse", "whatsInIt", "nutritionText", "unit", "weight"];
     fields.forEach((field) => {
       if (req.body[field] !== undefined) product[field] = req.body[field];
     });
@@ -223,6 +228,10 @@ export const updateProduct = async (req, res, next) => {
     if (req.body.isFeatured !== undefined) product.isFeatured = parseBoolean(req.body.isFeatured);
     if (req.body.isBestSeller !== undefined) product.isBestSeller = parseBoolean(req.body.isBestSeller);
 
+    const previousNutritionPdf = product.nutritionPdf;
+    const nutritionPdfFile = uploadedFiles(req, "nutritionPdf")[0];
+    if (nutritionPdfFile) product.nutritionPdf = await saveNutritionPdf(nutritionPdfFile);
+    else if (parseBoolean(req.body.clearNutritionPdf)) product.nutritionPdf = "";
     const previousNutritionGraphic = product.nutritionGraphic;
     const nutritionFiles = uploadedFiles(req, "nutritionGraphic");
     if (nutritionFiles.length) {
@@ -270,6 +279,7 @@ export const updateProduct = async (req, res, next) => {
     await product.save();
     await product.populate("category", "name slug");
     if (imagePlan.shouldUpdate) await deleteUploadedImages(imagePlan.removedImages);
+    if (previousNutritionPdf && previousNutritionPdf !== product.nutritionPdf) await deleteUploadedImages([previousNutritionPdf]);
     if (previousNutritionGraphic && previousNutritionGraphic !== product.nutritionGraphic) await deleteUploadedImages([previousNutritionGraphic]);
     if (aboutGraphicChanged && previousAboutGraphic && previousAboutGraphic !== product.aboutGraphic) {
       await deleteUploadedImages([previousAboutGraphic]);

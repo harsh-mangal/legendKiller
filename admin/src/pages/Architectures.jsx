@@ -17,7 +17,7 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import API, { STOREFRONT_URL } from "../api/axios";
+import API, { STOREFRONT_URL, assetUrl } from "../api/axios";
 import {
   Badge,
   Button,
@@ -35,6 +35,8 @@ import {
   Toggle,
 } from "../components/ui";
 import { useToast } from "../context/ToastContext";
+import { useObjectUrl } from "../hooks/useObjectUrl";
+import { validateImageFiles } from "../utils/validation";
 import { getErrorMessage } from "../utils/errors";
 
 const ICON_OPTIONS = [
@@ -54,6 +56,8 @@ const iconMap = {
   Droplets,
   Shield,
 };
+
+const logoPreviewUrl = (url) => /^\/?uploads\//i.test(url || "") ? assetUrl(url) : url?.startsWith("/") ? `${STOREFRONT_URL}${url}` : url;
 
 const blankArchitecture = {
   title: "",
@@ -93,6 +97,10 @@ export default function Architectures() {
   const [editingId, setEditingId] = useState("");
   const [form, setForm] = useState(blankArchitecture);
   const [saving, setSaving] = useState(false);
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoInputKey, setLogoInputKey] = useState(0);
+  const logoPreview = useObjectUrl(logoFile);
+  const resetLogoFile = () => { setLogoFile(null); setLogoInputKey((value) => value + 1); };
   const [deletingId, setEditingDeleteId] = useState("");
   const [seeding, setSeeding] = useState(false);
   const toast = useToast();
@@ -116,12 +124,14 @@ export default function Architectures() {
   const handleOpenCreate = () => {
     setEditingId("");
     setForm(blankArchitecture);
+    resetLogoFile();
     setActiveTab("general");
     setEditorOpen(true);
   };
 
   const handleOpenEdit = (item) => {
     setEditingId(item._id);
+    resetLogoFile();
     setForm({
       title: item.title || "",
       slug: item.slug || "",
@@ -171,6 +181,8 @@ export default function Architectures() {
       return;
     }
 
+    const imageError = validateImageFiles(logoFile ? [logoFile] : [], { maxFiles: 1 });
+    if (imageError) return toast.error(imageError);
     try {
       setSaving(true);
       const payload = {
@@ -182,11 +194,17 @@ export default function Architectures() {
           .map((c, idx) => ({ ...c, number: idx + 1 })),
       };
 
+      let body = payload;
+      if (logoFile) {
+        body = new FormData();
+        body.append("payload", JSON.stringify(payload));
+        body.append("image", logoFile);
+      }
       if (editingId) {
-        await API.put(`/architectures/${editingId}`, payload);
+        await API.put(`/architectures/${editingId}`, body);
         toast.success("Architecture updated successfully");
       } else {
-        await API.post("/architectures", payload);
+        await API.post("/architectures", body);
         toast.success("Architecture created successfully");
       }
       setEditorOpen(false);
@@ -375,7 +393,7 @@ export default function Architectures() {
                   <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
                     <div className="flex items-center gap-2">
                       <div className="flex h-9 w-9 items-center justify-center overflow-hidden bg-slate-900 text-[#FFB800]">
-                        {item.logoUrl ? <img src={item.logoUrl.startsWith("/") ? `${STOREFRONT_URL}${item.logoUrl}` : item.logoUrl} alt="" className="h-full w-full object-cover" /> : <IconComponent size={20} />}
+                        {item.logoUrl ? <img src={logoPreviewUrl(item.logoUrl)} alt="" className="h-full w-full object-cover" /> : <IconComponent size={20} />}
                       </div>
                       <div>
                         <Badge variant="outline" className="text-[10px] font-black uppercase text-[#FF5500]">
@@ -527,7 +545,7 @@ export default function Architectures() {
                     options={ICON_OPTIONS}
                   />
                 </Field>
-                <Field label="Logo URL">
+                <Field label="Architecture image URL" hint="You can paste a URL or upload an image below.">
                   <Input value={form.logoUrl} onChange={(e) => setForm({ ...form, logoUrl: e.target.value })} placeholder="/architectures/logo.png" />
                 </Field>
                 <Field label="Sort Order">
@@ -537,6 +555,22 @@ export default function Architectures() {
                     onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })}
                   />
                 </Field>
+              </div>
+
+              <div className="space-y-4 rounded-xl border border-orange-200 bg-orange-50 p-5">
+                <Field label="Upload architecture image" hint="JPG, PNG or WEBP, maximum 10 MB. This replaces the image on architecture cards, detail pages and navigation menus.">
+                  <Input key={logoInputKey} type="file" accept="image/jpeg,image/png,image/webp" disabled={saving} onChange={(event) => {
+                    const file = event.target.files?.[0] || null;
+                    const error = validateImageFiles(file ? [file] : [], { maxFiles: 1 });
+                    if (error) { toast.error(error); event.target.value = ""; return; }
+                    setLogoFile(file);
+                  }} />
+                </Field>
+                {(logoPreview || form.logoUrl) && <img src={logoPreview || logoPreviewUrl(form.logoUrl)} alt="Architecture image preview" className="h-40 w-40 rounded-lg border border-stone-200 bg-white object-contain" />}
+                <div className="flex flex-wrap gap-3">
+                  {logoFile && <Button type="button" size="sm" variant="secondary" onClick={resetLogoFile}>Discard replacement</Button>}
+                  {form.logoUrl && <Button type="button" size="sm" variant="secondary" onClick={() => { resetLogoFile(); setForm((current) => ({ ...current, logoUrl: "" })); }}>Remove image</Button>}
+                </div>
               </div>
 
               <Field label="Short Summary Description">

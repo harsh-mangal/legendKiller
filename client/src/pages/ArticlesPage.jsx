@@ -6,11 +6,12 @@ import Alert from "../components/ui/Alert";
 import ProductImage from "../components/ui/ProductImage";
 import { EmptyState, PageLoading } from "../components/ui/PageState";
 import { SITE } from "../config/site";
-import { articleApi, getErrorMessage } from "../services/api";
+import { articleApi, getErrorMessage, storefrontSettingsApi } from "../services/api";
 import { formatDate } from "../utils/format";
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState([]);
+  const [sectionBanner, setSectionBanner] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -25,6 +26,15 @@ export default function ArticlesPage() {
         }
       })
       .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; controller.abort(); };
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+    storefrontSettingsApi.getArticles({ signal: controller.signal })
+      .then((settings) => { if (active) setSectionBanner(settings.aboutLegendSlayerBanner || ""); })
+      .catch(() => {});
     return () => { active = false; controller.abort(); };
   }, []);
 
@@ -64,6 +74,7 @@ export default function ArticlesPage() {
         </div>
 
         <section id="about-legend-slayer" aria-labelledby="about-legend-slayer-title" className="protocol-content mt-10 scroll-mt-36 rounded-xl p-6 sm:p-10">
+          {sectionBanner && <img src={sectionBanner} alt="About Legend Slayer: The Viper Protocol" className="mb-6 h-auto w-full rounded-lg" loading="lazy" />}
           <p className="section-eyebrow">About the pre-workout</p>
           <h2 id="about-legend-slayer-title" className="mt-3 font-display text-2xl font-black uppercase sm:text-3xl">About Legend Slayer: <span className="text-[#FF5500]">The Viper Protocol</span></h2>
           <div className="mt-6 grid items-center gap-8 md:grid-cols-[180px_1fr]">

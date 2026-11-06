@@ -21,6 +21,7 @@ import {
   Wand2,
   XCircle,
 } from "lucide-react";
+import ArticleSectionSettings from "../components/ArticleSectionSettings";
 import API, { assetUrl } from "../api/axios";
 import {
   Badge,
@@ -440,6 +441,8 @@ export default function Articles() {
           </>
         }
       />
+
+      <ArticleSectionSettings />
 
       {/* Metric Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

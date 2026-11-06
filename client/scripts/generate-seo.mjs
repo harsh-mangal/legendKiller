@@ -1,3 +1,4 @@
+import { canPrerenderRoute } from "./seo-output.mjs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -463,6 +464,10 @@ const renderStaticFallback = (page, indexable) => {
 };
 
 const writeRouteHtml = async (template, page, indexable) => {
+  if (!canPrerenderRoute(page.path)) {
+    console.warn(`Using app routing for a URL that exceeds static filename limits: ${page.path}`);
+    return;
+  }
   const output = template
     .replace(/<!-- SEO:START -->[\s\S]*?<!-- SEO:END -->/, renderHead(page, indexable))
     .replace('<div id="root"></div>', renderStaticFallback(page, indexable))

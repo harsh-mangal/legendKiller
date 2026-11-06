@@ -1,5 +1,18 @@
+import { ApiError } from "../utils/apiError.js";
+import { deleteUploadedImages, uploadMultipleImages } from "../utils/imageUpload.js";
 import Architecture from "../models/Architecture.js";
 import { DEFAULT_ARCHITECTURES } from "../data/architecturesData.js";
+
+const readArchitecturePayload = (req) => {
+  if (!req.body.payload) return req.body;
+  try {
+    const value = JSON.parse(req.body.payload);
+    if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error();
+    return value;
+  } catch {
+    throw new ApiError(400, "Invalid architecture details");
+  }
+};
 
 let syncPromise;
 const syncSuppliedArchitectures = async () => {
@@ -22,7 +35,9 @@ const syncSuppliedArchitectures = async () => {
 export const getArchitectures = async (req, res, next) => {
   try {
     await syncSuppliedArchitectures();
-    const items = await Architecture.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
+    const query = Architecture.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
+    if (req.query.summary === "true") query.select("title slug subtitle logoUrl");
+    const items = await query;
 
     res.json({ success: true, count: items.length, data: items });
   } catch (error) {
@@ -59,7 +74,7 @@ export const getArchitectureBySlug = async (req, res, next) => {
 
 export const createArchitecture = async (req, res, next) => {
   try {
-    const { title, slug, subtitle, category, badge, icon, logoUrl, shortDescription, overview, pillars, emergentOutcomes, chapters, sortOrder, isActive } = req.body;
+    const { title, slug, subtitle, category, badge, icon, logoUrl, shortDescription, overview, pillars, emergentOutcomes, chapters, sortOrder, isActive } = readArchitecturePayload(req);
 
     if (!title || !slug) {
       return res.status(400).json({ success: false, message: "Title and slug are required" });
@@ -71,6 +86,7 @@ export const createArchitecture = async (req, res, next) => {
       return res.status(400).json({ success: false, message: "Architecture slug already exists" });
     }
 
+    const uploadedLogo = (await uploadMultipleImages(req.file ? [req.file] : [], "architectures", { width: 1200, quality: 90, maxBytes: 500 * 1024 }))[0];
     const architecture = await Architecture.create({
       title,
       slug: cleanSlug,
@@ -78,7 +94,8 @@ export const createArchitecture = async (req, res, next) => {
       category: category || "Viper Protocol",
       badge: badge || "5 Pillars",
       icon: icon || "Zap",
-      logoUrl: logoUrl || "",
+      logoUrl: uploadedLogo || logoUrl || "",
+      contentVersion: 1,
       shortDescription: shortDescription || "",
       overview: overview || "",
       pillars: pillars || [],
@@ -97,7 +114,7 @@ export const createArchitecture = async (req, res, next) => {
 export const updateArchitecture = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, slug, subtitle, category, badge, icon, logoUrl, shortDescription, overview, pillars, emergentOutcomes, chapters, sortOrder, isActive } = req.body;
+    const { title, slug, subtitle, category, badge, icon, logoUrl, shortDescription, overview, pillars, emergentOutcomes, chapters, sortOrder, isActive } = readArchitecturePayload(req);
 
     const architecture = await Architecture.findById(id);
     if (!architecture) {
@@ -113,12 +130,16 @@ export const updateArchitecture = async (req, res, next) => {
       architecture.slug = cleanSlug;
     }
 
+    const previousLogo = architecture.logoUrl;
+    const uploadedLogo = (await uploadMultipleImages(req.file ? [req.file] : [], "architectures", { width: 1200, quality: 90, maxBytes: 500 * 1024 }))[0];
     if (title) architecture.title = title;
     if (subtitle !== undefined) architecture.subtitle = subtitle;
     if (category !== undefined) architecture.category = category;
     if (badge !== undefined) architecture.badge = badge;
     if (icon !== undefined) architecture.icon = icon;
-    if (logoUrl !== undefined) architecture.logoUrl = logoUrl;
+    if (uploadedLogo) architecture.logoUrl = uploadedLogo;
+    else if (logoUrl !== undefined) architecture.logoUrl = logoUrl;
+    architecture.contentVersion = 1;
     if (shortDescription !== undefined) architecture.shortDescription = shortDescription;
     if (overview !== undefined) architecture.overview = overview;
     if (pillars !== undefined) architecture.pillars = pillars;
@@ -128,6 +149,7 @@ export const updateArchitecture = async (req, res, next) => {
     if (isActive !== undefined) architecture.isActive = isActive;
 
     await architecture.save();
+    if (previousLogo && previousLogo !== architecture.logoUrl) await deleteUploadedImages([previousLogo]);
 
     res.json({ success: true, data: architecture });
   } catch (error) {

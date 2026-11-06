@@ -83,3 +83,10 @@ export const validateMediaFiles = (files = [], { maxFiles = 2, maxMb = 100, allo
   if (oversized) return `${oversized.name || "File"} must be smaller than ${maxMb} MB.`;
   return "";
 };
+
+export const validatePdfFile = (file, { maxMb = 10 } = {}) => {
+  if (!file) return "";
+  if (file.type !== "application/pdf") return "Select a PDF document.";
+  if (Number(file.size || 0) > maxMb * 1024 * 1024) return `The PDF must be smaller than ${maxMb} MB.`;
+  return "";
+};

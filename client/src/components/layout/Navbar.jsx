@@ -1,6 +1,7 @@
 import { Heart, Menu, Search, ShoppingBag, User, X, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { architectureApi } from "../../services/api";
 import { SITE } from "../../config/site";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
@@ -19,6 +20,12 @@ const navLinks = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [architectures, setArchitectures] = useState(ARCHITECTURE_SUMMARIES);
+  useEffect(() => {
+    let active = true;
+    architectureApi.getArchitectures({ summary: true }).then((items) => { if (active) setArchitectures(items); }).catch(() => {});
+    return () => { active = false; };
+  }, []);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -153,13 +160,13 @@ export default function Navbar() {
                             6 Viper Protocol™ Architectures
                           </p>
                           <div className="space-y-1">
-                            {ARCHITECTURE_SUMMARIES.map((arch) => (
+                            {architectures.map((arch) => (
                               <Link
-                                key={arch.id}
+                                key={arch._id || arch.id || arch.slug}
                                 to={`/architectures/${arch.slug}`}
                                 className="flex items-center gap-3 p-2.5 hover:bg-[#1A1A22] transition border-l-2 border-transparent hover:border-[#FF5500]"
                               >
-                                {arch.logoUrl && <span className="h-11 w-11 shrink-0 overflow-hidden"><img src={arch.logoUrl} alt="" className="h-full w-full scale-[2.2] object-cover" /></span>}
+                                {arch.logoUrl && <span className="h-11 w-11 shrink-0 overflow-hidden"><img src={arch.logoUrl} alt="" className={arch.logoUrl.includes("/uploads/") ? "h-full w-full object-contain" : "h-full w-full scale-[2.2] object-cover"} /></span>}
                                 <span className="min-w-0"><span className="block text-xs font-black uppercase text-white hover:text-[#FFB800]">{arch.title}</span><span className="block truncate text-[10px] font-bold text-slate-400">{arch.subtitle}</span></span>
                               </Link>
                             ))}
@@ -230,7 +237,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} links={navLinks} />
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} links={navLinks} architectures={architectures} />
     </>
   );
 }

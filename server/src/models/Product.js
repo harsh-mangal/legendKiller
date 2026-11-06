@@ -46,6 +46,8 @@ const productSchema = new mongoose.Schema(
     howToUse: { type: String, trim: true },
     whatsInIt: { type: String, trim: true, default: "" },
     nutritionGraphic: { type: String, trim: true, default: "" },
+    nutritionText: { type: String, trim: true, default: "" },
+    nutritionPdf: { type: String, trim: true, default: "" },
     nutritionalFacts: [{ name: String, amount: String, dailyValue: String }],
     suitableFor: [String],
     warnings: [String],
