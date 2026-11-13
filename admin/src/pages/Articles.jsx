@@ -822,7 +822,7 @@ export default function Articles() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Upload Image File">
+                  <Field label="Upload Image File" hint="Image container: 16:9, responsive width. Recommended upload: 1920 × 1080 px (1600 × 900 px also works). Other ratios are cropped to fill the container.">
                     <Input
                       type="file"
                       accept="image/*"
@@ -843,7 +843,7 @@ export default function Articles() {
                 </div>
 
                 {preview && (
-                  <div className="relative h-44 overflow-hidden rounded-xl border border-stone-200 bg-white">
+                  <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-stone-200 bg-white">
                     <img src={preview} alt={form.imageAlt || "Preview"} className="h-full w-full object-cover" />
                   </div>
                 )}
